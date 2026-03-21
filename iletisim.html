@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Hall Strateji ve Yönetim Danışmanlığı A.Ş. — İletişim bilgileri ve mesaj formu.">
+  <title>İletişim — HALL Strateji ve Yönetim Danışmanlığı</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    if('scrollRestoration' in history) history.scrollRestoration='manual';
+    document.documentElement.classList.add('no-scroll');
+    window.scrollTo(0,0);
+  </script>
+</head>
+<body>
+
+  <!-- ===================== NAVBAR ===================== -->
+  <nav class="navbar scrolled" id="navbar">
+    <div class="navbar__inner">
+      <a href="index.html" class="navbar__brand">
+        <img src="assets/logo-full.png" alt="Hall Global Solutions" class="navbar__logo-full">
+      </a>
+      <div class="navbar__nav">
+        <a href="index.html">Ana Sayfa</a>
+        <a href="hakkimizda.html">Hakkımızda</a>
+        <a href="hizmetler.html">Hizmetler</a>
+        <a href="iletisim.html" class="navbar__cta active" style="background:var(--gold); color:var(--bg);">İletişim</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===================== PAGE HERO ===================== -->
+  <section class="page-hero">
+    <img src="assets/logo-mark.png" class="page-hero__deco" alt="" aria-hidden="true">
+    <div class="container page-hero__inner">
+      <p class="eyebrow">Bize Ulaşın</p>
+      <span class="gold-line"></span>
+      <h1 class="section-title">İletişim</h1>
+      <p class="page-hero__desc">
+        Kurumunuza özel danışmanlık hizmetlerimiz hakkında bilgi almak ve
+        ilk değerlendirme görüşmesi için bugün bize ulaşın.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== CONTACT SECTION ===================== -->
+  <section class="contact-section section-pad">
+    <div class="container">
+
+      <div class="contact-grid">
+
+        <!-- Left: Contact Info -->
+        <div class="contact-info">
+          <h3>Ofis Bilgileri</h3>
+
+          <div class="contact-detail">
+            <div class="contact-detail__icon">📍</div>
+            <div class="contact-detail__content">
+              <div class="contact-detail__label">Adres</div>
+              <div class="contact-detail__value">
+                Varyap Meridian 6 Toplu Yapısı<br>
+                Barbaros Mahallesi, Mor Sümbül Sokak<br>
+                Meridian Business I-Blok<br>
+                Ofis No: 90–91–92<br>
+                Batı Ataşehir / İSTANBUL
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-detail">
+            <div class="contact-detail__icon">📞</div>
+            <div class="contact-detail__content">
+              <div class="contact-detail__label">Telefon</div>
+              <div class="contact-detail__value">
+                <a href="tel:+902165042464">+90 (216) 504 24 64</a><br>
+                <a href="tel:+902165042465">+90 (216) 504 24 65</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-detail">
+            <div class="contact-detail__icon">📠</div>
+            <div class="contact-detail__content">
+              <div class="contact-detail__label">Faks</div>
+              <div class="contact-detail__value">
+                +90 (216) 504 24 66
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-detail">
+            <div class="contact-detail__icon">✉</div>
+            <div class="contact-detail__content">
+              <div class="contact-detail__label">E-posta</div>
+              <div class="contact-detail__value">
+                <a href="mailto:can.kilickaya@halldanismanlik.com">can.kilickaya@halldanismanlik.com</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-detail">
+            <div class="contact-detail__icon">🌐</div>
+            <div class="contact-detail__content">
+              <div class="contact-detail__label">Web</div>
+              <div class="contact-detail__value">
+                <a href="https://www.halldanismanlik.com" target="_blank">www.halldanismanlik.com</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Info card -->
+          <div style="
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--gold);
+            padding: 1.5rem 1.5rem 1.5rem 1.25rem;
+            border-radius: 0 var(--radius) var(--radius) 0;
+            margin-top: 1rem;
+          ">
+            <p style="font-family: var(--font-display); font-size:1rem; font-style:italic; color:var(--gold); margin-bottom:0.5rem;">
+              İlk Görüşme
+            </p>
+            <p style="font-size:0.85rem; color:var(--muted-light); line-height:1.75;">
+              Kurumunuzun ihtiyaçlarını değerlendirmek için ücretsiz ilk görüşme sunmaktayız.
+              Formu doldurun, en kısa sürede size dönelim.
+            </p>
+          </div>
+        </div>
+
+        <!-- Right: Contact Form -->
+        <div class="contact-form-wrap">
+          <h3>Mesaj Gönderin</h3>
+
+          <form id="contactForm" onsubmit="handleSubmit(event)">
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="ad">Ad Soyad *</label>
+                <input type="text" id="ad" name="ad" placeholder="Adınız ve soyadınız" required>
+              </div>
+              <div class="form-group">
+                <label for="sirket">Şirket</label>
+                <input type="text" id="sirket" name="sirket" placeholder="Şirket adı">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="email">E-posta *</label>
+                <input type="email" id="email" name="email" placeholder="ornek@sirket.com" required>
+              </div>
+              <div class="form-group">
+                <label for="telefon">Telefon</label>
+                <input type="tel" id="telefon" name="telefon" placeholder="+90 (___) ___ __ __">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="hizmet">Hizmet Alanı</label>
+              <select id="hizmet" name="hizmet">
+                <option value="" disabled selected>Hizmet alanı seçiniz</option>
+                <option value="kurumsal-finans">Kurumsal Finans</option>
+                <option value="finansal-yapilandirma">Finansal Yeniden Yapılandırma</option>
+                <option value="yonetim-danismanligi">Yönetim Danışmanlığı</option>
+                <option value="vergi-danismanligi">Vergi Danışmanlığı</option>
+                <option value="kurumsal-strateji">Kurumsal Strateji</option>
+                <option value="bagimsiz-denetim">Bağımsız Denetim</option>
+                <option value="diger">Diğer / Birden Fazla Alan</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="mesaj">Mesajınız *</label>
+              <textarea
+                id="mesaj"
+                name="mesaj"
+                placeholder="Kurumunuz ve danışmanlık ihtiyacınız hakkında kısaca bilgi veriniz..."
+                required
+              ></textarea>
+            </div>
+
+            <button type="submit" class="btn btn--primary form-submit">
+              Mesajı Gönder
+            </button>
+
+            <p id="form-success" style="display:none; margin-top:1rem; color:var(--gold); font-size:0.875rem; text-align:center;">
+              Mesajınız başarıyla iletildi. En kısa sürede sizinle iletişime geçeceğiz.
+            </p>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer">
+    <div class="footer__main">
+      <div class="container">
+        <div class="footer__grid">
+
+          <div class="footer__brand-col">
+            <div class="footer__brand-wrap">
+              <img src="assets/logo-full.png" alt="Hall Global Solutions" class="footer__logo-mark" style="height:52px;">
+            </div>
+            <p class="footer__desc">
+              Hall Strateji ve Yönetim Danışmanlığı A.Ş., Türkiye'nin önde gelen kurumsal danışmanlık firmalarından biridir.
+            </p>
+          </div>
+
+          <div>
+            <p class="footer__col-title">Hizmetler</p>
+            <nav class="footer__links">
+              <a href="hizmetler.html">Kurumsal Finans</a>
+              <a href="hizmetler.html">Finansal Yeniden Yapılandırma</a>
+              <a href="hizmetler.html">Yönetim Danışmanlığı</a>
+              <a href="hizmetler.html">Vergi Danışmanlığı</a>
+              <a href="hizmetler.html">Kurumsal Strateji</a>
+              <a href="hizmetler.html">Bağımsız Denetim</a>
+            </nav>
+          </div>
+
+          <div>
+            <p class="footer__col-title">Kurumsal</p>
+            <nav class="footer__links">
+              <a href="hakkimizda.html">Hakkımızda</a>
+              <a href="hakkimizda.html">Liderlik Ekibi</a>
+              <a href="iletisim.html">İletişim</a>
+            </nav>
+            <p class="footer__col-title" style="margin-top:2rem;">İletişim</p>
+            <p style="font-size:0.82rem; color:var(--muted); line-height:1.7;">
+              Batı Ataşehir / İSTANBUL<br>
+              <a href="tel:+902165042464" style="color:var(--gold);">+90 (216) 504 24 64</a><br>
+              <a href="mailto:can.kilickaya@halldanismanlik.com" style="color:var(--gold); font-size:0.78rem;">can.kilickaya@halldanismanlik.com</a>
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <div class="container" style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+        <span>&copy; 2025 Hall Strateji ve Yönetim Danışmanlığı A.Ş. Tüm hakları saklıdır.</span>
+        <a href="https://www.halldanismanlik.com" target="_blank">www.halldanismanlik.com</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.scrollTo(0, 0);
+    document.documentElement.classList.remove('no-scroll');
+
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 30);
+    });
+
+    window.addEventListener('load', () => { window.scrollTo(0, 0); });
+
+    function handleSubmit(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('.form-submit');
+      btn.textContent = 'Gönderiliyor...';
+      btn.disabled = true;
+      setTimeout(() => {
+        document.getElementById('form-success').style.display = 'block';
+        btn.textContent = 'Gönderildi';
+        btn.style.background = 'var(--gold-dark)';
+      }, 1200);
+    }
+  </script>
+
+</body>
+</html>

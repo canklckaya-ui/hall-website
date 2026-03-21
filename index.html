@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Hall Strateji ve Yönetim Danışmanlığı A.Ş. — Kurumsal finans, yönetim ve strateji danışmanlığı hizmetleri.">
+  <title>HALL Strateji ve Yönetim Danışmanlığı A.Ş.</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    if('scrollRestoration' in history) history.scrollRestoration='manual';
+    document.documentElement.classList.add('no-scroll');
+    window.scrollTo(0,0);
+  </script>
+</head>
+<body class="page-fixed">
+
+  <!-- ===================== NAVBAR ===================== -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar__inner">
+      <a href="index.html" class="navbar__brand">
+        <img src="assets/logo-full.png" alt="Hall Global Solutions" class="navbar__logo-full">
+      </a>
+      <div class="navbar__nav">
+        <a href="index.html" class="active">Ana Sayfa</a>
+        <a href="hakkimizda.html">Hakkımızda</a>
+        <a href="hizmetler.html">Hizmetler</a>
+        <a href="iletisim.html" class="navbar__cta">İletişim</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero">
+    <img src="assets/logo-mark.png" class="hero__deco-mark" alt="" aria-hidden="true">
+    <div class="container">
+      <div class="hero__grid">
+
+        <!-- Left: Text -->
+        <div class="hero__left">
+          <p class="hero__eyebrow">Hall Strateji ve Yönetim Danışmanlığı A.Ş.</p>
+          <h1 class="hero__title">
+            Kurumsal Danışmanlıkta<br>
+            <span>Bağımsız</span> Uzmanlık
+          </h1>
+          <p class="hero__subtitle">
+            Kamu kökeni, özel sektör çevikliği ve uluslararası birikim ile<br>
+            kurumunuzun geleceğini şekillendiriyoruz.
+          </p>
+          <p class="hero__desc">
+            Yeminli Mali Müşavirlik, Bağımsız Denetim, kurumsal finans ve yönetim danışmanlığı
+            alanlarında 30 yılı aşkın deneyimle; şirket birleşme ve satın almaları, finansal
+            yeniden yapılandırma, vergi danışmanlığı ve yönetim kurulu danışmanlığı konularında
+            üst düzey çözümler sunuyoruz.
+          </p>
+          <div class="hero__actions">
+            <a href="hizmetler.html" class="btn btn--primary">Hizmetlerimizi Keşfedin</a>
+            <a href="iletisim.html" class="btn btn--outline">İletişime Geçin</a>
+          </div>
+        </div>
+
+        <!-- Right: Photo -->
+        <div class="hero__right">
+          <div class="hero__photo-wrapper">
+            <div class="hero__photo-bg-glow"></div>
+            <div class="hero__photo-frame">
+              <img
+                src="assets/can-kilickaya.png"
+                alt="Can Kılıçkaya — YMM · Bağımsız Denetçi · YK Bağımsız Üyesi"
+                class="hero__photo"
+              >
+            </div>
+            <!-- Corner accents -->
+            <div class="hero__gold-corner"></div>
+            <div class="hero__gold-corner hero__gold-corner--bl"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <script>
+    window.scrollTo(0, 0);
+    document.documentElement.classList.remove('no-scroll');
+
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 30);
+    });
+
+    // Sayfa tam yüklenince de en üste git
+    window.addEventListener('load', () => { window.scrollTo(0, 0); });
+  </script>
+
+</body>
+</html>

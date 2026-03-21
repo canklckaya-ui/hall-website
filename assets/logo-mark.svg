@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 114 68" fill="#BCA764">
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--  LEFT H-FORM  (Z-maze: top-left → bottom-right) -->
+  <!-- ═══════════════════════════════════════════════ -->
+
+  <!-- Left outer bar (full height) -->
+  <rect x="0"  y="0"  width="11" height="68"/>
+  <!-- Right outer bar (full height) -->
+  <rect x="41" y="0"  width="11" height="68"/>
+  <!-- Top connector: left outer → inner-top -->
+  <rect x="11" y="0"  width="13" height="11"/>
+  <!-- Inner-top bar (right-center, top half) -->
+  <rect x="24" y="0"  width="11" height="39"/>
+  <!-- Full-width crossbar -->
+  <rect x="11" y="28" width="30" height="11"/>
+  <!-- Inner-bottom bar (left-center, bottom half) -->
+  <rect x="17" y="28" width="11" height="40"/>
+  <!-- Bottom connector: inner-bottom → right outer -->
+  <rect x="28" y="57" width="13" height="11"/>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--  RIGHT H-FORM  (S-maze: mirrored)              -->
+  <!-- ═══════════════════════════════════════════════ -->
+
+  <!-- Left outer bar (full height) -->
+  <rect x="62"  y="0"  width="11" height="68"/>
+  <!-- Right outer bar (full height) -->
+  <rect x="103" y="0"  width="11" height="68"/>
+  <!-- Top connector: inner-top → right outer -->
+  <rect x="90"  y="0"  width="13" height="11"/>
+  <!-- Inner-top bar (left-center, top half) -->
+  <rect x="79"  y="0"  width="11" height="39"/>
+  <!-- Full-width crossbar -->
+  <rect x="73"  y="28" width="30" height="11"/>
+  <!-- Inner-bottom bar (right-center, bottom half) -->
+  <rect x="86"  y="28" width="11" height="40"/>
+  <!-- Bottom connector: left outer → inner-bottom -->
+  <rect x="73"  y="57" width="13" height="11"/>
+
+</svg>
