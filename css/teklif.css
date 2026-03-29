@@ -1,0 +1,775 @@
+/* =========================================================
+   HALL Strateji ve Yönetim Danışmanlığı A.Ş.
+   Teklif (Proposal) Stylesheet
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* --- Brand Variables --- */
+:root {
+  --gold:        #C9B06A;
+  --gold-light:  #DFC882;
+  --gold-dark:   #9A844E;
+  --navy:        #111520;
+  --navy-light:  #1A2030;
+  --border:      #D4D4D4;
+  --border-light:#E8E8E8;
+  --text:        #1A1A1A;
+  --text-muted:  #666666;
+  --text-light:  #999999;
+  --white:       #FFFFFF;
+  --bg-subtle:   #FAFAF8;
+  --bg-gold:     #FBF8F0;
+
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body:    'Inter', system-ui, sans-serif;
+}
+
+/* --- Reset & Base --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 15px;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--text);
+  line-height: 1.7;
+  background: #E0E0E0;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+
+/* =========================================================
+   PAGE LAYOUT — A4 Simulation
+   ========================================================= */
+.proposal-page {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 20px auto;
+  padding: 40px 50px;
+  background: var(--white);
+  box-shadow: 0 2px 20px rgba(0,0,0,0.12);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* =========================================================
+   COVER PAGE
+   ========================================================= */
+.proposal-cover {
+  padding: 0;
+  background: var(--navy);
+  color: #F0EDE8;
+  overflow: hidden;
+}
+
+.cover__header {
+  padding: 50px 50px 0;
+}
+
+.cover__logo {
+  height: 72px;
+  width: auto;
+}
+
+.cover__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 50px;
+}
+
+.cover__gold-line {
+  width: 60px;
+  height: 2px;
+  background: var(--gold);
+}
+
+.cover__eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.cover__title {
+  font-family: var(--font-display);
+  font-size: 2.8rem;
+  font-weight: 600;
+  line-height: 1.15;
+  color: #F0EDE8;
+  margin-bottom: 0.75rem;
+}
+
+.cover__subtitle {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--gold-light);
+  margin-bottom: 2rem;
+}
+
+.cover__meta {
+  padding: 0 50px 0;
+}
+
+.cover__meta-row {
+  display: flex;
+  gap: 2rem;
+  border-top: 1px solid rgba(201, 176, 106, 0.25);
+  padding-top: 1.5rem;
+}
+
+.cover__meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.cover__meta-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.cover__meta-value {
+  font-size: 0.9rem;
+  color: #B0BAC8;
+}
+
+.cover__footer {
+  padding: 2.5rem 50px 40px;
+  margin-top: auto;
+}
+
+.cover__footer-line {
+  width: 100%;
+  height: 1px;
+  background: rgba(201, 176, 106, 0.2);
+  margin-bottom: 1.25rem;
+}
+
+.cover__footer p {
+  font-size: 0.8rem;
+  color: #8A96A8;
+  line-height: 1.6;
+}
+
+.cover__footer-muted {
+  font-size: 0.7rem !important;
+  color: #6A7688 !important;
+}
+
+/* =========================================================
+   PAGE HEADER (inner pages)
+   ========================================================= */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 2rem;
+}
+
+.page-header__mark {
+  width: 24px;
+  height: 24px;
+  opacity: 0.6;
+}
+
+.page-header__title {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+.page-header__ref {
+  margin-left: auto;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--gold-dark);
+}
+
+/* =========================================================
+   PAGE FOOTER
+   ========================================================= */
+.page-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-light);
+  font-size: 0.65rem;
+  color: var(--text-light);
+}
+
+/* =========================================================
+   SECTION HEADINGS
+   ========================================================= */
+.section-heading {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.section-heading::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border-light);
+}
+
+.section-heading__num {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  background: var(--bg-gold);
+  padding: 0.25rem 0.6rem;
+  border-radius: 3px;
+}
+
+.subsection-heading {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--navy);
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  padding-left: 0.75rem;
+  border-left: 3px solid var(--gold);
+}
+
+/* =========================================================
+   SECTION CONTENT
+   ========================================================= */
+.section-content {
+  margin-bottom: 2rem;
+}
+
+.section-content p {
+  font-size: 0.875rem;
+  color: var(--text);
+  line-height: 1.8;
+  margin-bottom: 0.75rem;
+}
+
+/* =========================================================
+   TABLE OF CONTENTS
+   ========================================================= */
+.toc {
+  max-width: 480px;
+  margin-top: 1rem;
+}
+
+.toc__item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.toc__num {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--gold);
+  min-width: 22px;
+}
+
+.toc__text {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.toc__dots {
+  flex: 1;
+  border-bottom: 1px dotted var(--border);
+  margin: 0 0.25rem;
+  min-width: 20px;
+  align-self: flex-end;
+  margin-bottom: 4px;
+}
+
+.toc__page {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+/* =========================================================
+   INFO BOX (Client Details)
+   ========================================================= */
+.info-box {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 1rem;
+}
+
+.info-box__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.info-box__row + .info-box__row {
+  border-top: 1px solid var(--border-light);
+}
+
+.info-box__cell {
+  padding: 0.85rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.info-box__cell + .info-box__cell {
+  border-left: 1px solid var(--border-light);
+}
+
+.info-box__label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gold-dark);
+}
+
+.info-box__value {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+/* =========================================================
+   HIGHLIGHTS (Stats)
+   ========================================================= */
+.highlights {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.highlight-item {
+  text-align: center;
+  padding: 1rem 0.5rem;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+}
+
+.highlight-item__num {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1.2;
+}
+
+.highlight-item__text {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* =========================================================
+   TABLES
+   ========================================================= */
+.proposal-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.75rem;
+  font-size: 0.825rem;
+}
+
+.proposal-table th {
+  background: var(--navy);
+  color: var(--gold-light);
+  font-weight: 600;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.7rem 1rem;
+  text-align: left;
+}
+
+.proposal-table th:first-child {
+  border-radius: 4px 0 0 0;
+}
+
+.proposal-table th:last-child {
+  border-radius: 0 4px 0 0;
+}
+
+.proposal-table td {
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text);
+}
+
+.proposal-table tbody tr:hover {
+  background: var(--bg-subtle);
+}
+
+.proposal-table tfoot td {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.proposal-table tfoot .total-row td {
+  background: var(--bg-gold);
+  border-bottom: 2px solid var(--gold);
+  font-size: 0.95rem;
+}
+
+/* =========================================================
+   PROPOSAL LIST
+   ========================================================= */
+.proposal-list {
+  margin-top: 0.5rem;
+}
+
+.proposal-list li {
+  position: relative;
+  padding: 0.4rem 0 0.4rem 1.5rem;
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.proposal-list li::before {
+  content: '';
+  position: absolute;
+  left: 0.25rem;
+  top: 0.75rem;
+  width: 6px;
+  height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+}
+
+/* =========================================================
+   METHODOLOGY
+   ========================================================= */
+.methodology {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.methodology__phase {
+  padding: 1.25rem;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  border-top: 3px solid var(--gold);
+}
+
+.methodology__phase-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.methodology__phase-num {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--white);
+  background: var(--gold);
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+}
+
+.methodology__phase-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.methodology__phase p {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+/* =========================================================
+   NOTE BOX
+   ========================================================= */
+.note-box {
+  margin-top: 1.25rem;
+  padding: 1rem 1.25rem;
+  background: var(--bg-gold);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 4px 4px 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.note-box strong {
+  color: var(--gold-dark);
+}
+
+/* =========================================================
+   TERMS
+   ========================================================= */
+.terms__item {
+  margin-bottom: 1rem;
+}
+
+.terms__item h4 {
+  font-family: var(--font-body);
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 0.25rem;
+}
+
+.terms__item p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+/* =========================================================
+   SIGNATURE BLOCK
+   ========================================================= */
+.signature-block {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  margin-top: 1.5rem;
+}
+
+.signature-col h4 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 1rem;
+}
+
+.signature-field {
+  padding: 1.25rem;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+}
+
+.signature-field__name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.signature-field__person {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+.signature-field__title {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  margin-top: 0.1rem;
+}
+
+.signature-line {
+  width: 100%;
+  height: 1px;
+  background: var(--border);
+  margin: 2.5rem 0 0.5rem;
+}
+
+.signature-field__label {
+  font-size: 0.65rem;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* =========================================================
+   FINAL FOOTER
+   ========================================================= */
+.final-footer {
+  margin-top: 2rem;
+}
+
+.final-footer__line {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light), transparent);
+  margin-bottom: 1.25rem;
+}
+
+.final-footer__content {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.final-footer__mark {
+  width: 32px;
+  height: 32px;
+  opacity: 0.5;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.final-footer__info p {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.final-footer__info p:first-child {
+  color: var(--text);
+  font-size: 0.75rem;
+  margin-bottom: 0.15rem;
+}
+
+/* =========================================================
+   PRINT STYLES
+   ========================================================= */
+@media print {
+  html {
+    font-size: 14px;
+  }
+
+  body {
+    background: white;
+  }
+
+  .proposal-page {
+    width: 100%;
+    min-height: auto;
+    margin: 0;
+    padding: 30px 40px;
+    box-shadow: none;
+    page-break-after: always;
+    page-break-inside: avoid;
+  }
+
+  .proposal-cover {
+    padding: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .proposal-table th {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .proposal-table tfoot .total-row td {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .methodology__phase-num {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .highlight-item,
+  .info-box,
+  .note-box,
+  .signature-field,
+  .methodology__phase {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* =========================================================
+   SCREEN RESPONSIVE (for preview on smaller screens)
+   ========================================================= */
+@media screen and (max-width: 800px) {
+  .proposal-page {
+    width: 100%;
+    min-height: auto;
+    margin: 10px;
+    padding: 30px 25px;
+  }
+
+  .cover__header,
+  .cover__body,
+  .cover__meta,
+  .cover__footer {
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+
+  .cover__title {
+    font-size: 2rem;
+  }
+
+  .cover__meta-row {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .highlights {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .methodology {
+    grid-template-columns: 1fr;
+  }
+
+  .signature-block {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .info-box__row {
+    grid-template-columns: 1fr;
+  }
+
+  .info-box__cell + .info-box__cell {
+    border-left: none;
+    border-top: 1px solid var(--border-light);
+  }
+}
