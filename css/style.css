@@ -534,15 +534,15 @@ ul { list-style: none; }
   text-align: center;
 }
 
-/* Arka plan büyük logo */
+/* Arka plan büyük logo — kartvizit tarzı */
 .hero__bg-logo {
   position: absolute;
-  left: 50%;
+  left: 8%;
   top: 50%;
-  transform: translate(-50%, -50%);
-  height: 75vh;
+  transform: translateY(-50%);
+  height: 80vh;
   width: auto;
-  opacity: 0.06;
+  opacity: 0.09;
   pointer-events: none;
   user-select: none;
   z-index: 0;
