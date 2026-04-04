@@ -431,9 +431,6 @@ ul { list-style: none; }
   padding: 3rem 0;
 }
 
-.hero--centered .hero__grid {
-  display: block;
-}
 
 .hero__left {
   position: relative;
@@ -509,40 +506,16 @@ ul { list-style: none; }
   z-index: 2;
 }
 
-/* Hero Centered Layout */
-.hero--centered {
-  text-align: center;
-}
-
-.hero__center {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.hero--centered .hero__eyebrow {
-  justify-content: center;
-}
-
-.hero--centered .hero__eyebrow::before {
-  display: none;
-}
-
-.hero--centered .hero__desc {
-  text-align: center;
-}
-
-/* Arka plan büyük logo — kartvizit tarzı */
+/* Arka plan logo — kartvizit tarzı */
 .hero__bg-logo {
   position: absolute;
-  left: 8%;
+  right: 5%;
   top: 50%;
   transform: translateY(-50%);
-  height: 80vh;
-  width: auto;
-  opacity: 0.09;
+  height: auto;
+  width: 45%;
+  max-width: 550px;
+  opacity: 0.08;
   pointer-events: none;
   user-select: none;
   z-index: 0;
