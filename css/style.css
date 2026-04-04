@@ -505,41 +505,93 @@ ul { list-style: none; }
   z-index: 2;
 }
 
-.hero__emblem-wrap {
+/* Hero Visual — CSS Skyline */
+.hero__visual {
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
+  justify-content: flex-end;
+  height: 380px;
   position: relative;
 }
 
-.hero__emblem {
-  width: 240px;
-  height: 240px;
-  object-fit: contain;
-  display: block;
-  filter: drop-shadow(0 0 60px rgba(188,167,100,0.2));
+.hero__skyline {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 300px;
+  padding: 0 1rem;
 }
 
-.hero__emblem-text {
-  font-family: var(--font-display);
-  font-size: 1.8rem;
-  font-weight: 600;
-  font-style: italic;
-  color: var(--gold);
-  letter-spacing: 0.04em;
-  margin-top: 1.5rem;
-  line-height: 1.2;
+.hero__building {
+  width: var(--w, 36px);
+  height: var(--h, 70%);
+  background: linear-gradient(180deg, rgba(201,176,106,0.25) 0%, rgba(201,176,106,0.06) 100%);
+  border: 1px solid rgba(201,176,106,0.15);
+  border-bottom: none;
+  border-radius: 3px 3px 0 0;
+  position: relative;
+  animation: buildingRise 0.8s ease-out both;
+  animation-delay: var(--d, 0s);
 }
 
-.hero__emblem-sub {
+.hero__building::before {
+  content: '';
+  position: absolute;
+  top: 8px; left: 4px; right: 4px;
+  height: calc(100% - 16px);
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 8px,
+    rgba(201,176,106,0.08) 8px,
+    rgba(201,176,106,0.08) 9px
+  );
+}
+
+.hero__building--accent {
+  background: linear-gradient(180deg, rgba(201,176,106,0.45) 0%, rgba(201,176,106,0.12) 100%);
+  border-color: rgba(201,176,106,0.3);
+  box-shadow: 0 0 30px rgba(201,176,106,0.1);
+}
+
+.hero__building--accent::after {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 6px;
+  background: var(--gold);
+  border-radius: 2px 2px 0 0;
+}
+
+@keyframes buildingRise {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: var(--h, 70%);
+    opacity: 1;
+  }
+}
+
+.hero__visual-line {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.hero__visual-label {
   font-family: var(--font-body);
-  font-size: 0.68rem;
+  font-size: 0.62rem;
   font-weight: 600;
-  letter-spacing: 0.25em;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--muted-light);
-  margin-top: 0.5rem;
+  color: var(--muted);
+  margin-top: 0.75rem;
 }
 
 .hero__photo-badge {
