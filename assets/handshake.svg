@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 400" fill="none">
+  <defs>
+    <linearGradient id="glow" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#C9B06A" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#C9B06A" stop-opacity="0.05"/>
+    </linearGradient>
+    <radialGradient id="bgGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#C9B06A" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#C9B06A" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DFC882"/>
+      <stop offset="50%" stop-color="#C9B06A"/>
+      <stop offset="100%" stop-color="#9A844E"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background glow -->
+  <ellipse cx="240" cy="200" rx="220" ry="180" fill="url(#bgGlow)"/>
+
+  <!-- Left person silhouette -->
+  <g opacity="0.85">
+    <!-- Head -->
+    <circle cx="148" cy="115" r="28" fill="url(#goldGrad)" opacity="0.7"/>
+    <!-- Body -->
+    <path d="M110 155 C110 155 118 148 148 148 C178 148 186 155 186 155 L195 230 C195 240 185 245 175 245 L121 245 C111 245 101 240 101 230 Z" fill="url(#goldGrad)" opacity="0.5"/>
+    <!-- Arm reaching right -->
+    <path d="M186 175 L235 195 C238 196 240 199 240 202 L240 208 C240 211 238 214 235 215 L190 200" fill="url(#goldGrad)" opacity="0.6" stroke="#C9B06A" stroke-width="1" stroke-opacity="0.3"/>
+    <!-- Legs -->
+    <rect x="125" y="245" width="18" height="70" rx="6" fill="url(#goldGrad)" opacity="0.4"/>
+    <rect x="153" y="245" width="18" height="70" rx="6" fill="url(#goldGrad)" opacity="0.4"/>
+  </g>
+
+  <!-- Right person silhouette -->
+  <g opacity="0.85">
+    <!-- Head -->
+    <circle cx="332" cy="115" r="28" fill="url(#goldGrad)" opacity="0.7"/>
+    <!-- Body -->
+    <path d="M294 155 C294 155 302 148 332 148 C362 148 370 155 370 155 L379 230 C379 240 369 245 359 245 L305 245 C295 245 285 240 285 230 Z" fill="url(#goldGrad)" opacity="0.5"/>
+    <!-- Arm reaching left -->
+    <path d="M294 175 L245 195 C242 196 240 199 240 202 L240 208 C240 211 242 214 245 215 L290 200" fill="url(#goldGrad)" opacity="0.6" stroke="#C9B06A" stroke-width="1" stroke-opacity="0.3"/>
+    <!-- Legs -->
+    <rect x="309" y="245" width="18" height="70" rx="6" fill="url(#goldGrad)" opacity="0.4"/>
+    <rect x="337" y="245" width="18" height="70" rx="6" fill="url(#goldGrad)" opacity="0.4"/>
+  </g>
+
+  <!-- Handshake center - clasped hands -->
+  <g>
+    <ellipse cx="240" cy="205" rx="28" ry="16" fill="url(#goldGrad)" opacity="0.8"/>
+    <line x1="225" y1="205" x2="255" y2="205" stroke="#DFC882" stroke-width="2" stroke-opacity="0.6"/>
+    <!-- Glow ring around handshake -->
+    <ellipse cx="240" cy="205" rx="40" ry="25" fill="none" stroke="#C9B06A" stroke-width="1" stroke-opacity="0.2"/>
+  </g>
+
+  <!-- Ground line -->
+  <line x1="60" y1="320" x2="420" y2="320" stroke="url(#goldGrad)" stroke-width="1" stroke-opacity="0.4"/>
+
+  <!-- Decorative dots -->
+  <circle cx="80" cy="320" r="2" fill="#C9B06A" opacity="0.4"/>
+  <circle cx="400" cy="320" r="2" fill="#C9B06A" opacity="0.4"/>
+</svg>
