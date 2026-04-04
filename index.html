@@ -6,11 +6,6 @@
   <meta name="description" content="Hall Strateji ve Yönetim Danışmanlığı A.Ş. — Kurumsal finans, yönetim ve strateji danışmanlığı hizmetleri.">
   <title>HALL Strateji ve Yönetim Danışmanlığı A.Ş.</title>
   <link rel="stylesheet" href="css/style.css">
-  <script>
-    if('scrollRestoration' in history) history.scrollRestoration='manual';
-    document.documentElement.classList.add('no-scroll');
-    window.scrollTo(0,0);
-  </script>
 </head>
 <body class="page-fixed">
 
@@ -30,38 +25,26 @@
   </nav>
 
   <!-- ===================== HERO ===================== -->
-  <section class="hero">
-    <img src="assets/logo-mark.png" class="hero__deco-mark" alt="" aria-hidden="true">
+  <section class="hero hero--centered">
+    <img src="assets/logo-mark.png" class="hero__bg-logo" alt="" aria-hidden="true">
     <div class="container">
-      <div class="hero__grid">
-
-        <!-- Left: Text -->
-        <div class="hero__left">
-          <p class="hero__eyebrow">Hall Strateji ve Yönetim Danışmanlığı A.Ş.</p>
-          <h1 class="hero__title">
-            Kurumsal Danışmanlıkta<br>
-            <span>Bağımsız</span> Uzmanlık
-          </h1>
-          <p class="hero__subtitle">
-            Deneyim temelli, sonuç odaklı danışmanlık.
-          </p>
-          <p class="hero__desc">
-            Kurumsal finans, finansal yeniden yapılandırma, vergi danışmanlığı ve
-            yönetim kurulu danışmanlığı alanlarında bağımsız ve kapsamlı çözümler sunuyoruz.
-          </p>
-          <div class="hero__actions">
-            <a href="hizmetler.html" class="btn btn--primary">Hizmetlerimizi Keşfedin</a>
-            <a href="iletisim.html" class="btn btn--outline">İletişime Geçin</a>
-          </div>
+      <div class="hero__center">
+        <p class="hero__eyebrow">Hall Strateji ve Yönetim Danışmanlığı A.Ş.</p>
+        <h1 class="hero__title">
+          Kurumsal Danışmanlıkta<br>
+          <span>Bağımsız</span> Uzmanlık
+        </h1>
+        <p class="hero__subtitle">
+          Deneyim temelli, sonuç odaklı danışmanlık.
+        </p>
+        <p class="hero__desc" style="max-width:580px; margin-left:auto; margin-right:auto;">
+          Kurumsal finans, finansal yeniden yapılandırma, vergi danışmanlığı ve
+          yönetim kurulu danışmanlığı alanlarında bağımsız ve kapsamlı çözümler sunuyoruz.
+        </p>
+        <div class="hero__actions" style="justify-content:center;">
+          <a href="hizmetler.html" class="btn btn--primary">Hizmetlerimizi Keşfedin</a>
+          <a href="iletisim.html" class="btn btn--outline">İletişime Geçin</a>
         </div>
-
-        <!-- Right: Tokalaşma Görseli -->
-        <div class="hero__right">
-          <div class="hero__visual">
-            <img src="assets/handshake.svg" alt="Kurumsal iş birliği" class="hero__handshake">
-          </div>
-        </div>
-
       </div>
     </div>
   </section>
@@ -75,7 +58,6 @@
       navbar.classList.toggle('scrolled', window.scrollY > 30);
     });
 
-    // Sayfa tam yüklenince de en üste git
     window.addEventListener('load', () => { window.scrollTo(0, 0); });
   </script>
 

@@ -431,6 +431,10 @@ ul { list-style: none; }
   padding: 3rem 0;
 }
 
+.hero--centered .hero__grid {
+  display: block;
+}
+
 .hero__left {
   position: relative;
   z-index: 2;
@@ -505,20 +509,43 @@ ul { list-style: none; }
   z-index: 2;
 }
 
-/* Hero Visual — Handshake */
-.hero__visual {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
+/* Hero Centered Layout */
+.hero--centered {
+  text-align: center;
 }
 
-.hero__handshake {
-  width: 100%;
-  max-width: 400px;
-  height: auto;
-  display: block;
-  filter: drop-shadow(0 0 40px rgba(188,167,100,0.12));
+.hero__center {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero--centered .hero__eyebrow {
+  justify-content: center;
+}
+
+.hero--centered .hero__eyebrow::before {
+  display: none;
+}
+
+.hero--centered .hero__desc {
+  text-align: center;
+}
+
+/* Arka plan büyük logo */
+.hero__bg-logo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  height: 75vh;
+  width: auto;
+  opacity: 0.06;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
 }
 
 .hero__photo-badge {
