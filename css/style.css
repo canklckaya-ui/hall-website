@@ -424,8 +424,8 @@ ul { list-style: none; }
 
 .hero__grid {
   display: grid;
-  grid-template-columns: 1.3fr 1fr;
-  gap: 3rem;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 4rem;
   align-items: center;
   width: 100%;
   padding: 3rem 0;
@@ -505,54 +505,41 @@ ul { list-style: none; }
   z-index: 2;
 }
 
-.hero__photo-wrapper {
+.hero__emblem-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
   position: relative;
-  width: 100%;
-  max-width: 380px;
 }
 
-.hero__photo-bg-glow {
-  position: absolute;
-  inset: -40px;
-  background: radial-gradient(ellipse at center, rgba(188,167,100,0.1) 0%, transparent 65%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.hero__photo-frame {
-  position: relative;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  line-height: 0;
-  z-index: 1;
-}
-
-.hero__photo-frame::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-light), var(--gold), var(--gold-dark));
-  z-index: 3;
-}
-
-.hero__photo-frame::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border: 1px solid rgba(188,167,100,0.2);
-  border-radius: var(--radius-lg);
-  z-index: 3;
-  pointer-events: none;
-}
-
-.hero__photo {
-  width: 100%;
-  height: 420px;
-  object-fit: cover;
-  object-position: center top;
+.hero__emblem {
+  width: 240px;
+  height: 240px;
+  object-fit: contain;
   display: block;
-  filter: contrast(1.04) brightness(0.97);
+  filter: drop-shadow(0 0 60px rgba(188,167,100,0.2));
+}
+
+.hero__emblem-text {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 600;
+  font-style: italic;
+  color: var(--gold);
+  letter-spacing: 0.04em;
+  margin-top: 1.5rem;
+  line-height: 1.2;
+}
+
+.hero__emblem-sub {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--muted-light);
+  margin-top: 0.5rem;
 }
 
 .hero__photo-badge {
