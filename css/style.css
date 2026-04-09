@@ -1237,6 +1237,244 @@ ul { list-style: none; }
 }
 
 /* =========================================================
+   SERVICES PAGE (Expandable Cards)
+   ========================================================= */
+.services-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  padding-top: var(--nav-h);
+  position: relative;
+  overflow: hidden;
+}
+
+.services-page__deco {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  height: 65vh;
+  width: auto;
+  opacity: 0.035;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+.services-page__header {
+  text-align: center;
+  padding: 1.75rem 2rem 0;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.services-page__header .gold-line {
+  margin: 0.5rem auto;
+}
+
+.services-page__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.services-page__grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin: 1.25rem 2rem 0;
+  max-width: var(--container);
+  width: calc(100% - 4rem);
+  align-self: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* --- Service Card --- */
+.svc-card {
+  background: var(--bg-card);
+  padding: 1.5rem;
+  position: relative;
+  transition: all var(--transition);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.svc-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transition: transform var(--transition);
+  transform-origin: left;
+}
+
+.svc-card:hover {
+  background: #192030;
+  z-index: 1;
+}
+
+.svc-card:hover::before,
+.svc-card.open::before {
+  transform: scaleX(1);
+}
+
+.svc-card.open {
+  background: #192030;
+}
+
+.svc-card__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.svc-card__num {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: rgba(188,167,100,0.12);
+  line-height: 1;
+  transition: color var(--transition);
+  flex-shrink: 0;
+}
+
+.svc-card:hover .svc-card__num,
+.svc-card.open .svc-card__num {
+  color: rgba(188,167,100,0.25);
+}
+
+.svc-card__title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+  flex: 1;
+  padding-top: 0.35rem;
+}
+
+.svc-card__toggle {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--gold);
+  line-height: 1;
+  flex-shrink: 0;
+  padding-top: 0.25rem;
+  transition: transform var(--transition);
+  user-select: none;
+}
+
+.svc-card.open .svc-card__toggle {
+  transform: rotate(45deg);
+}
+
+.svc-card__desc {
+  font-size: 0.8rem;
+  color: var(--muted-light);
+  line-height: 1.65;
+  margin-top: 0.5rem;
+}
+
+.svc-card__desc-list {
+  list-style: none;
+  margin-top: 0.5rem;
+  padding: 0;
+}
+
+.svc-card__desc-list li {
+  font-size: 0.8rem;
+  color: var(--muted-light);
+  line-height: 1.65;
+  padding-left: 1rem;
+  position: relative;
+}
+
+.svc-card__desc-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55rem;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: 0.5;
+}
+
+.svc-card:hover .svc-card__desc-list li::before,
+.svc-card.open .svc-card__desc-list li::before {
+  opacity: 0.8;
+}
+
+/* --- Expandable Details --- */
+.svc-card__details {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, margin-top 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+  margin-top: 0;
+}
+
+.svc-card.open .svc-card__details {
+  max-height: 300px;
+  opacity: 1;
+  margin-top: 0.75rem;
+}
+
+.svc-card__details ul {
+  list-style: none;
+  padding: 0.75rem 0 0.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.svc-card__details li {
+  font-size: 0.78rem;
+  color: var(--muted-light);
+  line-height: 1.6;
+  padding: 0.3rem 0 0.3rem 1rem;
+  position: relative;
+}
+
+.svc-card__details li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.7rem;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: 0.6;
+}
+
+/* Bottom bar */
+.services-page__bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 2rem;
+  font-size: 0.72rem;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  background: rgba(13,16,20,0.6);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* =========================================================
    ILETISIM PAGE
    ========================================================= */
 .contact-section {
@@ -1564,6 +1802,8 @@ ul { list-style: none; }
   .services-single__grid { grid-template-columns: repeat(2, 1fr); }
   .services-single { height: auto; min-height: 100vh; }
 
+  .services-page__grid { grid-template-columns: repeat(2, 1fr); }
+
   .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
 
   .footer__grid { grid-template-columns: 1fr 1fr; }
@@ -1589,6 +1829,8 @@ ul { list-style: none; }
   }
 
   .values-grid { grid-template-columns: 1fr; }
+
+  .services-page__grid { grid-template-columns: 1fr; }
 
   .form-row { grid-template-columns: 1fr; }
 

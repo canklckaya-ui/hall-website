@@ -7,7 +7,7 @@
   <title>Hizmetler — HALL Strateji ve Yönetim Danışmanlığı</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="page-fixed">
+<body>
 
   <!-- ===================== NAVBAR ===================== -->
   <nav class="navbar scrolled" id="navbar">
@@ -24,76 +24,183 @@
     </div>
   </nav>
 
-  <!-- ===================== HİZMETLER - TEK EKRAN ===================== -->
-  <section class="services-single">
-    <img src="assets/logo-mark.png" class="services-single__deco" alt="" aria-hidden="true">
+  <!-- ===================== HİZMETLER ===================== -->
+  <section class="services-page">
+    <img src="assets/logo-mark.png" class="services-page__deco" alt="" aria-hidden="true">
 
     <!-- Başlık -->
-    <div class="services-single__header">
+    <div class="services-page__header">
       <p class="eyebrow">Uzmanlık Alanlarımız</p>
       <span class="gold-line"></span>
-      <h1 class="services-single__title">Hizmetlerimiz</h1>
+      <h1 class="services-page__title">Hizmetlerimiz</h1>
     </div>
 
     <!-- 6 Kart Grid -->
-    <div class="services-single__grid">
+    <div class="services-page__grid">
 
-      <div class="services-single__card">
-        <div class="services-single__card-num">01</div>
-        <h3 class="services-single__card-title">Kurumsal Finans</h3>
-        <p class="services-single__card-desc">
-          Birleşme ve satın almalar, due diligence, değerleme, halka arz süreçleri ve ortaklık müzakereleri.
-        </p>
+      <div class="svc-card" onclick="toggleCard(this)">
+        <div class="svc-card__header">
+          <div class="svc-card__num">01</div>
+          <h3 class="svc-card__title">Kurumsal Finans</h3>
+          <span class="svc-card__toggle">+</span>
+        </div>
+        <ul class="svc-card__desc-list">
+          <li>Birleşme ve Satın Almalar</li>
+          <li>Due Diligence</li>
+          <li>Değerleme</li>
+          <li>Halka Arz Süreçleri</li>
+          <li>Ortaklık Müzakereleri</li>
+        </ul>
+        <div class="svc-card__details">
+          <ul>
+            <li>Birleşme ve Satın Alma (M&amp;A) Danışmanlığı</li>
+            <li>Finansal Due Diligence &amp; Şirket İncelemesi</li>
+            <li>Şirket Değerleme ve Hisse Değeri Analizi</li>
+            <li>Halka Arz (IPO) Süreç Yönetimi</li>
+            <li>Ortaklık Müzakereleri ve Hissedar Anlaşmaları</li>
+            <li>İşlem Yapılandırma ve Sözleşme Desteği</li>
+          </ul>
+        </div>
       </div>
 
-      <div class="services-single__card">
-        <div class="services-single__card-num">02</div>
-        <h3 class="services-single__card-title">Finansal Yeniden Yapılandırma</h3>
-        <p class="services-single__card-desc">
-          Mali yapı tasarımı, refinansman operasyonları, bölünme-birleşme süreçleri ve yapılandırma sonrası uyum.
-        </p>
+      <div class="svc-card" onclick="toggleCard(this)">
+        <div class="svc-card__header">
+          <div class="svc-card__num">02</div>
+          <h3 class="svc-card__title">Finansal Yeniden Yapılandırma</h3>
+          <span class="svc-card__toggle">+</span>
+        </div>
+        <ul class="svc-card__desc-list">
+          <li>Mali Yapı Tasarımı</li>
+          <li>Refinansman Operasyonları</li>
+          <li>Bölünme-Birleşme Süreçleri</li>
+          <li>Yapılandırma Sonrası Uyum</li>
+        </ul>
+        <div class="svc-card__details">
+          <ul>
+            <li>Mali Yapı Analizi ve Yeniden Tasarım</li>
+            <li>Borç Yeniden Yapılandırma ve Refinansman</li>
+            <li>Bölünme, Birleşme ve Tür Değişikliği İşlemleri</li>
+            <li>Sermaye Yapısı Optimizasyonu</li>
+            <li>Yapılandırma Sonrası Uyum ve İzleme</li>
+            <li>Alacaklı ve Kredi Kuruluşları ile Müzakere</li>
+          </ul>
+        </div>
       </div>
 
-      <div class="services-single__card">
-        <div class="services-single__card-num">03</div>
-        <h3 class="services-single__card-title">Yönetim Danışmanlığı</h3>
-        <p class="services-single__card-desc">
-          YK bağımsız üyeliği, kurumsal yapı dizaynı, ERP dönüşümü ve iç yönerge sistemleri.
-        </p>
+      <div class="svc-card" onclick="toggleCard(this)">
+        <div class="svc-card__header">
+          <div class="svc-card__num">03</div>
+          <h3 class="svc-card__title">Yönetim Danışmanlığı</h3>
+          <span class="svc-card__toggle">+</span>
+        </div>
+        <ul class="svc-card__desc-list">
+          <li>YK Bağımsız Üyeliği</li>
+          <li>Kurumsal Yapı Dizaynı</li>
+          <li>ERP Dönüşümü</li>
+          <li>İç Yönerge Sistemleri</li>
+        </ul>
+        <div class="svc-card__details">
+          <ul>
+            <li>Yönetim Kurulu Bağımsız Üyeliği</li>
+            <li>Kurumsal Yönetim (Corporate Governance) Yapılandırması</li>
+            <li>Organizasyon Yapısı Tasarımı ve Reorganizasyon</li>
+            <li>ERP Dönüşümü ve Dijital Süreç Yönetimi</li>
+            <li>İç Yönerge ve Prosedür Sistemleri</li>
+            <li>Yönetim Raporlama Altyapısı Kurulumu</li>
+          </ul>
+        </div>
       </div>
 
-      <div class="services-single__card">
-        <div class="services-single__card-num">04</div>
-        <h3 class="services-single__card-title">Vergi Danışmanlığı</h3>
-        <p class="services-single__card-desc">
-          Kurumsal vergi planlaması, denetim süreci yönetimi, vergi davaları ve YMM bağımsız denetim.
-        </p>
+      <div class="svc-card" onclick="toggleCard(this)">
+        <div class="svc-card__header">
+          <div class="svc-card__num">04</div>
+          <h3 class="svc-card__title">Vergi Danışmanlığı</h3>
+          <span class="svc-card__toggle">+</span>
+        </div>
+        <ul class="svc-card__desc-list">
+          <li>Kurumsal Vergi Planlaması</li>
+          <li>Denetim Süreci Yönetimi</li>
+          <li>Vergi Davaları</li>
+          <li>YMM Bağımsız Denetim</li>
+        </ul>
+        <div class="svc-card__details">
+          <ul>
+            <li>Kurumsal Vergi Planlaması ve Optimizasyonu</li>
+            <li>Vergi Denetimi Süreç Yönetimi</li>
+            <li>Vergi Uyuşmazlıkları ve Dava Takibi</li>
+            <li>YMM Tasdik ve Bağımsız Denetim Raporları</li>
+            <li>Transfer Fiyatlandırması Danışmanlığı</li>
+            <li>Uluslararası Vergi Yapılandırması</li>
+          </ul>
+        </div>
       </div>
 
-      <div class="services-single__card">
-        <div class="services-single__card-num">05</div>
-        <h3 class="services-single__card-title">Kurumsal Strateji</h3>
-        <p class="services-single__card-desc">
-          Rekabetçi konumlandırma, büyüme stratejisi, pazar analizi ve stratejik yol haritası geliştirme.
-        </p>
+      <div class="svc-card" onclick="toggleCard(this)">
+        <div class="svc-card__header">
+          <div class="svc-card__num">05</div>
+          <h3 class="svc-card__title">Kurumsal Strateji</h3>
+          <span class="svc-card__toggle">+</span>
+        </div>
+        <ul class="svc-card__desc-list">
+          <li>Rekabetçi Konumlandırma</li>
+          <li>Büyüme Stratejisi</li>
+          <li>Pazar Analizi</li>
+          <li>Stratejik Yol Haritası Geliştirme</li>
+        </ul>
+        <div class="svc-card__details">
+          <ul>
+            <li>Rekabetçi Konumlandırma ve Pazar Analizi</li>
+            <li>Büyüme Stratejisi ve İş Geliştirme</li>
+            <li>Stratejik Yol Haritası Oluşturma</li>
+            <li>Sektör Araştırması ve Benchmarking</li>
+            <li>İş Modeli Dönüşümü ve İnovasyon Danışmanlığı</li>
+            <li>Stratejik Planlama ve Performans Yönetimi</li>
+          </ul>
+        </div>
       </div>
 
-      <div class="services-single__card">
-        <div class="services-single__card-num">06</div>
-        <h3 class="services-single__card-title">Bağımsız Denetim</h3>
-        <p class="services-single__card-desc">
-          Bağımsız denetim, iç kontrol sistemleri, risk haritalaması ve mevzuat uyumluluk yönetimi.
-        </p>
+      <div class="svc-card" onclick="toggleCard(this)">
+        <div class="svc-card__header">
+          <div class="svc-card__num">06</div>
+          <h3 class="svc-card__title">Bağımsız Denetim</h3>
+          <span class="svc-card__toggle">+</span>
+        </div>
+        <ul class="svc-card__desc-list">
+          <li>Bağımsız Denetim</li>
+          <li>İç Kontrol Sistemleri</li>
+          <li>Risk Haritalaması</li>
+          <li>Mevzuat Uyumluluk Yönetimi</li>
+        </ul>
+        <div class="svc-card__details">
+          <ul>
+            <li>Bağımsız Denetim (KGK Lisanslı)</li>
+            <li>İç Kontrol Sistemleri Tasarımı ve Değerlendirmesi</li>
+            <li>Risk Haritalaması ve Yönetimi</li>
+            <li>Mevzuat Uyumluluk (Compliance) Yönetimi</li>
+            <li>UFRS / TFRS Uyum Danışmanlığı</li>
+            <li>Özel Amaçlı Denetim ve İnceleme Raporları</li>
+          </ul>
+        </div>
       </div>
 
     </div>
 
     <!-- Alt CTA + footer -->
-    <div class="services-single__bottom">
+    <div class="services-page__bottom">
       <a href="iletisim.html" class="btn btn--primary btn--sm">İletişime Geçin</a>
       <span>&copy; 2025 Hall Strateji ve Yönetim Danışmanlığı A.Ş.</span>
     </div>
   </section>
+
+  <script>
+    function toggleCard(card) {
+      const wasOpen = card.classList.contains('open');
+      // Close all cards
+      document.querySelectorAll('.svc-card').forEach(c => c.classList.remove('open'));
+      // Toggle clicked card
+      if (!wasOpen) card.classList.add('open');
+    }
+  </script>
 
 </body>
 </html>
