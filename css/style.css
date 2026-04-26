@@ -432,9 +432,19 @@ ul { list-style: none; }
 }
 
 
+.hero .container {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+  max-width: 720px !important;
+  padding-left: clamp(2rem, 6vw, 6rem) !important;
+  padding-right: 2rem !important;
+}
+
 .hero__left {
   position: relative;
   z-index: 2;
+  max-width: 560px;
+  margin-right: auto;
 }
 
 .hero__eyebrow {
@@ -509,13 +519,13 @@ ul { list-style: none; }
 /* Arka plan logo — kartvizit tarzı */
 .hero__bg-logo {
   position: absolute;
-  right: 5%;
+  right: 4%;
   top: 50%;
   transform: translateY(-50%);
   height: auto;
-  width: 45%;
-  max-width: 550px;
-  opacity: 0.08;
+  width: 65%;
+  max-width: 880px;
+  opacity: 0.55;
   pointer-events: none;
   user-select: none;
   z-index: 0;
