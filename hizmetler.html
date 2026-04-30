@@ -15,7 +15,10 @@
       <a href="index.html" class="navbar__brand">
         <img src="assets/logo-full.png" alt="Hall Global Solutions" class="navbar__logo-full">
       </a>
-      <div class="navbar__nav">
+      <button class="navbar__hamburger" id="hamburger" aria-label="Menü">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="navbar__nav" id="navMenu">
         <a href="index.html">Ana Sayfa</a>
         <a href="hakkimizda.html">Hakkımızda</a>
         <a href="hizmetler.html" class="active">Hizmetler</a>
@@ -195,11 +198,22 @@
   <script>
     function toggleCard(card) {
       const wasOpen = card.classList.contains('open');
-      // Close all cards
       document.querySelectorAll('.svc-card').forEach(c => c.classList.remove('open'));
-      // Toggle clicked card
       if (!wasOpen) card.classList.add('open');
     }
+
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('navMenu');
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      navMenu.classList.toggle('open');
+    });
+    navMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        navMenu.classList.remove('open');
+      });
+    });
   </script>
 
 </body>

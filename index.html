@@ -15,7 +15,10 @@
       <a href="index.html" class="navbar__brand">
         <img src="assets/logo-full.png" alt="Hall Global Solutions" class="navbar__logo-full">
       </a>
-      <div class="navbar__nav">
+      <button class="navbar__hamburger" id="hamburger" aria-label="Menü">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="navbar__nav" id="navMenu">
         <a href="index.html" class="active">Ana Sayfa</a>
         <a href="hakkimizda.html">Hakkımızda</a>
         <a href="hizmetler.html">Hizmetler</a>
@@ -56,6 +59,19 @@
     const navbar = document.getElementById('navbar');
     window.addEventListener('scroll', () => {
       navbar.classList.toggle('scrolled', window.scrollY > 30);
+    });
+
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('navMenu');
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      navMenu.classList.toggle('open');
+    });
+    navMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        navMenu.classList.remove('open');
+      });
     });
 
     window.addEventListener('load', () => { window.scrollTo(0, 0); });
