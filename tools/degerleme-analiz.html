@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Değerleme Raporu Analiz Aracı</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
+  <script src="lib/pdf.min.js"></script>
+  <script src="lib/chart.umd.js"></script>
+  <script src="lib/chartjs-plugin-annotation.min.js"></script>
+  <script src="lib/tesseract.min.js"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    /* Local font stack - no external dependencies */
 
     :root {
       --bg: #0f1117;
@@ -34,7 +34,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { font-size: 15px; }
     body {
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.6;
@@ -284,7 +284,7 @@
 </div>
 
 <script>
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'lib/pdf.worker.min.js';
 
 const S = { files: [], reports: [], spot: [], yearly: [], assumptions: [], charts: [] };
 
@@ -324,8 +324,11 @@ function setStatus(msg) {
 async function initOCR() {
   if (_ocrWorker) return _ocrWorker;
   if (typeof Tesseract === 'undefined') throw new Error('Tesseract.js yüklenemedi. Sayfayı yenileyin veya internet bağlantınızı kontrol edin.');
-  setStatus('OCR motoru hazırlanıyor — ilk seferde dil verileri indirilecek (birkaç dakika sürebilir)...');
+  setStatus('OCR motoru hazırlanıyor...');
   _ocrWorker = await Tesseract.createWorker('tur+eng', 1, {
+    workerPath: 'lib/tesseract-worker.min.js',
+    corePath: 'lib/tesseract-core-simd-lstm.wasm.js',
+    langPath: 'lib',
     logger: function(m) {
       var pct = Math.round((m.progress || 0) * 100);
       if (m.status === 'loading tesseract core') setStatus('OCR motoru yükleniyor... ' + pct + '%');
