@@ -7,6 +7,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
@@ -237,6 +238,7 @@
 
   <div class="files" id="fileList"></div>
   <div class="progress" id="progressBar"><div class="progress__fill" id="progressFill"></div></div>
+  <div id="ocrStatus" style="display:none; margin-top:0.5rem; font-size:0.78rem; color:var(--orange); font-weight:500;"></div>
   <div class="bar" id="actionsBar" style="display:none;">
     <button class="btn btn--primary" onclick="analyzeAll()">Analiz Et</button>
     <button class="btn btn--outline" onclick="clearAll()">Temizle</button>
@@ -312,9 +314,27 @@ function clearAll() {
 }
 
 // ============= PDF =============
-async function pdfToText(file) {
+let ocrWorker = null;
+
+async function getOCRWorker() {
+  if (!ocrWorker) {
+    ocrWorker = await Tesseract.createWorker('tur+eng', 1, {
+      logger: m => {
+        if (m.status === 'recognizing text') {
+          const el = document.getElementById('ocrStatus');
+          if (el) el.textContent = 'OCR: ' + Math.round((m.progress || 0) * 100) + '%';
+        }
+      }
+    });
+  }
+  return ocrWorker;
+}
+
+async function pdfToText(file, statusCallback) {
   const buf = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+
+  // First try native text extraction
   let txt = '';
   for (let i = 1; i <= pdf.numPages; i++) {
     const pg = await pdf.getPage(i);
@@ -327,6 +347,32 @@ async function pdfToText(file) {
     }
     txt += '\n\n';
   }
+
+  // If text is too short, fall back to OCR
+  const cleanedTxt = txt.replace(/\s+/g, '').trim();
+  if (cleanedTxt.length < 50) {
+    if (statusCallback) statusCallback('OCR yapılıyor...');
+    txt = '';
+    const worker = await getOCRWorker();
+    const scale = 2.0;
+
+    for (let i = 1; i <= pdf.numPages; i++) {
+      if (statusCallback) statusCallback(`OCR: sayfa ${i}/${pdf.numPages}`);
+      const pg = await pdf.getPage(i);
+      const viewport = pg.getViewport({ scale });
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      const ctx = canvas.getContext('2d');
+      await pg.render({ canvasContext: ctx, viewport }).promise;
+
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+      const result = await worker.recognize(blob);
+      txt += result.data.text + '\n\n--- Sayfa ' + i + ' ---\n\n';
+      canvas.width = 0; canvas.height = 0;
+    }
+  }
+
   return txt;
 }
 
@@ -649,8 +695,12 @@ async function analyzeAll() {
   for (let i = 0; i < S.files.length; i++) {
     const el = document.getElementById('st-' + i);
     if (el) el.className = 'file-dot processing';
+    const ocrEl = document.getElementById('ocrStatus');
     try {
-      const txt = await pdfToText(S.files[i]);
+      const txt = await pdfToText(S.files[i], (msg) => {
+        if (el) el.className = 'file-dot processing';
+        if (ocrEl) { ocrEl.style.display = 'block'; ocrEl.textContent = S.files[i].name + ' — ' + msg; }
+      });
       S.reports.push({ name: S.files[i].name, text: txt });
       S.spot.push(extractSpot(txt, S.files[i].name));
       S.yearly.push(extractYearly(txt, S.files[i].name));
@@ -666,6 +716,9 @@ async function analyzeAll() {
     }
     pf.style.width = ((i+1)/S.files.length*100) + '%';
   }
+  if (ocrWorker) { await ocrWorker.terminate(); ocrWorker = null; }
+  const ocrEl2 = document.getElementById('ocrStatus');
+  if (ocrEl2) ocrEl2.style.display = 'none';
   render();
   document.getElementById('results').style.display = 'block';
   pb.style.display = 'none';
