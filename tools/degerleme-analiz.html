@@ -315,14 +315,16 @@ function clearAll() {
 
 // ============= PDF =============
 let ocrWorker = null;
+let _ocrPageInfo = { file: '', page: 0, total: 0 };
 
 async function getOCRWorker() {
   if (!ocrWorker) {
     ocrWorker = await Tesseract.createWorker('tur+eng', 1, {
       logger: m => {
-        if (m.status === 'recognizing text') {
+        if (m.status === 'recognizing text' && _ocrPageInfo.total > 0) {
+          const pct = Math.round((m.progress || 0) * 100);
           const el = document.getElementById('ocrStatus');
-          if (el) el.textContent = 'OCR: ' + Math.round((m.progress || 0) * 100) + '%';
+          if (el) el.textContent = `${_ocrPageInfo.file} — Sayfa ${_ocrPageInfo.page}/${_ocrPageInfo.total} (${pct}%)`;
         }
       }
     });
@@ -334,7 +336,8 @@ async function pdfToText(file, statusCallback) {
   const buf = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
 
-  // First try native text extraction
+  if (statusCallback) statusCallback('Metin çıkarılıyor...');
+
   let txt = '';
   for (let i = 1; i <= pdf.numPages; i++) {
     const pg = await pdf.getPage(i);
@@ -348,30 +351,32 @@ async function pdfToText(file, statusCallback) {
     txt += '\n\n';
   }
 
-  // If text is too short, fall back to OCR
   const cleanedTxt = txt.replace(/\s+/g, '').trim();
-  if (cleanedTxt.length < 50) {
-    if (statusCallback) statusCallback('OCR yapılıyor...');
-    txt = '';
-    const worker = await getOCRWorker();
-    const scale = 2.0;
+  if (cleanedTxt.length >= 50) return txt;
 
-    for (let i = 1; i <= pdf.numPages; i++) {
-      if (statusCallback) statusCallback(`OCR: sayfa ${i}/${pdf.numPages}`);
-      const pg = await pdf.getPage(i);
-      const viewport = pg.getViewport({ scale });
-      const canvas = document.createElement('canvas');
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-      const ctx = canvas.getContext('2d');
-      await pg.render({ canvasContext: ctx, viewport }).promise;
+  if (statusCallback) statusCallback('Taranmış PDF — OCR başlatılıyor...');
+  txt = '';
+  const worker = await getOCRWorker();
+  _ocrPageInfo = { file: file.name.replace(/\.pdf$/i, ''), page: 0, total: pdf.numPages };
 
-      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-      const result = await worker.recognize(blob);
-      txt += result.data.text + '\n\n--- Sayfa ' + i + ' ---\n\n';
-      canvas.width = 0; canvas.height = 0;
-    }
+  for (let i = 1; i <= pdf.numPages; i++) {
+    _ocrPageInfo.page = i;
+    if (statusCallback) statusCallback(`OCR: sayfa ${i}/${pdf.numPages}`);
+    const pg = await pdf.getPage(i);
+    const viewport = pg.getViewport({ scale: 2.0 });
+    const canvas = document.createElement('canvas');
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    const ctx = canvas.getContext('2d');
+    await pg.render({ canvasContext: ctx, viewport }).promise;
+
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+    const result = await worker.recognize(blob);
+    txt += result.data.text + '\n\n';
+    canvas.width = 0; canvas.height = 0;
   }
+  _ocrPageInfo = { file: '', page: 0, total: 0 };
+  return txt;
 
   return txt;
 }
@@ -692,14 +697,17 @@ async function analyzeAll() {
   S.reports = []; S.spot = []; S.yearly = []; S.assumptions = [];
   S.charts.forEach(c => c.destroy()); S.charts = [];
 
-  for (let i = 0; i < S.files.length; i++) {
+  const ocrEl = document.getElementById('ocrStatus');
+  const total = S.files.length;
+
+  for (let i = 0; i < total; i++) {
     const el = document.getElementById('st-' + i);
     if (el) el.className = 'file-dot processing';
-    const ocrEl = document.getElementById('ocrStatus');
+    const fname = S.files[i].name.replace(/\.pdf$/i, '');
+    if (ocrEl) { ocrEl.style.display = 'block'; ocrEl.textContent = `Dosya ${i+1}/${total}: ${fname} işleniyor...`; }
     try {
       const txt = await pdfToText(S.files[i], (msg) => {
-        if (el) el.className = 'file-dot processing';
-        if (ocrEl) { ocrEl.style.display = 'block'; ocrEl.textContent = S.files[i].name + ' — ' + msg; }
+        if (ocrEl) ocrEl.textContent = `Dosya ${i+1}/${total}: ${fname} — ${msg}`;
       });
       S.reports.push({ name: S.files[i].name, text: txt });
       S.spot.push(extractSpot(txt, S.files[i].name));
@@ -714,11 +722,10 @@ async function analyzeAll() {
       S.yearly.push({ dosya: S.files[i].name, sirket: S.files[i].name, years: {}, metrics: {} });
       S.assumptions.push({ dosya: S.files[i].name, items: {} });
     }
-    pf.style.width = ((i+1)/S.files.length*100) + '%';
+    pf.style.width = ((i+1)/total*100) + '%';
   }
   if (ocrWorker) { await ocrWorker.terminate(); ocrWorker = null; }
-  const ocrEl2 = document.getElementById('ocrStatus');
-  if (ocrEl2) ocrEl2.style.display = 'none';
+  if (ocrEl) ocrEl.style.display = 'none';
   render();
   document.getElementById('results').style.display = 'block';
   pb.style.display = 'none';
