@@ -355,7 +355,7 @@ const ML = {
   fd:'Firma Değeri (EV)', ozsermayeDeger:'Özsermaye Değeri', fdFavoek:'FD/FAVÖK', fk:'F/K (P/E)', pdDd:'PD/DD (P/BV)',
   favoekMarji:'FAVÖK Marjı (%)', netKarMarji:'Net Kâr Marjı (%)', amortisman:'Amortisman & İtfa',
   capex:'Yatırım Harcaması (CAPEX)', isletmeSermayesi:'İşletme Sermayesi', fcf:'Serbest Nakit Akışı (FCF)',
-  wacc:'WACC / İskonto Oranı (%)'
+  wacc:'Ağırlıklı Ortalama Sermaye Maliyeti — WACC (%)'
 };
 
 // ============= EXTRACTION =============
@@ -782,8 +782,8 @@ function renderExpert() {
 
     if (sp.m.wacc) {
       const w = sp.m.wacc.v;
-      if (w > 20) warnings.push(`WACC / İskonto oranı <span class="hl">%${w.toFixed(1)}</span> — yüksek risk primi uygulanmış. Bu oran değerleme sonucunu aşağı yönlü etkiler. Ülke riski, sektör riski ve şirkete özel riskin katkıları sorgulanmalı.`);
-      else if (w < 8) warnings.push(`WACC / İskonto oranı <span class="hl">%${w.toFixed(1)}</span> — düşük. Risk priminin yeterli olup olmadığı ve cari piyasa koşullarıyla uyumu kontrol edilmeli.`);
+      if (w > 20) warnings.push(`Ağırlıklı Ortalama Sermaye Maliyeti (WACC) <span class="hl">%${w.toFixed(1)}</span> — yüksek risk primi uygulanmış. Bu oran değerleme sonucunu aşağı yönlü etkiler. Ülke riski, sektör riski ve şirkete özel riskin katkıları sorgulanmalı.`);
+      else if (w < 8) warnings.push(`Ağırlıklı Ortalama Sermaye Maliyeti (WACC) <span class="hl">%${w.toFixed(1)}</span> — düşük. Risk priminin yeterli olup olmadığı ve cari piyasa koşullarıyla uyumu kontrol edilmeli.`);
     }
 
     // ---- RENDER VERDICT ----
