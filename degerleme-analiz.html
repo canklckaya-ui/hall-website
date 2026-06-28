@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Değerleme Raporu Analiz Aracı</title>
+  <script src="lib/pdf.min.js"></script>
+  <script src="lib/chart.umd.js"></script>
+  <script src="lib/chartjs-plugin-annotation.min.js"></script>
+  <script src="lib/tesseract.min.js"></script>
+  <style>
+    /* Local font stack - no external dependencies */
+
+    :root {
+      --bg: #0f1117;
+      --bg-card: #1a1d27;
+      --bg-section: #151820;
+      --border: #2a2f3d;
+      --accent: #c9a84c;
+      --accent-light: #e0c16e;
+      --text: #eaedf2;
+      --muted: #7a8499;
+      --muted-light: #a0aabf;
+      --green: #22c55e;
+      --red: #ef4444;
+      --blue: #3b82f6;
+      --orange: #f59e0b;
+      --purple: #a855f7;
+      --radius: 8px;
+      --radius-sm: 4px;
+      --shadow: 0 4px 24px rgba(0,0,0,0.4);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 15px; }
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--accent); }
+    ul { list-style: none; }
+
+    .app { max-width: 1440px; margin: 0 auto; padding: 2rem; }
+
+    /* Header */
+    .header { margin-bottom: 2rem; }
+    .header h1 { font-size: 1.6rem; font-weight: 700; color: var(--text); }
+    .header p { color: var(--muted); font-size: 0.85rem; margin-top: 0.3rem; }
+    .header__badge {
+      display: inline-block; font-size: 0.65rem; padding: 0.2rem 0.6rem; border-radius: 3px;
+      background: rgba(201,168,76,0.12); color: var(--accent); margin-left: 0.5rem;
+      font-weight: 600; letter-spacing: 0.06em; vertical-align: middle;
+    }
+
+    /* Upload */
+    .upload {
+      border: 2px dashed var(--border); border-radius: var(--radius); padding: 2.5rem 2rem;
+      text-align: center; cursor: pointer; transition: all 0.2s; background: var(--bg-card); position: relative;
+    }
+    .upload:hover, .upload.dragover { border-color: var(--accent); background: rgba(201,168,76,0.04); }
+    .upload__icon { font-size: 2.5rem; margin-bottom: 0.75rem; opacity: 0.5; }
+    .upload__text { color: var(--muted-light); font-size: 0.88rem; }
+    .upload__text strong { color: var(--accent); }
+    .upload input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+    .files { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+    .file-chip {
+      display: inline-flex; align-items: center; gap: 0.4rem; background: var(--bg-card);
+      border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.4rem 0.8rem;
+      font-size: 0.78rem; color: var(--text);
+    }
+    .file-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+    .file-dot.processing { background: var(--orange); animation: pulse 1s infinite; }
+    .file-dot.done { background: var(--green); }
+    .file-dot.error { background: var(--red); }
+    .file-rm { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; padding: 0; line-height: 1; }
+    .file-rm:hover { color: var(--red); }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .bar { display: flex; gap: 0.75rem; margin-top: 1rem; align-items: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.3rem;
+      font-family: inherit; font-size: 0.78rem; font-weight: 600; border-radius: var(--radius-sm);
+      cursor: pointer; transition: all 0.2s; border: none; letter-spacing: 0.04em;
+    }
+    .btn--primary { background: var(--accent); color: #111; }
+    .btn--primary:hover { background: var(--accent-light); }
+    .btn--outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn--outline:hover { border-color: var(--accent); color: var(--accent); }
+
+    .progress { width: 100%; height: 3px; background: var(--border); border-radius: 2px; margin-top: 0.75rem; overflow: hidden; display: none; }
+    .progress__fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-light)); width: 0%; transition: width 0.3s; }
+
+    /* Tabs */
+    .results { margin-top: 2rem; display: none; }
+    .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 1.25rem; overflow-x: auto; }
+    .tab {
+      padding: 0.6rem 1.2rem; font-size: 0.75rem; font-weight: 500; color: var(--muted); cursor: pointer;
+      border: none; background: none; border-bottom: 2px solid transparent; transition: all 0.2s;
+      white-space: nowrap; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* Cards */
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem; }
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; }
+    .card__label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.4rem; }
+    .card__val { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+    .card__sub { font-size: 0.7rem; color: var(--muted); margin-top: 0.2rem; }
+
+    /* Table */
+    .tbl-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); }
+    .tbl { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    .tbl th {
+      background: var(--bg-section); color: var(--accent); font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.05em; font-size: 0.7rem; padding: 0.7rem 0.8rem; text-align: left;
+      border-bottom: 1px solid var(--border); white-space: nowrap; position: sticky; top: 0;
+    }
+    .tbl td { padding: 0.6rem 0.8rem; border-bottom: 1px solid rgba(42,47,61,0.5); color: var(--text); white-space: nowrap; }
+    .tbl tr:hover td { background: rgba(201,168,76,0.03); }
+    .tbl .num { text-align: right; font-variant-numeric: tabular-nums; }
+    .tbl .cell-proj { color: var(--muted-light); font-style: italic; }
+    .tbl .row-label { font-weight: 600; color: var(--text); position: sticky; left: 0; background: var(--bg-card); z-index: 1; min-width: 150px; }
+    .tbl thead .row-label { background: var(--bg-section); }
+    .tbl th.yr-actual { border-bottom: 2px solid var(--green); }
+    .tbl th.yr-proj { border-bottom: 2px solid var(--blue); }
+
+    .badge-g { display: inline-block; font-size: 0.55rem; padding: 0.1rem 0.35rem; border-radius: 3px; background: rgba(34,197,94,0.15); color: var(--green); margin-left: 0.2rem; font-weight: 700; }
+    .badge-t { display: inline-block; font-size: 0.55rem; padding: 0.1rem 0.35rem; border-radius: 3px; background: rgba(59,130,246,0.15); color: var(--blue); margin-left: 0.2rem; font-weight: 700; }
+    .g-up { color: var(--green); font-size: 0.68rem; margin-left: 0.2rem; }
+    .g-dn { color: var(--red); font-size: 0.68rem; margin-left: 0.2rem; }
+
+    /* Charts */
+    .charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1rem; }
+    .chart-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
+    .chart-box__title { font-size: 0.75rem; font-weight: 600; color: var(--text); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .chart-box canvas { max-height: 320px; }
+    .legend-bar { display: flex; gap: 1.2rem; margin-bottom: 0.75rem; font-size: 0.72rem; color: var(--muted-light); }
+    .legend-bar span { display: flex; align-items: center; gap: 0.3rem; }
+    .leg-solid { width: 20px; height: 3px; background: var(--accent); border-radius: 2px; }
+    .leg-dash { width: 20px; height: 0; border-top: 2px dashed var(--blue); }
+
+    /* Analysis / Expert commentary */
+    .expert {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.75rem; line-height: 1.85; font-size: 0.85rem; color: var(--muted-light);
+    }
+    .expert h3 { font-size: 1.1rem; font-weight: 700; color: var(--accent); margin: 1.5rem 0 0.6rem; }
+    .expert h3:first-child { margin-top: 0; }
+    .expert h4 { font-size: 0.9rem; font-weight: 600; color: var(--text); margin: 1rem 0 0.4rem; }
+    .expert ul { padding-left: 1.1rem; list-style: disc; }
+    .expert li { margin-bottom: 0.35rem; }
+    .expert strong { color: var(--text); }
+    .expert .hl {
+      display: inline-block; background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 3px; padding: 0.1rem 0.4rem; font-weight: 600; color: var(--accent);
+    }
+    .expert .pos { padding: 1rem; margin: 0.75rem 0; border-radius: var(--radius); background: rgba(34,197,94,0.06); border-left: 3px solid var(--green); }
+    .expert .neg { padding: 1rem; margin: 0.75rem 0; border-radius: var(--radius); background: rgba(239,68,68,0.06); border-left: 3px solid var(--red); }
+    .expert .warn { padding: 1rem; margin: 0.75rem 0; border-radius: var(--radius); background: rgba(245,158,11,0.06); border-left: 3px solid var(--orange); }
+    .expert .pos strong { color: var(--green); }
+    .expert .neg strong { color: var(--red); }
+    .expert .warn strong { color: var(--orange); }
+
+    /* Assumptions */
+    .assume-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1rem; }
+    .assume-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.25rem; transition: border-color 0.2s;
+    }
+    .assume-card:hover { border-color: rgba(201,168,76,0.3); }
+    .assume-card__head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.6rem; }
+    .assume-card__name { font-size: 0.82rem; font-weight: 600; color: var(--text); }
+    .assume-card__val { font-size: 1.1rem; font-weight: 700; color: var(--accent); }
+    .assume-card__desc {
+      font-size: 0.78rem; color: var(--muted-light); line-height: 1.7; border-top: 1px solid var(--border);
+      padding-top: 0.6rem; margin-top: 0.4rem;
+    }
+    .assume-card__impact {
+      font-size: 0.72rem; margin-top: 0.5rem; padding: 0.5rem 0.7rem; border-radius: var(--radius-sm);
+      background: rgba(201,168,76,0.06); color: var(--muted-light); line-height: 1.6;
+    }
+    .assume-card__impact strong { color: var(--accent); }
+    .assume-section { margin-bottom: 1.5rem; }
+    .assume-section__title {
+      font-size: 0.9rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;
+      padding-bottom: 0.4rem; border-bottom: 1px solid var(--border);
+    }
+    .assume-empty { color: var(--muted); font-size: 0.85rem; }
+
+    /* Raw */
+    .raw {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.25rem; max-height: 550px; overflow-y: auto; font-size: 0.8rem; line-height: 1.65;
+      color: var(--muted-light); white-space: pre-wrap; word-wrap: break-word;
+    }
+    .raw .ftitle { color: var(--accent); font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; display: block; }
+    .raw .fsection { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+
+    .selector { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+    .selector button {
+      padding: 0.35rem 0.75rem; font-size: 0.72rem; background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); color: var(--muted-light); cursor: pointer; transition: all 0.2s; font-family: inherit;
+    }
+    .selector button:hover { border-color: var(--accent); color: var(--accent); }
+    .selector button.active { background: rgba(201,168,76,0.1); border-color: var(--accent); color: var(--accent); }
+
+    .empty { text-align: center; padding: 2.5rem; color: var(--muted); }
+
+    @media (max-width: 768px) {
+      .app { padding: 1rem; }
+      .charts { grid-template-columns: 1fr; }
+      .cards { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+<div id="fileProtocolWarning" style="display:none;position:fixed;inset:0;z-index:9999;background:#0f1117;color:#e8e6e3;font-family:system-ui,sans-serif;padding:40px;text-align:center;">
+  <div style="max-width:500px;margin:80px auto;background:#1a1d27;border:1px solid #c9a84c;border-radius:12px;padding:40px;">
+    <div style="font-size:48px;margin-bottom:16px;">⚠️</div>
+    <h2 style="color:#c9a84c;margin-bottom:12px;">Doğrudan Açılamaz</h2>
+    <p style="margin-bottom:20px;line-height:1.6;">Bu araç tarayıcıda doğrudan açılamaz. <strong>Çift tıklayarak başlatın:</strong></p>
+    <div style="background:#151820;border-radius:8px;padding:20px;text-align:left;margin-bottom:20px;">
+      <p style="margin-bottom:8px;"><strong style="color:#c9a84c;">Windows:</strong> <code style="background:#0f1117;padding:3px 8px;border-radius:4px;">baslat.bat</code> dosyasına çift tıklayın</p>
+      <p><strong style="color:#c9a84c;">Mac:</strong> <code style="background:#0f1117;padding:3px 8px;border-radius:4px;">baslat.command</code> dosyasına çift tıklayın</p>
+    </div>
+    <p style="color:#888;font-size:0.85rem;">Otomatik olarak tarayıcınız açılacak ve araç çalışacak.</p>
+  </div>
+</div>
+<script>
+if (location.protocol === 'file:') document.getElementById('fileProtocolWarning').style.display = 'block';
+</script>
+<div class="app">
+
+  <div class="header">
+    <h1>Değerleme Raporu Analiz Aracı <span class="header__badge">GİZLİ</span></h1>
+    <p>PDF değerleme raporlarını yükleyin — gerçekleşme & projeksiyon verilerini çıkarın, finansal uzman yorumuyla analiz edin.</p>
+  </div>
+
+  <div class="upload" id="uploadZone">
+    <div class="upload__icon">📄</div>
+    <p class="upload__text">PDF dosyalarını sürükleyip bırakın veya <strong>tıklayarak seçin</strong></p>
+    <p style="color:var(--muted);font-size:0.72rem;margin-top:0.35rem;">Birden fazla dosya seçebilirsiniz — tüm veriler tarayıcıda işlenir, sunucuya gönderilmez</p>
+    <input type="file" id="fileInput" multiple accept=".pdf">
+  </div>
+
+  <div class="files" id="fileList"></div>
+  <div class="progress" id="progressBar"><div class="progress__fill" id="progressFill"></div></div>
+  <div id="ocrStatus" style="display:none; margin-top:0.5rem; font-size:0.78rem; color:var(--orange); font-weight:500;"></div>
+  <div class="bar" id="actionsBar" style="display:none;">
+    <button class="btn btn--primary" onclick="analyzeAll()">Analiz Et</button>
+    <button class="btn btn--outline" onclick="clearAll()">Temizle</button>
+    <span style="color:var(--muted);font-size:0.75rem;" id="fileCount"></span>
+  </div>
+
+  <div class="results" id="results">
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('overview')">Özet</button>
+      <button class="tab" onclick="switchTab('proj')">Projeksiyon & Gerçekleşme</button>
+      <button class="tab" onclick="switchTab('table')">Veri Tablosu</button>
+      <button class="tab" onclick="switchTab('charts')">Grafikler</button>
+      <button class="tab" onclick="switchTab('assume')">Varsayımlar</button>
+      <button class="tab" onclick="switchTab('expert')">Uzman Yorumu</button>
+      <button class="tab" onclick="switchTab('raw')">Ham Metin</button>
+    </div>
+
+    <div class="panel active" id="p-overview"><div class="cards" id="summaryCards"></div></div>
+
+    <div class="panel" id="p-proj">
+      <div class="selector" id="projSel"></div>
+      <div class="legend-bar"><span><span class="leg-solid"></span> Gerçekleşme</span><span><span class="leg-dash"></span> Projeksiyon</span></div>
+      <div class="charts" id="projCharts" style="margin-bottom:1.25rem;"></div>
+      <div class="tbl-wrap"><table class="tbl" id="projTbl"><thead id="projHead"></thead><tbody id="projBody"></tbody></table></div>
+    </div>
+
+    <div class="panel" id="p-table"><div class="tbl-wrap"><table class="tbl" id="dataTbl"><thead id="dataHead"></thead><tbody id="dataBody"></tbody></table></div></div>
+
+    <div class="panel" id="p-charts"><div class="charts" id="chartsGrid"></div></div>
+
+    <div class="panel" id="p-assume">
+      <div class="selector" id="assumeSel"></div>
+      <div id="assumeContent"></div>
+    </div>
+
+    <div class="panel" id="p-expert"><div class="expert" id="expertContent"></div></div>
+
+    <div class="panel" id="p-raw">
+      <div class="selector" id="rawSel"></div>
+      <div class="raw" id="rawText"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'lib/pdf.worker.min.js';
+
+const S = { files: [], reports: [], spot: [], yearly: [], assumptions: [], charts: [] };
+
+// ============= FILE HANDLING =============
+const uploadZone = document.getElementById('uploadZone');
+const fileInput = document.getElementById('fileInput');
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+uploadZone.addEventListener('drop', e => { e.preventDefault(); uploadZone.classList.remove('dragover'); addFiles(e.dataTransfer.files); });
+fileInput.addEventListener('change', e => { addFiles(e.target.files); fileInput.value = ''; });
+
+function addFiles(list) {
+  for (const f of list) if (f.type === 'application/pdf' && !S.files.some(x => x.name === f.name)) S.files.push(f);
+  renderFiles();
+}
+function rmFile(i) { S.files.splice(i, 1); renderFiles(); }
+function renderFiles() {
+  document.getElementById('fileList').innerHTML = S.files.map((f, i) =>
+    `<div class="file-chip"><span class="file-dot" id="st-${i}"></span>${f.name}<button class="file-rm" onclick="rmFile(${i})">&times;</button></div>`).join('');
+  document.getElementById('actionsBar').style.display = S.files.length ? 'flex' : 'none';
+  document.getElementById('fileCount').textContent = S.files.length + ' dosya';
+}
+function clearAll() {
+  S.files = []; S.reports = []; S.spot = []; S.yearly = []; S.assumptions = [];
+  S.charts.forEach(c => c.destroy()); S.charts = [];
+  renderFiles(); document.getElementById('results').style.display = 'none';
+}
+
+// ============= PDF =============
+let _ocrWorker = null;
+
+function setStatus(msg) {
+  const el = document.getElementById('ocrStatus');
+  if (el) { el.style.display = msg ? 'block' : 'none'; el.textContent = msg || ''; }
+}
+
+async function initOCR() {
+  if (_ocrWorker) return _ocrWorker;
+  if (typeof Tesseract === 'undefined') throw new Error('Tesseract.js yüklenemedi. Sayfayı yenileyin veya internet bağlantınızı kontrol edin.');
+  setStatus('OCR motoru hazırlanıyor...');
+  _ocrWorker = await Tesseract.createWorker('tur+eng', 1, {
+    workerPath: 'lib/tesseract-worker.min.js',
+    corePath: 'lib/tesseract-core-simd-lstm.wasm.js',
+    langPath: 'lib',
+    logger: function(m) {
+      var pct = Math.round((m.progress || 0) * 100);
+      if (m.status === 'loading tesseract core') setStatus('OCR motoru yükleniyor... ' + pct + '%');
+      else if (m.status === 'loading language traineddata') setStatus('Dil verileri indiriliyor... ' + pct + '%');
+      else if (m.status === 'initializing tesseract' || m.status === 'initializing api') setStatus('OCR başlatılıyor...');
+      else if (m.status === 'recognizing text') setStatus('OCR sayfa okuyor... ' + pct + '%');
+    }
+  });
+  return _ocrWorker;
+}
+
+async function destroyOCR() {
+  if (_ocrWorker) { try { await _ocrWorker.terminate(); } catch(e) {} _ocrWorker = null; }
+}
+
+function canvasToBlob(canvas) {
+  return new Promise(function(resolve, reject) {
+    canvas.toBlob(function(blob) {
+      if (blob) resolve(blob); else reject(new Error('Canvas toBlob failed'));
+    }, 'image/png');
+  });
+}
+
+async function ocrPage(worker, pdf, pageNum, totalPages) {
+  setStatus('Sayfa ' + pageNum + '/' + totalPages + ' render ediliyor...');
+  var pg = await pdf.getPage(pageNum);
+  var viewport = pg.getViewport({ scale: 2.0 });
+  var canvas = document.createElement('canvas');
+  canvas.width = viewport.width;
+  canvas.height = viewport.height;
+  var ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  await pg.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+  setStatus('Sayfa ' + pageNum + '/' + totalPages + ' OCR ile okunuyor...');
+  var blob = await canvasToBlob(canvas);
+  var url = URL.createObjectURL(blob);
+  var result;
+  try {
+    result = await worker.recognize(url);
+  } finally {
+    URL.revokeObjectURL(url);
+    canvas.width = 1; canvas.height = 1;
+    canvas = null;
+  }
+  return result.data.text;
+}
+
+async function pdfToText(file, statusCallback) {
+  if (statusCallback) statusCallback('PDF açılıyor...');
+  var buf = await file.arrayBuffer();
+  var pdf = await pdfjsLib.getDocument({ data: new Uint8Array(buf) }).promise;
+  var numPages = pdf.numPages;
+
+  if (statusCallback) statusCallback('Metin çıkarılıyor...');
+  var txt = '';
+  for (var i = 1; i <= numPages; i++) {
+    var pg = await pdf.getPage(i);
+    var content = await pg.getTextContent();
+    var lastY = null;
+    for (var j = 0; j < content.items.length; j++) {
+      var it = content.items[j];
+      if (lastY !== null && Math.abs(it.transform[5] - lastY) > 5) txt += '\n';
+      txt += it.str + ' ';
+      lastY = it.transform[5];
+    }
+    txt += '\n\n';
+  }
+
+  var cleaned = txt.replace(/\s+/g, '').trim();
+  if (cleaned.length >= 50) {
+    if (statusCallback) statusCallback('Metin tabanlı PDF — tamamlandı');
+    return txt;
+  }
+
+  if (statusCallback) statusCallback('Taranmış PDF tespit edildi — OCR başlatılıyor...');
+  var worker = await initOCR();
+  txt = '';
+  for (var p = 1; p <= numPages; p++) {
+    if (statusCallback) statusCallback('OCR: sayfa ' + p + '/' + numPages);
+    var pageTxt = await ocrPage(worker, pdf, p, numPages);
+    txt += pageTxt + '\n\n';
+  }
+
+  txt = txt
+    .replace(/[|]/g, 'I')
+    .replace(/(\d)\s+([.,])\s+(\d)/g, '$1$2$3')
+    .replace(/[""]/g, '"').replace(/['']/g, "'")
+    .replace(/(\w)-\n(\w)/g, '$1$2');
+
+  return txt;
+}
+
+// ============= NUMBERS =============
+function parseNum(s) {
+  if (!s) return null;
+  let c = s.replace(/\s/g, '').replace(/[oOıİ]/g, m => /[oO]/.test(m) ? '0' : '1').replace(/[^\d.,\-]/g, '');
+  if (!c || c === '-') return null;
+  if (c.includes(',') && c.includes('.')) c = c.lastIndexOf(',') > c.lastIndexOf('.') ? c.replace(/\./g, '').replace(',', '.') : c.replace(/,/g, '');
+  else if (c.includes(',')) { const p = c.split(','); c = p.length === 2 && p[1].length <= 2 ? c.replace(',', '.') : c.replace(/,/g, ''); }
+  const n = parseFloat(c); return isNaN(n) ? null : n;
+}
+function applyMul(raw, v) {
+  if (!raw || !v) return v;
+  if (/milyar|mlr/i.test(raw)) return v * 1e9;
+  if (/milyon|mio|mn/i.test(raw)) return v * 1e6;
+  if (/bin/i.test(raw)) return v * 1e3;
+  return v;
+}
+function fmt(n, key) {
+  if (n == null) return '—';
+  if (['fdFavoek','fk','pdDd'].includes(key)) return n.toFixed(1) + 'x';
+  if (['wacc','favoekMarji','netKarMarji','buyumeOrani'].includes(key)) return '%' + n.toFixed(1);
+  if (Math.abs(n) >= 1e9) return (n/1e9).toFixed(1) + ' Mlr';
+  if (Math.abs(n) >= 1e6) return (n/1e6).toFixed(1) + ' Mln';
+  if (Math.abs(n) >= 1e3) return (n/1e3).toFixed(1) + ' Bin';
+  return n.toLocaleString('tr-TR', { maximumFractionDigits: 2 });
+}
+function fmtN(n) { return n == null ? '—' : n.toLocaleString('tr-TR', { maximumFractionDigits: 2 }); }
+
+// ============= METRIC DEFS =============
+const MP = [
+  { key:'gelir', aliases:['gelir','ciro','hasılat','net satış','revenue','sales','net sales','satış gelirleri','net satışlar'] },
+  { key:'smmm', aliases:['satışların maliyeti','smm','cost of sales','cogs','satılan malın maliyeti'] },
+  { key:'brutKar', aliases:['brüt kar','brüt kâr','gross profit','brüt'] },
+  { key:'favoek', aliases:['favök','ebitda','favök (ebitda)'] },
+  { key:'faaliyetKari', aliases:['faaliyet karı','faaliyet kârı','ebit','operating profit'] },
+  { key:'netKar', aliases:['net kar','net kâr','net dönem karı','net dönem kârı','net profit','net income','dönem karı','dönem kârı'] },
+  { key:'aktifToplam', aliases:['aktif toplamı','toplam aktif','toplam varlık','total assets','toplam varlıklar'] },
+  { key:'ozkaynak', aliases:['özkaynak','özkaynaklar','equity','özsermaye','öz kaynak','öz kaynaklar'] },
+  { key:'borclar', aliases:['toplam borç','finansal borç','net borç','total debt','net debt','toplam yükümlülükler'] },
+  { key:'fd', aliases:['firma değeri','şirket değeri','enterprise value'] },
+  { key:'ozsermayeDeger', aliases:['özsermaye değeri','equity value','piyasa değeri','market cap'] },
+  { key:'fdFavoek', aliases:['fd/favök','ev/ebitda'] },
+  { key:'fk', aliases:['f/k','p/e','fiyat kazanç','fiyat/kazanç'] },
+  { key:'pdDd', aliases:['pd/dd','p/bv','p/b'] },
+  { key:'favoekMarji', aliases:['favök marjı','ebitda marjı','ebitda margin','favök marj'] },
+  { key:'netKarMarji', aliases:['net kar marjı','net kâr marjı','net profit margin'] },
+  { key:'amortisman', aliases:['amortisman','depreciation','amortisation','amortisman ve itfa'] },
+  { key:'capex', aliases:['yatırım harcaması','capex','sermaye harcaması','capital expenditure','yatırım harcamaları'] },
+  { key:'isletmeSermayesi', aliases:['işletme sermayesi','working capital','net işletme sermayesi'] },
+  { key:'fcf', aliases:['serbest nakit akışı','free cash flow','fcf','nakit akışı','nakit akımı'] },
+  { key:'wacc', aliases:['wacc','aosm','ağırlıklı ortalama sermaye maliyeti','iskonto oranı'] },
+];
+
+const ML = {
+  gelir:'Gelir (Ciro)', smmm:'SMM', brutKar:'Brüt Kâr', favoek:'FAVÖK (EBITDA)', faaliyetKari:'Faaliyet Kârı (EBIT)',
+  netKar:'Net Kâr', aktifToplam:'Aktif Toplamı', ozkaynak:'Özkaynaklar', borclar:'Toplam Borç/Yükümlülük',
+  fd:'Firma Değeri (EV)', ozsermayeDeger:'Özsermaye Değeri', fdFavoek:'FD/FAVÖK', fk:'F/K (P/E)', pdDd:'PD/DD (P/BV)',
+  favoekMarji:'FAVÖK Marjı (%)', netKarMarji:'Net Kâr Marjı (%)', amortisman:'Amortisman & İtfa',
+  capex:'Yatırım Harcaması (CAPEX)', isletmeSermayesi:'İşletme Sermayesi', fcf:'Serbest Nakit Akışı (FCF)',
+  wacc:'Ağırlıklı Ortalama Sermaye Maliyeti — WACC (%)'
+};
+
+// ============= EXTRACTION =============
+function detectYears(text) {
+  const rx = /\b(20[1-3]\d)\s*([GgAa](?:erçekleş)?|[TtPpEe](?:ahmin|rojeksiyon|stimate)?|[Ff](?:orecast)?|[Bb](?:ütçe)?)?\b/g;
+  const m = {}; let match;
+  while ((match = rx.exec(text)) !== null) {
+    const yr = parseInt(match[1]);
+    if (yr < 2015 || yr > 2035) continue;
+    const sfx = (match[2] || '').toLowerCase();
+    let type = 'unknown';
+    if (/^[ga]/.test(sfx)) type = 'actual';
+    else if (/^[tpefb]/.test(sfx)) type = 'projection';
+    if (!m[yr] || type !== 'unknown') m[yr] = type;
+  }
+  const yrs = Object.keys(m).map(Number).sort();
+  if (yrs.length === 0) return m;
+  const hasA = Object.values(m).some(t => t === 'actual');
+  const hasP = Object.values(m).some(t => t === 'projection');
+  const now = 2026;
+  for (const y of yrs) {
+    if (m[y] !== 'unknown') continue;
+    if (!hasA && !hasP) m[y] = y < now ? 'actual' : 'projection';
+    else if (hasA) { const last = Math.max(...yrs.filter(yy => m[yy] === 'actual')); m[y] = y <= last ? 'actual' : 'projection'; }
+    else { const first = Math.min(...yrs.filter(yy => m[yy] === 'projection')); m[y] = y < first ? 'actual' : 'projection'; }
+  }
+  return m;
+}
+
+function normalizeForMatch(s) {
+  return s.toLowerCase().replace(/\s+/g, ' ').replace(/[ıi̇]/g, 'i').replace(/[şṣ]/g, 'ş').replace(/[çc̣]/g, 'ç').replace(/[ğġ]/g, 'ğ').replace(/[üụ]/g, 'ü').replace(/[öọ]/g, 'ö');
+}
+
+function extractYearly(text, fileName) {
+  const lines = text.split('\n');
+  const yearMap = detectYears(text);
+  const years = Object.keys(yearMap).map(Number).sort();
+  const res = { dosya: fileName, sirket: fileName.replace(/\.pdf$/i, ''), years: yearMap, metrics: {} };
+
+  const sm = text.match(/(?:şirket|firma|company|kuruluş)\s*(?:adı|unvanı|ismi)?\s*[:\-]\s*(.+)/i);
+  if (sm) res.sirket = sm[1].trim().substring(0, 60);
+
+  for (const line of lines) {
+    const ll = normalizeForMatch(line.trim());
+    if (!ll || ll.startsWith('---')) continue;
+    for (const mp of MP) {
+      const hit = mp.aliases.some(a => {
+        const na = normalizeForMatch(a);
+        const idx = ll.indexOf(na);
+        if (idx === -1) return false;
+        const before = idx > 0 ? ll[idx-1] : ' ';
+        const after = idx + na.length < ll.length ? ll[idx + na.length] : ' ';
+        return /[\s,.:;(\-]|^/.test(before) && /[\s,.:;)\-]|$/.test(after);
+      });
+      if (!hit) continue;
+      const nums = [];
+      const nrx = /[\-]?[\d]+[.,\d]*/g; let nm;
+      while ((nm = nrx.exec(line)) !== null) {
+        const v = parseNum(nm[0]);
+        if (v !== null && Math.abs(v) < 1e15 && !(v >= 2015 && v <= 2035 && Number.isInteger(v))) nums.push(v);
+      }
+      if (nums.length > 0 && years.length > 0 && nums.length >= years.length) {
+        const si = nums.length - years.length;
+        const yv = {};
+        for (let i = 0; i < years.length; i++) yv[years[i]] = nums[si + i];
+        if (!res.metrics[mp.key] || Object.keys(yv).length > Object.keys(res.metrics[mp.key] || {}).length) res.metrics[mp.key] = yv;
+      }
+      break;
+    }
+  }
+  return res;
+}
+
+function extractSpot(text, fileName) {
+  const data = { dosya: fileName, m: {} };
+  const pats = [
+    { key:'sirket', rx:/(?:şirket|firma|company)\s*(?:adı|unvanı)?\s*[:\-]\s*(.+)/i },
+    { key:'tarih', rx:/(?:değerleme|valuation)\s*(?:tarihi|date)\s*[:\-]\s*(.+)/i },
+    { key:'yontem', rx:/(?:değerleme\s*yöntemi|valuation\s*method)\s*[:\-]\s*(.+)/i },
+    { key:'gelir', rx:/(?:net\s*)?(?:gelir|ciro|hasılat|revenue|net\s*satış)\s*[:\-]?\s*[\(]?(?:TL|₺|USD|\$|EUR|€)?\s*[:\-]?\s*([\d.,]+(?:\s*(?:milyon|milyar|mn|mio|mlr))?)/i, n:1 },
+    { key:'favoek', rx:/(?:FAVÖK|EBITDA)\s*[:\-]?\s*[\(]?(?:TL|₺)?\s*[:\-]?\s*([\d.,]+(?:\s*(?:milyon|milyar|mn|mio|mlr))?)/i, n:1 },
+    { key:'netKar', rx:/(?:net\s*(?:kâr|kar))\s*[:\-]?\s*[\(]?(?:TL|₺)?\s*[:\-]?\s*([\d.,]+(?:\s*(?:milyon|milyar|mn|mio|mlr))?)/i, n:1 },
+    { key:'fd', rx:/(?:firma\s*değeri|enterprise\s*value|FD|EV)\s*[:\-]?\s*[\(]?(?:TL|₺)?\s*[:\-]?\s*([\d.,]+(?:\s*(?:milyon|milyar|mn|mio|mlr))?)/i, n:1 },
+    { key:'ozsermayeDeger', rx:/(?:özsermaye\s*değeri|equity\s*value|piyasa\s*değeri)\s*[:\-]?\s*[\(]?(?:TL|₺)?\s*[:\-]?\s*([\d.,]+(?:\s*(?:milyon|milyar|mn|mio|mlr))?)/i, n:1 },
+    { key:'fdFavoek', rx:/(?:FD\s*\/\s*FAVÖK|EV\s*\/\s*EBITDA)\s*[:\-]?\s*([\d.,]+)\s*x?/i, n:1 },
+    { key:'fk', rx:/(?:F\s*\/\s*K|P\s*\/\s*E)\s*[:\-]?\s*([\d.,]+)\s*x?/i, n:1 },
+    { key:'pdDd', rx:/(?:PD\s*\/\s*DD|P\s*\/\s*BV)\s*[:\-]?\s*([\d.,]+)\s*x?/i, n:1 },
+    { key:'wacc', rx:/(?:WACC|AOSM|iskonto\s*oran)\s*[:\-]?\s*%?\s*([\d.,]+)\s*%?/i, n:1 },
+  ];
+  for (const p of pats) {
+    const match = text.match(p.rx);
+    if (match) {
+      if (p.n) { const v = parseNum(match[1]); if (v !== null) data.m[p.key] = { l: ML[p.key]||p.key, v, raw: match[1].trim() }; }
+      else data.m[p.key] = { l: ML[p.key]||p.key, v: match[1].trim() };
+    }
+  }
+  if (!data.m.sirket) data.m.sirket = { l: 'Şirket', v: fileName.replace(/\.pdf$/i, '') };
+  return data;
+}
+
+// ============= ASSUMPTIONS =============
+const ASSUME_DEFS = {
+  riskFreeRate: {
+    name: 'Risksiz Faiz Oranı',
+    desc: 'Devlet tahvili getirisine dayanan, teorik olarak sıfır kredi riski taşıyan yatırımın beklenen getirisi. Genellikle uzun vadeli (10 yıllık) devlet tahvili faizi baz alınır.',
+    impact: 'Risksiz faiz oranı yükseldikçe iskonto oranı (WACC) artar ve şirketin bugünkü değeri düşer. Düşük risksiz faiz ortamında değerlemeler yukarı yönlü etkilenir.',
+    category: 'wacc'
+  },
+  marketRiskPremium: {
+    name: 'Piyasa Risk Primi (Özsermaye Risk Primi)',
+    desc: 'Yatırımcıların hisse senedi piyasasına yatırım yaparak risksiz faiz üzerinde talep ettiği ek getiri. Tarihsel piyasa getirisi ile risksiz faiz arasındaki fark olarak hesaplanır.',
+    impact: 'Yüksek piyasa risk primi, yatırımcıların daha fazla risk tazminatı beklediğini gösterir. Bu, özsermaye maliyetini ve dolayısıyla WACC\'ı artırarak değerlemeyi düşürür.',
+    category: 'wacc'
+  },
+  beta: {
+    name: 'Beta Katsayısı (β)',
+    desc: 'Şirketin hisse senedinin piyasa geneline göre sistematik riskini ölçer. Beta = 1 piyasayla aynı volatilite, >1 piyasadan daha riskli, <1 daha az riskli anlamına gelir.',
+    impact: 'Beta arttıkça özsermaye maliyeti yükselir. Kaldıraçlı (levered) beta şirketin borç yapısını da yansıtır. Karşılaştırılabilir şirketlerin betası ile uyumu kontrol edilmelidir.',
+    category: 'wacc'
+  },
+  countryRisk: {
+    name: 'Ülke Risk Primi',
+    desc: 'Gelişmekte olan ülkelerde yatırım yapmanın ek riskini (politik istikrarsızlık, kur riski, hukuki belirsizlik) yansıtan ek getiri beklentisi.',
+    impact: 'Türkiye gibi gelişmekte olan piyasalarda önemli bir bileşendir. CDS spreadi veya Damodaran ülke risk primi kullanılır. Yüksek ülke riski değerlemeyi önemli ölçüde düşürür.',
+    category: 'wacc'
+  },
+  companyRisk: {
+    name: 'Şirkete Özel Risk Primi',
+    desc: 'Şirketin kendine özgü risklerini (küçük ölçek, tek müşteriye bağımlılık, yönetim riski, sektörel riskler) yansıtan ek iskonto oranı. Genellikle %1-5 arasında uygulanır.',
+    impact: 'Subjektif bir parametredir ve değerleme sonucunu doğrudan etkiler. Yüksek şirkete özel risk primi, değerlemeyi aşağı çeker. Gerekçeleri açıkça belirtilmelidir.',
+    category: 'wacc'
+  },
+  costOfEquity: {
+    name: 'Özsermaye Maliyeti (Ke)',
+    desc: 'Hissedarların şirkete yatırım yaparak beklediği minimum getiri oranı. CAPM modeline göre: Ke = Risksiz Faiz + Beta × Piyasa Risk Primi + Ülke Riski + Şirkete Özel Risk.',
+    impact: 'Özsermaye maliyeti, WACC hesaplamasının en büyük bileşenidir. Yüksek Ke, şirket değerini düşürür.',
+    category: 'wacc'
+  },
+  costOfDebt: {
+    name: 'Borç Maliyeti (Kd)',
+    desc: 'Şirketin borçlanma için ödediği faiz oranı. Vergi kalkanı etkisiyle vergi sonrası borç maliyeti = Kd × (1 - Vergi Oranı) olarak hesaplanır.',
+    impact: 'Borç maliyeti genellikle özsermaye maliyetinden düşüktür (vergi kalkanı etkisi). Ancak aşırı borçlanma iflas riskini artırır.',
+    category: 'wacc'
+  },
+  debtEquityRatio: {
+    name: 'Borç / Özsermaye Oranı (D/E)',
+    desc: 'Şirketin sermaye yapısındaki borç ve özsermaye dengesini gösterir. WACC hesaplamasında borç ve özsermaye ağırlıklarını belirler.',
+    impact: 'Borç oranı arttıkça WACC başlangıçta düşer (borç maliyeti < özsermaye maliyeti), ancak belirli bir noktadan sonra iflas riski nedeniyle artar (optimal sermaye yapısı teorisi).',
+    category: 'wacc'
+  },
+  taxRate: {
+    name: 'Vergi Oranı',
+    desc: 'İndirgenmiş nakit akışı hesaplamasında kullanılan efektif kurumlar vergisi oranı. Borç maliyetinin vergi kalkanı etkisini belirler.',
+    impact: 'Yüksek vergi oranı, vergi sonrası nakit akışlarını düşürürken borçlanmanın vergi avantajını artırır.',
+    category: 'wacc'
+  },
+  wacc: {
+    name: 'Ağırlıklı Ortalama Sermaye Maliyeti (WACC)',
+    desc: 'Şirketin tüm sermaye kaynaklarının (borç + özsermaye) ağırlıklı ortalama maliyeti. WACC = (E/V) × Ke + (D/V) × Kd × (1-t) formülüyle hesaplanır.',
+    impact: 'WACC, gelecekteki nakit akışlarını bugüne indirgemek için kullanılan iskonto oranıdır. %1 puanlık artış, firma değerini %8-15 oranında düşürebilir.',
+    category: 'wacc'
+  },
+  terminalGrowth: {
+    name: 'Terminal (Kalıcı) Büyüme Oranı',
+    desc: 'Projeksiyon dönemi sonrasında şirketin sonsuza kadar büyüyeceği varsayılan oran. Genellikle uzun vadeli enflasyon veya GSYİH büyüme oranına yakın seçilir (%2-4).',
+    impact: 'Terminal değer, toplam firma değerinin genellikle %60-80\'ini oluşturur. Bu nedenle terminal büyüme oranındaki küçük değişiklikler değerleme sonucunu dramatik şekilde etkiler.',
+    category: 'dcf'
+  },
+  projectionPeriod: {
+    name: 'Projeksiyon (Tahmin) Dönemi',
+    desc: 'Detaylı nakit akışı tahminlerinin yapıldığı süre. Genellikle 5-10 yıl arasında seçilir. Dönem sonunda terminal değer hesaplanır.',
+    impact: 'Kısa projeksiyon dönemi terminal değerin ağırlığını artırır. Uzun dönem ise tahmin belirsizliğini artırır.',
+    category: 'dcf'
+  },
+  controlPremium: {
+    name: 'Kontrol Primi',
+    desc: 'Şirketin yönetim kontrolünü elde etmek için azınlık hisse değeri üzerine ödenen ek bedel. Genellikle %15-40 arasında uygulanır.',
+    impact: 'Kontrol primi uygulanması değerlemeyi yukarı yönlü etkiler. M&A işlemlerinde alıcının kontrol avantajını yansıtır.',
+    category: 'premium'
+  },
+  minorityDiscount: {
+    name: 'Azınlık İskontosu',
+    desc: 'Azınlık hissedarlığının yönetim üzerinde kontrol sağlamaması nedeniyle uygulanan indirim. Kontrol priminin tersi olarak düşünülebilir.',
+    impact: 'Azınlık hisse değerlemesinde uygulanır. Hisse değerini aşağı yönlü etkiler.',
+    category: 'premium'
+  },
+  liquidityDiscount: {
+    name: 'Likidite (Pazarlanabilirlik) İskontosu',
+    desc: 'Borsada işlem görmeyen veya düşük hacimli hisselerin kolayca nakde çevrilememesi nedeniyle uygulanan indirim. Genellikle %10-35 arasında.',
+    impact: 'Halka açık olmayan şirketlerde uygulanır. Likidite iskontosu, özellikle azınlık hissedarlığında değerlemeyi önemli ölçüde düşürebilir.',
+    category: 'premium'
+  },
+  dlom: {
+    name: 'Pazarlanabilirlik Eksikliği İskontosu (DLOM)',
+    desc: 'Hissenin organize bir piyasada serbestçe alınıp satılamamasından kaynaklanan değer kaybı. Restricted stock çalışmaları ve put opsiyon modelleriyle tahmin edilir.',
+    impact: 'DLOM ile likidite iskontosu birlikte veya ayrı ayrı uygulanabilir. Halka açık olmayan şirketlerde %15-30 arasında uygulanması yaygındır.',
+    category: 'premium'
+  },
+  evEbitda: {
+    name: 'FD/FAVÖK Çarpanı (EV/EBITDA)',
+    desc: 'Firma değerinin FAVÖK\'e bölünmesiyle bulunan değerleme çarpanı. Karşılaştırılabilir şirket analizi ve emsal işlem analizinde kullanılır.',
+    impact: 'Sektör ortalamasından yüksek çarpan, prim veya aşırı değerleme gösterebilir. Düşük çarpan ise iskontolu değerleme veya düşük büyüme beklentisine işaret eder.',
+    category: 'multiples'
+  },
+  pe: {
+    name: 'Fiyat / Kazanç Oranı (F/K — P/E)',
+    desc: 'Hisse fiyatının hisse başına kâra bölünmesiyle hesaplanır. Şirketin kârlılığına göre ne kadar "pahalı" olduğunu gösterir.',
+    impact: 'Yüksek F/K, yatırımcıların gelecekte güçlü büyüme beklediğini yansıtır. Çok yüksek F/K değerleri balon riski taşıyabilir.',
+    category: 'multiples'
+  },
+  pbv: {
+    name: 'Piyasa Değeri / Defter Değeri (PD/DD — P/BV)',
+    desc: 'Piyasa değerinin özkaynak defter değerine oranı. Şirketin muhasebe değerine göre piyasadaki primini veya iskontosunu gösterir.',
+    impact: 'PD/DD > 1 ise piyasa şirkete defter değerinin üzerinde değer biçiyor. Düşük PD/DD düşük kârlılık veya varlık yoğun yapıya işaret edebilir.',
+    category: 'multiples'
+  },
+};
+
+const ASSUME_PATTERNS = [
+  { key:'riskFreeRate', rx:/(?:risksiz\s*faiz|risk[\s\-]*free\s*rate|devlet\s*tahvil\s*faiz|gösterge\s*faiz)\s*(?:oranı)?\s*[:\-=]?\s*%?\s*([\d.,]+)\s*%?/i, unit:'%' },
+  { key:'marketRiskPremium', rx:/(?:piyasa\s*risk\s*prim|özsermaye\s*risk\s*prim|equity\s*risk\s*premium|market\s*risk\s*premium|ERP)\s*[:\-=]?\s*%?\s*([\d.,]+)\s*%?/i, unit:'%' },
+  { key:'beta', rx:/(?:beta|β)\s*(?:katsayısı|coefficient|levered|kaldıraçlı|unlevered|kaldıraçsız)?\s*[:\-=]?\s*([\d.,]+)/i, unit:'' },
+  { key:'countryRisk', rx:/(?:ülke\s*risk\s*prim|country\s*risk\s*premium|CRP|ülke\s*riski)\s*[:\-=]?\s*%?\s*([\d.,]+)\s*%?/i, unit:'%' },
+  { key:'companyRisk', rx:/(?:şirket(?:e)?\s*özel\s*risk|firmaya?\s*özel\s*risk|company[\s\-]*specific\s*risk|size\s*premium|ölçek\s*primi|küçük\s*şirket\s*primi)\s*[:\-=]?\s*%?\s*([\d.,]+)\s*%?/i, unit:'%' },
+  { key:'costOfEquity', rx:/(?:özsermaye\s*maliyet|cost\s*of\s*equity|Ke)\s*[:\-=]?\s*%?\s*([\d.,]+)\s*%?/i, unit:'%' },
+  { key:'costOfDebt', rx:/(?:borç\s*maliyet|borçlanma\s*maliyet|cost\s*of\s*debt|Kd)\s*[:\-=]?\s*%?\s*([\d.,]+)\s*%?/i, unit:'%' },
+  { key:'debtEquityRatio', rx:/(?:borç\s*\/?\s*özsermaye|D\s*\/\s*E|debt\s*(?:to\s*)?equity|borç\s*oranı|borç\s*ağırlığı)\s*[:\-=]?\s*%?\s*([\d.,]+)\s*%?/i, unit:'%' },
+  { key:'taxRate', rx:/(?:vergi\s*oranı|kurumlar\s*vergisi|efektif\s*vergi|tax\s*rate)\s*[:\-=]?\s*%?\s*([\d.,]+)\s*%?/i, unit:'%' },
+  { key:'wacc', rx:/(?:WACC|AOSM|ağırlıklı\s*ortalama\s*sermaye\s*maliyet|iskonto\s*oranı)\s*[:\-=]?\s*%?\s*([\d.,]+)\s*%?/i, unit:'%' },
+  { key:'terminalGrowth', rx:/(?:terminal\s*büyüme|kalıcı\s*büyüme|perpetuity\s*growth|terminal\s*growth|sonsuz\s*büyüme|uzun\s*vadeli\s*büyüme)\s*(?:oranı)?\s*[:\-=]?\s*%?\s*([\d.,]+)\s*%?/i, unit:'%' },
+  { key:'projectionPeriod', rx:/(?:projeksiyon\s*(?:dönem|süre|period)|tahmin\s*(?:dönem|süre)|forecast\s*period|explicit\s*period)\s*[:\-=]?\s*([\d]+)\s*(?:yıl|year)?/i, unit:' yıl' },
+  { key:'controlPremium', rx:/(?:kontrol\s*prim|control\s*premium)\s*[:\-=]?\s*%?\s*([\d.,]+)\s*%?/i, unit:'%' },
+  { key:'minorityDiscount', rx:/(?:azınlık\s*iskonto|minority\s*discount)\s*[:\-=]?\s*%?\s*([\d.,]+)\s*%?/i, unit:'%' },
+  { key:'liquidityDiscount', rx:/(?:likidite\s*iskonto|pazarlanabilirlik\s*iskonto|liquidity\s*discount|marketability\s*discount|DLOM)\s*[:\-=]?\s*%?\s*([\d.,]+)\s*%?/i, unit:'%' },
+  { key:'evEbitda', rx:/(?:FD\s*\/\s*FAVÖK|EV\s*\/\s*EBITDA)\s*(?:çarpanı|multiple)?\s*[:\-=]?\s*([\d.,]+)\s*x?/i, unit:'x' },
+  { key:'pe', rx:/(?:F\s*\/\s*K|P\s*\/\s*E|fiyat\s*kazanç)\s*(?:oranı|çarpanı|multiple)?\s*[:\-=]?\s*([\d.,]+)\s*x?/i, unit:'x' },
+  { key:'pbv', rx:/(?:PD\s*\/\s*DD|P\s*\/\s*BV)\s*(?:oranı|çarpanı|multiple)?\s*[:\-=]?\s*([\d.,]+)\s*x?/i, unit:'x' },
+];
+
+function extractAssumptions(text, fileName) {
+  const result = { dosya: fileName, items: {} };
+  for (const p of ASSUME_PATTERNS) {
+    const match = text.match(p.rx);
+    if (match) {
+      const v = parseNum(match[1]);
+      if (v !== null) {
+        const def = ASSUME_DEFS[p.key] || {};
+        result.items[p.key] = { value: v, unit: p.unit, name: def.name || p.key, desc: def.desc || '', impact: def.impact || '', category: def.category || 'other' };
+      }
+    }
+  }
+  return result;
+}
+
+// ============= MAIN =============
+var _analyzing = false;
+async function analyzeAll() {
+  if (!S.files.length || _analyzing) return;
+  _analyzing = true;
+
+  var btn = document.querySelector('#actionsBar .btn--primary');
+  if (btn) { btn.disabled = true; btn.textContent = 'Analiz ediliyor...'; btn.style.opacity = '0.5'; btn.style.pointerEvents = 'none'; }
+
+  var pb = document.getElementById('progressBar');
+  var pf = document.getElementById('progressFill');
+  pb.style.display = 'block';
+  pf.style.width = '0%';
+  document.getElementById('results').style.display = 'none';
+
+  S.reports = []; S.spot = []; S.yearly = []; S.assumptions = [];
+  S.charts.forEach(function(c) { c.destroy(); }); S.charts = [];
+
+  var total = S.files.length;
+
+  for (let i = 0; i < total; i++) {
+    const dot = document.getElementById('st-' + i);
+    if (dot) dot.className = 'file-dot processing';
+    const fname = S.files[i].name.replace(/\.pdf$/i, '');
+    const fileLabel = '[' + (i+1) + '/' + total + '] ' + fname;
+    setStatus(fileLabel + ' işleniyor...');
+
+    try {
+      const txt = await pdfToText(S.files[i], function(msg) {
+        setStatus(fileLabel + ' — ' + msg);
+      });
+
+      const textLen = (txt || '').replace(/\s+/g, '').length;
+      S.reports.push({ name: S.files[i].name, text: txt || '(boş)' });
+      S.spot.push(extractSpot(txt || '', S.files[i].name));
+      S.yearly.push(extractYearly(txt || '', S.files[i].name));
+      S.assumptions.push(extractAssumptions(txt || '', S.files[i].name));
+
+      if (dot) dot.className = textLen > 20 ? 'file-dot done' : 'file-dot error';
+    } catch (err) {
+      console.error('Hata [' + fname + ']:', err);
+      if (dot) dot.className = 'file-dot error';
+      S.reports.push({ name: S.files[i].name, text: 'HATA: ' + (err.message || err) });
+      S.spot.push({ dosya: S.files[i].name, m: {} });
+      S.yearly.push({ dosya: S.files[i].name, sirket: fname, years: {}, metrics: {} });
+      S.assumptions.push({ dosya: S.files[i].name, items: {} });
+    }
+
+    pf.style.width = Math.round((i + 1) / total * 100) + '%';
+  }
+
+  await destroyOCR();
+  setStatus('');
+  pb.style.display = 'none';
+
+  render();
+  document.getElementById('results').style.display = 'block';
+
+  _analyzing = false;
+  if (btn) { btn.disabled = false; btn.textContent = 'Analiz Et'; btn.style.opacity = '1'; btn.style.pointerEvents = ''; }
+}
+
+function render() { renderSummary(); renderProj(); renderTable(); renderCharts(); renderAssumptions(); renderExpert(); renderRaw(); }
+
+// ===== SUMMARY =====
+function renderSummary() {
+  const c = [];
+  c.push({ l:'Rapor Sayısı', v: S.spot.length, s:'PDF dosyası' });
+  const allYrs = new Set(); let aC=0, pC=0;
+  S.yearly.forEach(d => Object.entries(d.years).forEach(([y,t]) => { allYrs.add(y); if(t==='actual')aC++; if(t==='projection')pC++; }));
+  if (allYrs.size) { const sy=[...allYrs].sort(); c.push({ l:'Yıl Aralığı', v:sy[0]+'–'+sy[sy.length-1], s:`${aC} gerçekleşme, ${pC} projeksiyon` }); }
+  const tm = S.yearly.reduce((s,d)=>s+Object.keys(d.metrics).length,0) + S.spot.reduce((s,d)=>s+Object.keys(d.m).length,0);
+  c.push({ l:'Toplam Metrik', v:tm, s:'veri noktası' });
+
+  for (const k of ['gelir','favoek','netKar','fd','ozsermayeDeger','fdFavoek','fk','wacc']) {
+    const vals = S.spot.filter(d=>d.m[k]).map(d=>applyMul(d.m[k].raw,d.m[k].v));
+    if (vals.length) {
+      const lbl = S.spot.find(d=>d.m[k]).m[k].l;
+      if (vals.length===1) c.push({l:lbl,v:fmt(vals[0],k),s:'1 rapor'});
+      else { const avg=vals.reduce((a,b)=>a+b,0)/vals.length; c.push({l:lbl+' (Ort.)',v:fmt(avg,k),s:`Min: ${fmt(Math.min(...vals),k)} — Max: ${fmt(Math.max(...vals),k)}`}); }
+    }
+  }
+  document.getElementById('summaryCards').innerHTML = c.map(x=>`<div class="card"><div class="card__label">${x.l}</div><div class="card__val">${x.v}</div><div class="card__sub">${x.s}</div></div>`).join('');
+}
+
+// ===== PROJECTION =====
+function renderProj(si) {
+  si = si !== undefined ? si : 0;
+  const sel = document.getElementById('projSel');
+  sel.innerHTML = S.yearly.length > 1 ? S.yearly.map((d,i)=>`<button class="${i===si?'active':''}" onclick="renderProj(${i})">${d.sirket}</button>`).join('') : '';
+  const yd = S.yearly[si];
+  if (!yd || !Object.keys(yd.metrics).length) {
+    document.getElementById('projCharts').innerHTML = '<div class="empty">Bu raporda yıl bazlı veri bulunamadı. PDF\'de yıl sütunları olması gerekir (2022G, 2023T vb.)</div>';
+    document.getElementById('projHead').innerHTML = ''; document.getElementById('projBody').innerHTML = ''; return;
+  }
+  const yrs = Object.keys(yd.years).map(Number).sort();
+  const mks = Object.keys(yd.metrics);
+
+  // Table
+  document.getElementById('projHead').innerHTML = '<tr><th class="row-label">Metrik</th>' +
+    yrs.map(y => `<th class="${yd.years[y]==='actual'?'yr-actual':'yr-proj'}">${y}${yd.years[y]==='actual'?'<span class="badge-g">G</span>':'<span class="badge-t">T</span>'}</th>`).join('') +
+    '<th>CAGR</th></tr>';
+
+  document.getElementById('projBody').innerHTML = mks.map(mk => {
+    const vals = yd.metrics[mk]; let prev = null;
+    let cells = `<td class="row-label">${ML[mk]||mk}</td>`;
+    for (const y of yrs) {
+      const v = vals[y]; const isP = yd.years[y]==='projection';
+      let gh = '';
+      if (prev !== null && prev !== 0 && v !== undefined) {
+        const g = ((v-prev)/Math.abs(prev))*100;
+        gh = g > 0 ? `<span class="g-up">+${g.toFixed(1)}%</span>` : g < 0 ? `<span class="g-dn">${g.toFixed(1)}%</span>` : '';
+      }
+      cells += `<td class="num${isP?' cell-proj':''}">${v!==undefined?fmtN(v):'—'}${gh}</td>`;
+      if (v !== undefined) prev = v;
+    }
+    const f=vals[yrs[0]], l=vals[yrs[yrs.length-1]]; let cagr='—';
+    if (f&&l&&f>0&&l>0&&yrs.length>1) { const n=yrs[yrs.length-1]-yrs[0]; if(n>0){const c2=(Math.pow(l/f,1/n)-1)*100; cagr=`<span style="color:${c2>=0?'var(--green)':'var(--red)'}">${c2>=0?'+':''}${c2.toFixed(1)}%</span>`;} }
+    return `<tr>${cells}<td class="num">${cagr}</td></tr>`;
+  }).join('');
+
+  // Charts
+  const container = document.getElementById('projCharts'); container.innerHTML = '';
+  S.charts = S.charts.filter(c => { if(c._proj){c.destroy();return false;} return true; });
+  const firstP = yrs.find(y => yd.years[y]==='projection');
+  const groups = [
+    { title:'Gelir & FAVÖK & Net Kâr', keys:['gelir','favoek','netKar'], colors:['#c9a84c','#e0c16e','#22c55e'] },
+    { title:'Firma Değeri & Özsermaye Değeri', keys:['fd','ozsermayeDeger'], colors:['#c9a84c','#3b82f6'] },
+    { title:'Nakit Akışı', keys:['fcf','capex','amortisman'], colors:['#22c55e','#ef4444','#f59e0b'] },
+    { title:'Çarpanlar', keys:['fdFavoek','fk','pdDd'], colors:['#c9a84c','#3b82f6','#a855f7'] },
+  ];
+  for (const g of groups) {
+    const ak = g.keys.filter(k => yd.metrics[k]); if (!ak.length) continue;
+    const box = document.createElement('div'); box.className = 'chart-box';
+    box.innerHTML = `<div class="chart-box__title">${g.title}</div><canvas></canvas>`;
+    container.appendChild(box);
+    const ds = ak.map((k,idx) => {
+      const col = g.colors[idx]||'#c9a84c';
+      const vals = yrs.map(y => yd.metrics[k][y] !== undefined ? yd.metrics[k][y] : null);
+      const bridgeIdx = firstP ? yrs.indexOf(firstP)-1 : -1;
+      return [
+        { label:ML[k]||k, data:yrs.map((y,i)=>yd.years[y]==='actual'||i===bridgeIdx?vals[i]:null), borderColor:col, backgroundColor:col+'33', borderWidth:2.5, pointRadius:4, pointBackgroundColor:col, tension:0.3, spanGaps:false },
+        { label:(ML[k]||k)+' (T)', data:yrs.map((y,i)=>yd.years[y]==='projection'||i===bridgeIdx?vals[i]:null), borderColor:col, backgroundColor:col+'15', borderWidth:2, borderDash:[6,4], pointRadius:4, pointStyle:'rectRot', pointBackgroundColor:col, tension:0.3, spanGaps:false }
+      ];
+    }).flat();
+    const ch = new Chart(box.querySelector('canvas').getContext('2d'), {
+      type:'line', data:{labels:yrs.map(String),datasets:ds},
+      options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+        plugins:{legend:{labels:{color:'#7a8499',font:{size:10},filter:it=>!it.text.includes('(T)')}},
+          annotation:firstP?{annotations:{pLine:{type:'line',xMin:String(firstP),xMax:String(firstP),borderColor:'rgba(59,130,246,0.4)',borderWidth:1,borderDash:[4,4],label:{display:true,content:'Projeksiyon',color:'#3b82f6',font:{size:9},position:'start',backgroundColor:'rgba(59,130,246,0.08)'}}}}:{}},
+        scales:{x:{ticks:{color:'#7a8499',font:{size:10}},grid:{color:'rgba(42,47,61,0.5)'}},y:{ticks:{color:'#7a8499',font:{size:10}},grid:{color:'rgba(42,47,61,0.5)'}}}}
+    });
+    ch._proj = true; S.charts.push(ch);
+  }
+  if (!container.children.length) container.innerHTML = '<div class="empty">Projeksiyon grafiği için yeterli yıllık veri bulunamadı.</div>';
+}
+
+// ===== DATA TABLE =====
+function renderTable() {
+  const allK = new Set(); S.spot.forEach(d=>Object.keys(d.m).forEach(k=>allK.add(k)));
+  const ord = ['sirket','tarih','yontem','gelir','favoek','netKar','fd','ozsermayeDeger','fdFavoek','fk','pdDd','wacc'];
+  const cols = ['dosya',...ord.filter(k=>allK.has(k))];
+  document.getElementById('dataHead').innerHTML = '<tr>' + cols.map(c=>c==='dosya'?'<th>Dosya</th>':`<th>${(S.spot.find(d=>d.m[c])||{m:{}}).m[c]?.l||c}</th>`).join('') + '</tr>';
+  document.getElementById('dataBody').innerHTML = S.spot.map(d=>'<tr>'+cols.map(c=>{
+    if(c==='dosya')return`<td>${d.dosya}</td>`;
+    const m=d.m[c]; if(!m)return'<td class="num" style="color:var(--muted)">—</td>';
+    return typeof m.v==='number'?`<td class="num">${m.raw||m.v.toLocaleString('tr-TR')}</td>`:`<td>${m.v}</td>`;
+  }).join('')+'</tr>').join('');
+}
+
+// ===== CHARTS (comparison) =====
+function renderCharts() {
+  const grid = document.getElementById('chartsGrid'); grid.innerHTML = '';
+  S.charts = S.charts.filter(c=>{if(!c._proj){c.destroy();return false;}return true;});
+  const labels = S.spot.map(d=>(d.m.sirket?d.m.sirket.v:d.dosya).substring(0,25));
+  const cfgs = [
+    {t:'Gelir & FAVÖK',ds:[{k:'gelir',l:'Gelir',c:'rgba(201,168,76,0.8)'},{k:'favoek',l:'FAVÖK',c:'rgba(224,193,110,0.6)'}]},
+    {t:'Firma Değeri & Özsermaye',ds:[{k:'fd',l:'FD',c:'rgba(201,168,76,0.8)'},{k:'ozsermayeDeger',l:'Özsermaye',c:'rgba(34,197,94,0.6)'}]},
+    {t:'Çarpanlar',ds:[{k:'fdFavoek',l:'FD/FAVÖK',c:'rgba(201,168,76,0.8)'},{k:'fk',l:'F/K',c:'rgba(59,130,246,0.6)'},{k:'pdDd',l:'PD/DD',c:'rgba(168,85,247,0.6)'}]},
+  ];
+  for (const cf of cfgs) {
+    if(!cf.ds.some(ds=>S.spot.some(d=>d.m[ds.k]))) continue;
+    const box=document.createElement('div'); box.className='chart-box';
+    box.innerHTML=`<div class="chart-box__title">${cf.t}</div><canvas></canvas>`;
+    grid.appendChild(box);
+    const ch = new Chart(box.querySelector('canvas').getContext('2d'),{
+      type:'bar',data:{labels,datasets:cf.ds.map(ds=>({label:ds.l,data:S.spot.map(d=>d.m[ds.k]?applyMul(d.m[ds.k].raw,d.m[ds.k].v):null),backgroundColor:ds.c,borderColor:ds.c.replace(/[\d.]+\)$/,'1)'),borderWidth:1}))},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#7a8499',font:{size:10}}}},scales:{x:{ticks:{color:'#7a8499'},grid:{color:'rgba(42,47,61,0.5)'}},y:{ticks:{color:'#7a8499'},grid:{color:'rgba(42,47,61,0.5)'}}}}
+    });
+    S.charts.push(ch);
+  }
+  if(!grid.children.length) grid.innerHTML='<div class="empty">Karşılaştırma grafiği için yeterli veri bulunamadı.</div>';
+}
+
+// ===== ASSUMPTIONS =====
+function renderAssumptions(si) {
+  si = si !== undefined ? si : 0;
+  const sel = document.getElementById('assumeSel');
+  const el = document.getElementById('assumeContent');
+
+  sel.innerHTML = S.assumptions.length > 1 ? S.assumptions.map((d,i) =>
+    `<button class="${i===si?'active':''}" onclick="renderAssumptions(${i})">${S.yearly[i]?.sirket || d.dosya}</button>`
+  ).join('') : '';
+
+  const data = S.assumptions[si];
+  if (!data || !Object.keys(data.items).length) {
+    el.innerHTML = '<div class="empty">Bu raporda varsayım verisi bulunamadı.<br>PDF içeriğinde WACC bileşenleri, iskonto oranı, beta, büyüme oranı vb. ifadeler aranmaktadır.</div>';
+    return;
+  }
+
+  const categories = {
+    wacc: { title: 'Ağırlıklı Ortalama Sermaye Maliyeti (WACC) Bileşenleri', items: [] },
+    dcf: { title: 'İndirgenmiş Nakit Akışı (İNA/DCF) Varsayımları', items: [] },
+    premium: { title: 'Primler ve İskontolar', items: [] },
+    multiples: { title: 'Değerleme Çarpanları', items: [] },
+    other: { title: 'Diğer Varsayımlar', items: [] },
+  };
+
+  for (const [key, item] of Object.entries(data.items)) {
+    const cat = categories[item.category] || categories.other;
+    cat.items.push({ key, ...item });
+  }
+
+  let html = '';
+  for (const [catKey, cat] of Object.entries(categories)) {
+    if (!cat.items.length) continue;
+    html += `<div class="assume-section">`;
+    html += `<div class="assume-section__title">${cat.title}</div>`;
+    html += `<div class="assume-grid">`;
+    for (const item of cat.items) {
+      html += `<div class="assume-card">`;
+      html += `<div class="assume-card__head">`;
+      html += `<span class="assume-card__name">${item.name}</span>`;
+      html += `<span class="assume-card__val">${item.unit === '%' ? '%' : ''}${typeof item.value === 'number' ? item.value.toLocaleString('tr-TR', {maximumFractionDigits:2}) : item.value}${item.unit === '%' ? '' : item.unit}</span>`;
+      html += `</div>`;
+      if (item.desc) html += `<div class="assume-card__desc">${item.desc}</div>`;
+      if (item.impact) html += `<div class="assume-card__impact"><strong>Değerlemeye Etkisi:</strong> ${item.impact}</div>`;
+      html += `</div>`;
+    }
+    html += `</div></div>`;
+  }
+
+  // Add explanatory note for assumptions not found
+  const allPossible = Object.keys(ASSUME_DEFS);
+  const found = Object.keys(data.items);
+  const missing = allPossible.filter(k => !found.includes(k));
+  if (missing.length > 0 && found.length > 0) {
+    html += `<div class="assume-section"><div class="assume-section__title">Raporda Tespit Edilemeyen Varsayımlar</div>`;
+    html += `<div style="font-size:0.8rem;color:var(--muted-light);line-height:1.8;">`;
+    html += `<p style="margin-bottom:0.5rem;">Aşağıdaki varsayımlar raporda açıkça belirtilmemiş veya farklı bir formatta sunulmuş olabilir:</p><ul style="list-style:disc;padding-left:1.2rem;">`;
+    for (const mk of missing) {
+      const def = ASSUME_DEFS[mk];
+      if (def) html += `<li><strong>${def.name}:</strong> ${def.desc.split('.')[0]}.</li>`;
+    }
+    html += `</ul></div></div>`;
+  }
+
+  el.innerHTML = html;
+}
+
+// ===== EXPERT ANALYSIS =====
+function renderExpert() {
+  const el = document.getElementById('expertContent');
+  if (!S.spot.length) { el.innerHTML = '<div class="empty">Analiz edilecek veri bulunamadı.</div>'; return; }
+
+  let h = '';
+
+  for (let ri = 0; ri < S.yearly.length; ri++) {
+    const yd = S.yearly[ri];
+    const sp = S.spot[ri];
+    const company = yd.sirket || sp.m.sirket?.v || yd.dosya;
+    const yrs = Object.keys(yd.years).map(Number).sort();
+    const actualYrs = yrs.filter(y => yd.years[y] === 'actual');
+    const projYrs = yrs.filter(y => yd.years[y] === 'projection');
+    const hasYearly = Object.keys(yd.metrics).length > 0;
+
+    h += `<h3>${company} — Finansal Uzman Değerlendirmesi</h3>`;
+
+    if (actualYrs.length) h += `<p><strong>Gerçekleşme dönemi:</strong> ${actualYrs.join(', ')}</p>`;
+    if (projYrs.length) h += `<p><strong>Projeksiyon dönemi:</strong> ${projYrs.join(', ')}</p>`;
+
+    const positives = [];
+    const negatives = [];
+    const warnings = [];
+
+    if (hasYearly) {
+      // ---- REVENUE ANALYSIS ----
+      if (yd.metrics.gelir) {
+        const gYrs = yrs.filter(y => yd.metrics.gelir[y] !== undefined);
+        if (gYrs.length >= 2) {
+          const first = yd.metrics.gelir[gYrs[0]], last = yd.metrics.gelir[gYrs[gYrs.length-1]];
+          const n = gYrs[gYrs.length-1] - gYrs[0];
+          if (first > 0 && last > 0 && n > 0) {
+            const cagr = (Math.pow(last/first, 1/n) - 1) * 100;
+            if (cagr > 20) positives.push(`Güçlü gelir büyümesi: CAGR <span class="hl">${cagr.toFixed(1)}%</span> (${gYrs[0]}–${gYrs[gYrs.length-1]}). Bu oran sektör ortalamasının üzerinde bir büyüme potansiyeline işaret ediyor.`);
+            else if (cagr > 10) positives.push(`İstikrarlı gelir büyümesi: CAGR <span class="hl">${cagr.toFixed(1)}%</span>. Sürdürülebilir bir büyüme trendi gözlemleniyor.`);
+            else if (cagr > 0) warnings.push(`Gelir büyümesi mütevazı düzeyde: CAGR <span class="hl">${cagr.toFixed(1)}%</span>. Enflasyon dikkate alındığında reel büyüme sınırlı kalabilir.`);
+            else negatives.push(`Gelir gerileme eğiliminde: CAGR <span class="hl">${cagr.toFixed(1)}%</span>. Şirketin pazar payı kaybetme veya fiyatlama gücünü yitirme riski değerlendirilmeli.`);
+          }
+
+          // YoY growth consistency check
+          if (gYrs.length >= 3) {
+            const growths = [];
+            for (let i = 1; i < gYrs.length; i++) {
+              const prev = yd.metrics.gelir[gYrs[i-1]], cur = yd.metrics.gelir[gYrs[i]];
+              if (prev > 0 && cur > 0) growths.push(((cur/prev)-1)*100);
+            }
+            if (growths.length >= 2) {
+              const maxG = Math.max(...growths), minG = Math.min(...growths);
+              if (maxG - minG > 30) warnings.push(`Gelir büyümesinde yüksek volatilite: yıllar arası büyüme oranları %${minG.toFixed(0)} ile %${maxG.toFixed(0)} arasında dalgalanıyor. Tahminlerin güvenilirliği sorgulanmalı.`);
+            }
+          }
+        }
+      }
+
+      // ---- EBITDA MARGIN ANALYSIS ----
+      if (yd.metrics.favoek && yd.metrics.gelir) {
+        const margins = [];
+        for (const y of yrs) {
+          if (yd.metrics.favoek[y] && yd.metrics.gelir[y] && yd.metrics.gelir[y] > 0) {
+            margins.push({ yr: y, m: (yd.metrics.favoek[y] / yd.metrics.gelir[y]) * 100, type: yd.years[y] });
+          }
+        }
+        if (margins.length >= 2) {
+          const actualMargins = margins.filter(x => x.type === 'actual');
+          const projMargins = margins.filter(x => x.type === 'projection');
+          const lastActual = actualMargins.length ? actualMargins[actualMargins.length-1] : null;
+          const lastProj = projMargins.length ? projMargins[projMargins.length-1] : null;
+
+          h += '<h4>FAVÖK Marjı Trendi</h4><p>';
+          h += margins.map(x => `${x.yr}${x.type==='projection'?' (T)':' (G)'}: <span class="hl">%${x.m.toFixed(1)}</span>`).join(' → ');
+          h += '</p>';
+
+          if (lastActual && lastProj) {
+            const diff = lastProj.m - lastActual.m;
+            if (diff > 5) warnings.push(`Projeksiyonda FAVÖK marjının %${lastActual.m.toFixed(1)}'den %${lastProj.m.toFixed(1)}'e yükselmesi öngörülmüş. Bu <strong>${diff.toFixed(1)} puanlık</strong> iyileşme agresif bir varsayım olabilir — operasyonel verimlilikteki iyileşmenin somut kaynakları sorgulanmalı.`);
+            if (diff < -3) negatives.push(`Projeksiyonda FAVÖK marjı %${lastActual.m.toFixed(1)}'den %${lastProj.m.toFixed(1)}'e gerilemesi bekleniyor. Bu durum artan maliyet baskısına veya fiyatlama gücü kaybına işaret edebilir.`);
+          }
+
+          const avgMargin = margins.reduce((s,x)=>s+x.m,0) / margins.length;
+          if (avgMargin > 25) positives.push(`Yüksek ortalama FAVÖK marjı: <span class="hl">%${avgMargin.toFixed(1)}</span>. Güçlü operasyonel kârlılık ve fiyatlama gücüne işaret ediyor.`);
+          else if (avgMargin < 10) negatives.push(`Düşük ortalama FAVÖK marjı: <span class="hl">%${avgMargin.toFixed(1)}</span>. Düşük kârlılık, borç servisi kapasitesini ve yatırım yapabilirliği sınırlayabilir.`);
+        }
+      }
+
+      // ---- NET PROFIT ANALYSIS ----
+      if (yd.metrics.netKar) {
+        const negYears = yrs.filter(y => yd.metrics.netKar[y] !== undefined && yd.metrics.netKar[y] < 0);
+        if (negYears.length > 0) {
+          negatives.push(`${negYears.join(', ')} yıl${negYears.length>1?'lar':''}ında net zarar gösterilmiş. Zarar dönemlerinin nedenleri (yapısal mı, dönemsel mi) ve finansman kaynakları değerlendirilmeli.`);
+        }
+        const profitYrs = yrs.filter(y => yd.metrics.netKar[y] > 0);
+        if (profitYrs.length === yrs.length && yrs.length >= 3) {
+          positives.push(`Tüm dönemlerde (${yrs[0]}–${yrs[yrs.length-1]}) net kâr pozitif. Sürdürülebilir kârlılık yapısı olumlu.`);
+        }
+      }
+
+      // ---- PROJECTION REALISM ----
+      if (actualYrs.length > 0 && projYrs.length > 0) {
+        h += '<h4>Projeksiyon Gerçekçilik Değerlendirmesi</h4>';
+
+        const lastA = actualYrs[actualYrs.length-1];
+        const keyM = ['gelir','favoek','netKar'].filter(k => yd.metrics[k]);
+
+        for (const k of keyM) {
+          const aVal = yd.metrics[k][lastA];
+          // Historical growth rate (actual period)
+          if (actualYrs.length >= 2 && yd.metrics[k][actualYrs[0]] > 0 && aVal > 0) {
+            const histN = lastA - actualYrs[0];
+            const histCAGR = histN > 0 ? (Math.pow(aVal / yd.metrics[k][actualYrs[0]], 1/histN) - 1) * 100 : 0;
+
+            // Projected growth rate
+            const lastP = projYrs[projYrs.length-1];
+            const pVal = yd.metrics[k][lastP];
+            if (pVal > 0 && aVal > 0) {
+              const projN = lastP - lastA;
+              const projCAGR = projN > 0 ? (Math.pow(pVal / aVal, 1/projN) - 1) * 100 : 0;
+
+              if (projCAGR > histCAGR * 1.5 && projCAGR > 15) {
+                warnings.push(`<strong>${ML[k]}:</strong> Projeksiyon büyüme hızı (CAGR %${projCAGR.toFixed(1)}) gerçekleşme döneminin (CAGR %${histCAGR.toFixed(1)}) önemli ölçüde üzerinde. Projeksiyonun makul gerekçeleri (yeni pazar, kapasite artışı, M&A) sorgulanmalı.`);
+              } else if (projCAGR > 0 && histCAGR > 0 && Math.abs(projCAGR - histCAGR) < 5) {
+                positives.push(`<strong>${ML[k]}:</strong> Projeksiyon büyüme hızı (%${projCAGR.toFixed(1)}) gerçekleşme dönemiyle (%${histCAGR.toFixed(1)}) tutarlı. Muhafazakâr ve gerçekçi bir yaklaşım.`);
+              }
+            }
+          }
+        }
+
+        // Terminal year check
+        if (projYrs.length >= 3 && yd.metrics.gelir) {
+          const projGrowths = [];
+          for (let i = 1; i < projYrs.length; i++) {
+            const prev = yd.metrics.gelir[projYrs[i-1]], cur = yd.metrics.gelir[projYrs[i]];
+            if (prev > 0 && cur > 0) projGrowths.push(((cur/prev)-1)*100);
+          }
+          if (projGrowths.length >= 2) {
+            const isAccel = projGrowths.every((g,i) => i === 0 || g >= projGrowths[i-1] - 1);
+            const isDecel = projGrowths.every((g,i) => i === 0 || g <= projGrowths[i-1] + 1);
+            if (isAccel && projGrowths[projGrowths.length-1] > projGrowths[0] + 5)
+              warnings.push('Projeksiyon döneminde gelir büyümesi hızlanıyor — "hockey stick" büyüme varsayımı dikkatle değerlendirilmeli.');
+            if (isDecel)
+              positives.push('Projeksiyon döneminde büyüme oranı kademeli olarak düşüyor — olgunlaşma eğrisiyle tutarlı, gerçekçi bir model.');
+          }
+        }
+      }
+
+      // ---- FCF ANALYSIS ----
+      if (yd.metrics.fcf) {
+        const fcfYrs = yrs.filter(y => yd.metrics.fcf[y] !== undefined);
+        const negFCF = fcfYrs.filter(y => yd.metrics.fcf[y] < 0);
+        if (negFCF.length > fcfYrs.length / 2) {
+          negatives.push(`Serbest nakit akışı dönemlerin çoğunluğunda negatif. Yüksek CAPEX veya işletme sermayesi ihtiyacı nakit yaratma kapasitesini sınırlıyor.`);
+        } else if (negFCF.length === 0 && fcfYrs.length >= 2) {
+          positives.push(`Tüm dönemlerde pozitif serbest nakit akışı — şirketin organik büyümeyi ve borç servisini finanse edebilecek nakit yaratma kapasitesi mevcut.`);
+        }
+      }
+    }
+
+    // ---- VALUATION MULTIPLES ----
+    if (sp.m.fdFavoek) {
+      const v = sp.m.fdFavoek.v;
+      if (v > 12) warnings.push(`FD/FAVÖK çarpanı <span class="hl">${v.toFixed(1)}x</span> — yüksek değerleme. Bu çarpan ya güçlü büyüme beklentilerini yansıtıyor ya da aşırı fiyatlama riskine işaret ediyor. Karşılaştırılabilir şirket çarpanlarıyla kıyaslanmalı.`);
+      else if (v < 5) positives.push(`FD/FAVÖK çarpanı <span class="hl">${v.toFixed(1)}x</span> — makul/düşük değerleme. Potansiyel yukarı yönlü hareket alanı mevcut.`);
+      else positives.push(`FD/FAVÖK çarpanı <span class="hl">${v.toFixed(1)}x</span> — piyasa ortalamasına yakın, makul değerleme.`);
+    }
+
+    if (sp.m.wacc) {
+      const w = sp.m.wacc.v;
+      if (w > 20) warnings.push(`Ağırlıklı Ortalama Sermaye Maliyeti (WACC) <span class="hl">%${w.toFixed(1)}</span> — yüksek risk primi uygulanmış. Bu oran değerleme sonucunu aşağı yönlü etkiler. Ülke riski, sektör riski ve şirkete özel riskin katkıları sorgulanmalı.`);
+      else if (w < 8) warnings.push(`Ağırlıklı Ortalama Sermaye Maliyeti (WACC) <span class="hl">%${w.toFixed(1)}</span> — düşük. Risk priminin yeterli olup olmadığı ve cari piyasa koşullarıyla uyumu kontrol edilmeli.`);
+    }
+
+    // ---- RENDER VERDICT ----
+    if (positives.length) {
+      h += '<div class="pos"><strong>Olumlu Yönler</strong><ul>' + positives.map(p=>`<li>${p}</li>`).join('') + '</ul></div>';
+    }
+    if (negatives.length) {
+      h += '<div class="neg"><strong>Olumsuz Yönler / Riskler</strong><ul>' + negatives.map(n=>`<li>${n}</li>`).join('') + '</ul></div>';
+    }
+    if (warnings.length) {
+      h += '<div class="warn"><strong>Dikkat Edilmesi Gerekenler</strong><ul>' + warnings.map(w=>`<li>${w}</li>`).join('') + '</ul></div>';
+    }
+
+    if (!positives.length && !negatives.length && !warnings.length) {
+      h += '<p>Otomatik yorum üretmek için yeterli sayısal veri çıkarılamamıştır. "Ham Metin" sekmesinden rapor içeriğini doğrudan inceleyebilirsiniz.</p>';
+    }
+  }
+
+  el.innerHTML = h;
+}
+
+// ===== RAW =====
+function renderRaw() {
+  const sel = document.getElementById('rawSel');
+  if (!S.reports.length) return;
+  sel.innerHTML = S.reports.map((r,i)=>`<button class="${i===0?'active':''}" onclick="showRaw(${i},this)">${r.name}</button>`).join('') + `<button onclick="showRaw(-1,this)">Tümü</button>`;
+  showRaw(0, sel.querySelector('.active'));
+}
+function showRaw(i, btn) {
+  document.querySelectorAll('#rawSel button').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  const d=document.getElementById('rawText');
+  if(i===-1) d.innerHTML=S.reports.map(r=>`<div class="fsection"><span class="ftitle">${r.name}</span>${esc(r.text)}</div>`).join('');
+  else d.innerHTML=`<div class="fsection"><span class="ftitle">${S.reports[i].name}</span>${esc(S.reports[i].text)}</div>`;
+}
+function esc(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML;}
+
+// ===== TABS =====
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  const map=['overview','proj','table','charts','assume','expert','raw'];
+  const idx=map.indexOf(id);
+  const tabs=document.querySelectorAll('.tab');
+  if(idx>=0&&tabs[idx])tabs[idx].classList.add('active');
+  const p=document.getElementById('p-'+id);
+  if(p)p.classList.add('active');
+}
+</script>
+</body>
+</html>
