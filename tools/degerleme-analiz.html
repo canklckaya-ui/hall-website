@@ -314,49 +314,81 @@ function clearAll() {
 }
 
 // ============= PDF =============
-let ocrWorker = null;
-let _ocrStatusCb = null;
+let _ocrWorker = null;
 
-async function getOCRWorker() {
-  if (!ocrWorker) {
-    if (typeof Tesseract === 'undefined') throw new Error('Tesseract.js yüklenemedi — internet bağlantınızı kontrol edin.');
-    ocrWorker = await Tesseract.createWorker('tur+eng', 1, {
-      logger: m => {
-        if (!_ocrStatusCb) return;
-        const pct = Math.round((m.progress || 0) * 100);
-        if (m.status === 'loading tesseract core') _ocrStatusCb(`OCR motoru yükleniyor... ${pct}%`);
-        else if (m.status === 'loading language traineddata') _ocrStatusCb(`Dil verileri indiriliyor... ${pct}%`);
-        else if (m.status === 'initializing tesseract' || m.status === 'initializing api') _ocrStatusCb('OCR başlatılıyor...');
-        else if (m.status === 'recognizing text') _ocrStatusCb(`OCR tanıma: ${pct}%`);
-      }
-    });
-  }
-  return ocrWorker;
+function setStatus(msg) {
+  const el = document.getElementById('ocrStatus');
+  if (el) { el.style.display = msg ? 'block' : 'none'; el.textContent = msg || ''; }
 }
 
-function cleanOCRText(txt) {
-  return txt
-    .replace(/[|]/g, 'I')
-    .replace(/(\d)\s+([.,])\s+(\d)/g, '$1$2$3')
-    .replace(/(\d)\s{2,}(\d)/g, '$1 $2')
-    .replace(/[""]/g, '"')
-    .replace(/['']/g, "'")
-    .replace(/\s{3,}/g, '  ')
-    .replace(/(\w)-\n(\w)/g, '$1$2');
+async function initOCR() {
+  if (_ocrWorker) return _ocrWorker;
+  if (typeof Tesseract === 'undefined') throw new Error('Tesseract.js yüklenemedi. Sayfayı yenileyin veya internet bağlantınızı kontrol edin.');
+  setStatus('OCR motoru hazırlanıyor — ilk seferde dil verileri indirilecek (birkaç dakika sürebilir)...');
+  _ocrWorker = await Tesseract.createWorker('tur+eng', 1, {
+    logger: function(m) {
+      var pct = Math.round((m.progress || 0) * 100);
+      if (m.status === 'loading tesseract core') setStatus('OCR motoru yükleniyor... ' + pct + '%');
+      else if (m.status === 'loading language traineddata') setStatus('Dil verileri indiriliyor... ' + pct + '%');
+      else if (m.status === 'initializing tesseract' || m.status === 'initializing api') setStatus('OCR başlatılıyor...');
+      else if (m.status === 'recognizing text') setStatus('OCR sayfa okuyor... ' + pct + '%');
+    }
+  });
+  return _ocrWorker;
+}
+
+async function destroyOCR() {
+  if (_ocrWorker) { try { await _ocrWorker.terminate(); } catch(e) {} _ocrWorker = null; }
+}
+
+function canvasToBlob(canvas) {
+  return new Promise(function(resolve, reject) {
+    canvas.toBlob(function(blob) {
+      if (blob) resolve(blob); else reject(new Error('Canvas toBlob failed'));
+    }, 'image/png');
+  });
+}
+
+async function ocrPage(worker, pdf, pageNum, totalPages) {
+  setStatus('Sayfa ' + pageNum + '/' + totalPages + ' render ediliyor...');
+  var pg = await pdf.getPage(pageNum);
+  var viewport = pg.getViewport({ scale: 2.0 });
+  var canvas = document.createElement('canvas');
+  canvas.width = viewport.width;
+  canvas.height = viewport.height;
+  var ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  await pg.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+  setStatus('Sayfa ' + pageNum + '/' + totalPages + ' OCR ile okunuyor...');
+  var blob = await canvasToBlob(canvas);
+  var url = URL.createObjectURL(blob);
+  var result;
+  try {
+    result = await worker.recognize(url);
+  } finally {
+    URL.revokeObjectURL(url);
+    canvas.width = 1; canvas.height = 1;
+    canvas = null;
+  }
+  return result.data.text;
 }
 
 async function pdfToText(file, statusCallback) {
-  const buf = await file.arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+  if (statusCallback) statusCallback('PDF açılıyor...');
+  var buf = await file.arrayBuffer();
+  var pdf = await pdfjsLib.getDocument({ data: new Uint8Array(buf) }).promise;
+  var numPages = pdf.numPages;
 
   if (statusCallback) statusCallback('Metin çıkarılıyor...');
-
-  let txt = '';
-  for (let i = 1; i <= pdf.numPages; i++) {
-    const pg = await pdf.getPage(i);
-    const c = await pg.getTextContent();
-    let lastY = null;
-    for (const it of c.items) {
+  var txt = '';
+  for (var i = 1; i <= numPages; i++) {
+    var pg = await pdf.getPage(i);
+    var content = await pg.getTextContent();
+    var lastY = null;
+    for (var j = 0; j < content.items.length; j++) {
+      var it = content.items[j];
       if (lastY !== null && Math.abs(it.transform[5] - lastY) > 5) txt += '\n';
       txt += it.str + ' ';
       lastY = it.transform[5];
@@ -364,34 +396,28 @@ async function pdfToText(file, statusCallback) {
     txt += '\n\n';
   }
 
-  const cleanedTxt = txt.replace(/\s+/g, '').trim();
-  if (cleanedTxt.length >= 50) return txt;
-
-  if (statusCallback) statusCallback('Taranmış PDF — OCR başlatılıyor...');
-  _ocrStatusCb = statusCallback;
-  txt = '';
-  const worker = await getOCRWorker();
-
-  for (let i = 1; i <= pdf.numPages; i++) {
-    if (statusCallback) statusCallback(`Sayfa ${i}/${pdf.numPages} render ediliyor...`);
-    const pg = await pdf.getPage(i);
-    const viewport = pg.getViewport({ scale: 2.5 });
-    const canvas = document.createElement('canvas');
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    await pg.render({ canvasContext: ctx, viewport }).promise;
-
-    if (statusCallback) statusCallback(`Sayfa ${i}/${pdf.numPages} OCR okunuyor...`);
-    const dataUrl = canvas.toDataURL('image/png');
-    const result = await worker.recognize(dataUrl);
-    txt += result.data.text + '\n\n';
-    canvas.width = 0; canvas.height = 0;
+  var cleaned = txt.replace(/\s+/g, '').trim();
+  if (cleaned.length >= 50) {
+    if (statusCallback) statusCallback('Metin tabanlı PDF — tamamlandı');
+    return txt;
   }
-  _ocrStatusCb = null;
-  return cleanOCRText(txt);
+
+  if (statusCallback) statusCallback('Taranmış PDF tespit edildi — OCR başlatılıyor...');
+  var worker = await initOCR();
+  txt = '';
+  for (var p = 1; p <= numPages; p++) {
+    if (statusCallback) statusCallback('OCR: sayfa ' + p + '/' + numPages);
+    var pageTxt = await ocrPage(worker, pdf, p, numPages);
+    txt += pageTxt + '\n\n';
+  }
+
+  txt = txt
+    .replace(/[|]/g, 'I')
+    .replace(/(\d)\s+([.,])\s+(\d)/g, '$1$2$3')
+    .replace(/[""]/g, '"').replace(/['']/g, "'")
+    .replace(/(\w)-\n(\w)/g, '$1$2');
+
+  return txt;
 }
 
 // ============= NUMBERS =============
@@ -708,59 +734,65 @@ function extractAssumptions(text, fileName) {
 }
 
 // ============= MAIN =============
-let _analyzing = false;
+var _analyzing = false;
 async function analyzeAll() {
   if (!S.files.length || _analyzing) return;
   _analyzing = true;
-  const analyzeBtn = document.querySelector('#actionsBar .btn--primary');
-  if (analyzeBtn) { analyzeBtn.disabled = true; analyzeBtn.textContent = 'Analiz ediliyor...'; analyzeBtn.style.opacity = '0.6'; }
-  const pb = document.getElementById('progressBar');
-  const pf = document.getElementById('progressFill');
-  pb.style.display = 'block'; pf.style.width = '0%';
-  S.reports = []; S.spot = []; S.yearly = []; S.assumptions = [];
-  S.charts.forEach(c => c.destroy()); S.charts = [];
+
+  var btn = document.querySelector('#actionsBar .btn--primary');
+  if (btn) { btn.disabled = true; btn.textContent = 'Analiz ediliyor...'; btn.style.opacity = '0.5'; btn.style.pointerEvents = 'none'; }
+
+  var pb = document.getElementById('progressBar');
+  var pf = document.getElementById('progressFill');
+  pb.style.display = 'block';
+  pf.style.width = '0%';
   document.getElementById('results').style.display = 'none';
 
-  const ocrEl = document.getElementById('ocrStatus');
-  const total = S.files.length;
+  S.reports = []; S.spot = []; S.yearly = []; S.assumptions = [];
+  S.charts.forEach(function(c) { c.destroy(); }); S.charts = [];
+
+  var total = S.files.length;
 
   for (let i = 0; i < total; i++) {
-    const el = document.getElementById('st-' + i);
-    if (el) el.className = 'file-dot processing';
+    const dot = document.getElementById('st-' + i);
+    if (dot) dot.className = 'file-dot processing';
     const fname = S.files[i].name.replace(/\.pdf$/i, '');
-    if (ocrEl) { ocrEl.style.display = 'block'; ocrEl.textContent = `[${i+1}/${total}] ${fname} işleniyor...`; }
+    const fileLabel = '[' + (i+1) + '/' + total + '] ' + fname;
+    setStatus(fileLabel + ' işleniyor...');
+
     try {
-      const txt = await pdfToText(S.files[i], (msg) => {
-        if (ocrEl) ocrEl.textContent = `[${i+1}/${total}] ${fname} — ${msg}`;
+      const txt = await pdfToText(S.files[i], function(msg) {
+        setStatus(fileLabel + ' — ' + msg);
       });
-      if (!txt || txt.replace(/\s+/g, '').length < 20) {
-        console.warn('Çok az metin çıkarıldı:', fname);
-        if (el) el.className = 'file-dot error';
-        S.reports.push({ name: S.files[i].name, text: '(Metin çıkarılamadı veya çok az metin bulundu)\n\n' + txt });
-      } else {
-        S.reports.push({ name: S.files[i].name, text: txt });
-        if (el) el.className = 'file-dot done';
-      }
+
+      const textLen = (txt || '').replace(/\s+/g, '').length;
+      S.reports.push({ name: S.files[i].name, text: txt || '(boş)' });
       S.spot.push(extractSpot(txt || '', S.files[i].name));
       S.yearly.push(extractYearly(txt || '', S.files[i].name));
       S.assumptions.push(extractAssumptions(txt || '', S.files[i].name));
+
+      if (dot) dot.className = textLen > 20 ? 'file-dot done' : 'file-dot error';
     } catch (err) {
-      console.error('Dosya hatası:', fname, err);
-      if (el) el.className = 'file-dot error';
-      S.reports.push({ name: S.files[i].name, text: 'HATA: ' + err.message });
+      console.error('Hata [' + fname + ']:', err);
+      if (dot) dot.className = 'file-dot error';
+      S.reports.push({ name: S.files[i].name, text: 'HATA: ' + (err.message || err) });
       S.spot.push({ dosya: S.files[i].name, m: {} });
-      S.yearly.push({ dosya: S.files[i].name, sirket: S.files[i].name, years: {}, metrics: {} });
+      S.yearly.push({ dosya: S.files[i].name, sirket: fname, years: {}, metrics: {} });
       S.assumptions.push({ dosya: S.files[i].name, items: {} });
     }
-    pf.style.width = ((i+1)/total*100) + '%';
+
+    pf.style.width = Math.round((i + 1) / total * 100) + '%';
   }
-  try { if (ocrWorker) { await ocrWorker.terminate(); ocrWorker = null; } } catch(e) { ocrWorker = null; }
-  if (ocrEl) ocrEl.style.display = 'none';
+
+  await destroyOCR();
+  setStatus('');
+  pb.style.display = 'none';
+
   render();
   document.getElementById('results').style.display = 'block';
-  pb.style.display = 'none';
+
   _analyzing = false;
-  if (analyzeBtn) { analyzeBtn.disabled = false; analyzeBtn.textContent = 'Analiz Et'; analyzeBtn.style.opacity = '1'; }
+  if (btn) { btn.disabled = false; btn.textContent = 'Analiz Et'; btn.style.opacity = '1'; btn.style.pointerEvents = ''; }
 }
 
 function render() { renderSummary(); renderProj(); renderTable(); renderCharts(); renderAssumptions(); renderExpert(); renderRaw(); }
