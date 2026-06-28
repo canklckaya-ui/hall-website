@@ -315,21 +315,34 @@ function clearAll() {
 
 // ============= PDF =============
 let ocrWorker = null;
-let _ocrPageInfo = { file: '', page: 0, total: 0 };
+let _ocrStatusCb = null;
 
 async function getOCRWorker() {
   if (!ocrWorker) {
+    if (typeof Tesseract === 'undefined') throw new Error('Tesseract.js yüklenemedi — internet bağlantınızı kontrol edin.');
     ocrWorker = await Tesseract.createWorker('tur+eng', 1, {
       logger: m => {
-        if (m.status === 'recognizing text' && _ocrPageInfo.total > 0) {
-          const pct = Math.round((m.progress || 0) * 100);
-          const el = document.getElementById('ocrStatus');
-          if (el) el.textContent = `${_ocrPageInfo.file} — Sayfa ${_ocrPageInfo.page}/${_ocrPageInfo.total} (${pct}%)`;
-        }
+        if (!_ocrStatusCb) return;
+        const pct = Math.round((m.progress || 0) * 100);
+        if (m.status === 'loading tesseract core') _ocrStatusCb(`OCR motoru yükleniyor... ${pct}%`);
+        else if (m.status === 'loading language traineddata') _ocrStatusCb(`Dil verileri indiriliyor... ${pct}%`);
+        else if (m.status === 'initializing tesseract' || m.status === 'initializing api') _ocrStatusCb('OCR başlatılıyor...');
+        else if (m.status === 'recognizing text') _ocrStatusCb(`OCR tanıma: ${pct}%`);
       }
     });
   }
   return ocrWorker;
+}
+
+function cleanOCRText(txt) {
+  return txt
+    .replace(/[|]/g, 'I')
+    .replace(/(\d)\s+([.,])\s+(\d)/g, '$1$2$3')
+    .replace(/(\d)\s{2,}(\d)/g, '$1 $2')
+    .replace(/[""]/g, '"')
+    .replace(/['']/g, "'")
+    .replace(/\s{3,}/g, '  ')
+    .replace(/(\w)-\n(\w)/g, '$1$2');
 }
 
 async function pdfToText(file, statusCallback) {
@@ -355,36 +368,37 @@ async function pdfToText(file, statusCallback) {
   if (cleanedTxt.length >= 50) return txt;
 
   if (statusCallback) statusCallback('Taranmış PDF — OCR başlatılıyor...');
+  _ocrStatusCb = statusCallback;
   txt = '';
   const worker = await getOCRWorker();
-  _ocrPageInfo = { file: file.name.replace(/\.pdf$/i, ''), page: 0, total: pdf.numPages };
 
   for (let i = 1; i <= pdf.numPages; i++) {
-    _ocrPageInfo.page = i;
-    if (statusCallback) statusCallback(`OCR: sayfa ${i}/${pdf.numPages}`);
+    if (statusCallback) statusCallback(`Sayfa ${i}/${pdf.numPages} render ediliyor...`);
     const pg = await pdf.getPage(i);
-    const viewport = pg.getViewport({ scale: 2.0 });
+    const viewport = pg.getViewport({ scale: 2.5 });
     const canvas = document.createElement('canvas');
     canvas.width = viewport.width;
     canvas.height = viewport.height;
     const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     await pg.render({ canvasContext: ctx, viewport }).promise;
 
-    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-    const result = await worker.recognize(blob);
+    if (statusCallback) statusCallback(`Sayfa ${i}/${pdf.numPages} OCR okunuyor...`);
+    const dataUrl = canvas.toDataURL('image/png');
+    const result = await worker.recognize(dataUrl);
     txt += result.data.text + '\n\n';
     canvas.width = 0; canvas.height = 0;
   }
-  _ocrPageInfo = { file: '', page: 0, total: 0 };
-  return txt;
-
-  return txt;
+  _ocrStatusCb = null;
+  return cleanOCRText(txt);
 }
 
 // ============= NUMBERS =============
 function parseNum(s) {
   if (!s) return null;
-  let c = s.replace(/\s/g, '').replace(/[^\d.,\-]/g, '');
+  let c = s.replace(/\s/g, '').replace(/[oOıİ]/g, m => /[oO]/.test(m) ? '0' : '1').replace(/[^\d.,\-]/g, '');
+  if (!c || c === '-') return null;
   if (c.includes(',') && c.includes('.')) c = c.lastIndexOf(',') > c.lastIndexOf('.') ? c.replace(/\./g, '').replace(',', '.') : c.replace(/,/g, '');
   else if (c.includes(',')) { const p = c.split(','); c = p.length === 2 && p[1].length <= 2 ? c.replace(',', '.') : c.replace(/,/g, ''); }
   const n = parseFloat(c); return isNaN(n) ? null : n;
@@ -468,6 +482,10 @@ function detectYears(text) {
   return m;
 }
 
+function normalizeForMatch(s) {
+  return s.toLowerCase().replace(/\s+/g, ' ').replace(/[ıi̇]/g, 'i').replace(/[şṣ]/g, 'ş').replace(/[çc̣]/g, 'ç').replace(/[ğġ]/g, 'ğ').replace(/[üụ]/g, 'ü').replace(/[öọ]/g, 'ö');
+}
+
 function extractYearly(text, fileName) {
   const lines = text.split('\n');
   const yearMap = detectYears(text);
@@ -478,19 +496,20 @@ function extractYearly(text, fileName) {
   if (sm) res.sirket = sm[1].trim().substring(0, 60);
 
   for (const line of lines) {
-    const ll = line.toLowerCase().trim();
+    const ll = normalizeForMatch(line.trim());
     if (!ll || ll.startsWith('---')) continue;
     for (const mp of MP) {
       const hit = mp.aliases.some(a => {
-        const idx = ll.indexOf(a.toLowerCase());
+        const na = normalizeForMatch(a);
+        const idx = ll.indexOf(na);
         if (idx === -1) return false;
         const before = idx > 0 ? ll[idx-1] : ' ';
-        const after = idx + a.length < ll.length ? ll[idx + a.length] : ' ';
+        const after = idx + na.length < ll.length ? ll[idx + na.length] : ' ';
         return /[\s,.:;(\-]|^/.test(before) && /[\s,.:;)\-]|$/.test(after);
       });
       if (!hit) continue;
       const nums = [];
-      const nrx = /[\-]?[\d.,]+/g; let nm;
+      const nrx = /[\-]?[\d]+[.,\d]*/g; let nm;
       while ((nm = nrx.exec(line)) !== null) {
         const v = parseNum(nm[0]);
         if (v !== null && Math.abs(v) < 1e15 && !(v >= 2015 && v <= 2035 && Number.isInteger(v))) nums.push(v);
@@ -689,13 +708,18 @@ function extractAssumptions(text, fileName) {
 }
 
 // ============= MAIN =============
+let _analyzing = false;
 async function analyzeAll() {
-  if (!S.files.length) return;
+  if (!S.files.length || _analyzing) return;
+  _analyzing = true;
+  const analyzeBtn = document.querySelector('#actionsBar .btn--primary');
+  if (analyzeBtn) { analyzeBtn.disabled = true; analyzeBtn.textContent = 'Analiz ediliyor...'; analyzeBtn.style.opacity = '0.6'; }
   const pb = document.getElementById('progressBar');
   const pf = document.getElementById('progressFill');
   pb.style.display = 'block'; pf.style.width = '0%';
   S.reports = []; S.spot = []; S.yearly = []; S.assumptions = [];
   S.charts.forEach(c => c.destroy()); S.charts = [];
+  document.getElementById('results').style.display = 'none';
 
   const ocrEl = document.getElementById('ocrStatus');
   const total = S.files.length;
@@ -704,31 +728,39 @@ async function analyzeAll() {
     const el = document.getElementById('st-' + i);
     if (el) el.className = 'file-dot processing';
     const fname = S.files[i].name.replace(/\.pdf$/i, '');
-    if (ocrEl) { ocrEl.style.display = 'block'; ocrEl.textContent = `Dosya ${i+1}/${total}: ${fname} işleniyor...`; }
+    if (ocrEl) { ocrEl.style.display = 'block'; ocrEl.textContent = `[${i+1}/${total}] ${fname} işleniyor...`; }
     try {
       const txt = await pdfToText(S.files[i], (msg) => {
-        if (ocrEl) ocrEl.textContent = `Dosya ${i+1}/${total}: ${fname} — ${msg}`;
+        if (ocrEl) ocrEl.textContent = `[${i+1}/${total}] ${fname} — ${msg}`;
       });
-      S.reports.push({ name: S.files[i].name, text: txt });
-      S.spot.push(extractSpot(txt, S.files[i].name));
-      S.yearly.push(extractYearly(txt, S.files[i].name));
-      S.assumptions.push(extractAssumptions(txt, S.files[i].name));
-      if (el) el.className = 'file-dot done';
+      if (!txt || txt.replace(/\s+/g, '').length < 20) {
+        console.warn('Çok az metin çıkarıldı:', fname);
+        if (el) el.className = 'file-dot error';
+        S.reports.push({ name: S.files[i].name, text: '(Metin çıkarılamadı veya çok az metin bulundu)\n\n' + txt });
+      } else {
+        S.reports.push({ name: S.files[i].name, text: txt });
+        if (el) el.className = 'file-dot done';
+      }
+      S.spot.push(extractSpot(txt || '', S.files[i].name));
+      S.yearly.push(extractYearly(txt || '', S.files[i].name));
+      S.assumptions.push(extractAssumptions(txt || '', S.files[i].name));
     } catch (err) {
-      console.error(err);
+      console.error('Dosya hatası:', fname, err);
       if (el) el.className = 'file-dot error';
-      S.reports.push({ name: S.files[i].name, text: 'Hata: ' + err.message });
+      S.reports.push({ name: S.files[i].name, text: 'HATA: ' + err.message });
       S.spot.push({ dosya: S.files[i].name, m: {} });
       S.yearly.push({ dosya: S.files[i].name, sirket: S.files[i].name, years: {}, metrics: {} });
       S.assumptions.push({ dosya: S.files[i].name, items: {} });
     }
     pf.style.width = ((i+1)/total*100) + '%';
   }
-  if (ocrWorker) { await ocrWorker.terminate(); ocrWorker = null; }
+  try { if (ocrWorker) { await ocrWorker.terminate(); ocrWorker = null; } } catch(e) { ocrWorker = null; }
   if (ocrEl) ocrEl.style.display = 'none';
   render();
   document.getElementById('results').style.display = 'block';
   pb.style.display = 'none';
+  _analyzing = false;
+  if (analyzeBtn) { analyzeBtn.disabled = false; analyzeBtn.textContent = 'Analiz Et'; analyzeBtn.style.opacity = '1'; }
 }
 
 function render() { renderSummary(); renderProj(); renderTable(); renderCharts(); renderAssumptions(); renderExpert(); renderRaw(); }
