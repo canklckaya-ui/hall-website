@@ -222,6 +222,21 @@
   </style>
 </head>
 <body>
+<div id="fileProtocolWarning" style="display:none;position:fixed;inset:0;z-index:9999;background:#0f1117;color:#e8e6e3;font-family:system-ui,sans-serif;padding:40px;text-align:center;">
+  <div style="max-width:500px;margin:80px auto;background:#1a1d27;border:1px solid #c9a84c;border-radius:12px;padding:40px;">
+    <div style="font-size:48px;margin-bottom:16px;">⚠️</div>
+    <h2 style="color:#c9a84c;margin-bottom:12px;">Doğrudan Açılamaz</h2>
+    <p style="margin-bottom:20px;line-height:1.6;">Bu araç tarayıcıda doğrudan açılamaz. <strong>Çift tıklayarak başlatın:</strong></p>
+    <div style="background:#151820;border-radius:8px;padding:20px;text-align:left;margin-bottom:20px;">
+      <p style="margin-bottom:8px;"><strong style="color:#c9a84c;">Windows:</strong> <code style="background:#0f1117;padding:3px 8px;border-radius:4px;">baslat.bat</code> dosyasına çift tıklayın</p>
+      <p><strong style="color:#c9a84c;">Mac:</strong> <code style="background:#0f1117;padding:3px 8px;border-radius:4px;">baslat.command</code> dosyasına çift tıklayın</p>
+    </div>
+    <p style="color:#888;font-size:0.85rem;">Otomatik olarak tarayıcınız açılacak ve araç çalışacak.</p>
+  </div>
+</div>
+<script>
+if (location.protocol === 'file:') document.getElementById('fileProtocolWarning').style.display = 'block';
+</script>
 <div class="app">
 
   <div class="header">
