@@ -168,6 +168,32 @@
     .expert .neg strong { color: var(--red); }
     .expert .warn strong { color: var(--orange); }
 
+    /* Assumptions */
+    .assume-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1rem; }
+    .assume-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.25rem; transition: border-color 0.2s;
+    }
+    .assume-card:hover { border-color: rgba(201,168,76,0.3); }
+    .assume-card__head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.6rem; }
+    .assume-card__name { font-size: 0.82rem; font-weight: 600; color: var(--text); }
+    .assume-card__val { font-size: 1.1rem; font-weight: 700; color: var(--accent); }
+    .assume-card__desc {
+      font-size: 0.78rem; color: var(--muted-light); line-height: 1.7; border-top: 1px solid var(--border);
+      padding-top: 0.6rem; margin-top: 0.4rem;
+    }
+    .assume-card__impact {
+      font-size: 0.72rem; margin-top: 0.5rem; padding: 0.5rem 0.7rem; border-radius: var(--radius-sm);
+      background: rgba(201,168,76,0.06); color: var(--muted-light); line-height: 1.6;
+    }
+    .assume-card__impact strong { color: var(--accent); }
+    .assume-section { margin-bottom: 1.5rem; }
+    .assume-section__title {
+      font-size: 0.9rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;
+      padding-bottom: 0.4rem; border-bottom: 1px solid var(--border);
+    }
+    .assume-empty { color: var(--muted); font-size: 0.85rem; }
+
     /* Raw */
     .raw {
       background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
@@ -223,6 +249,7 @@
       <button class="tab" onclick="switchTab('proj')">Projeksiyon & Gerçekleşme</button>
       <button class="tab" onclick="switchTab('table')">Veri Tablosu</button>
       <button class="tab" onclick="switchTab('charts')">Grafikler</button>
+      <button class="tab" onclick="switchTab('assume')">Varsayımlar</button>
       <button class="tab" onclick="switchTab('expert')">Uzman Yorumu</button>
       <button class="tab" onclick="switchTab('raw')">Ham Metin</button>
     </div>
@@ -240,6 +267,11 @@
 
     <div class="panel" id="p-charts"><div class="charts" id="chartsGrid"></div></div>
 
+    <div class="panel" id="p-assume">
+      <div class="selector" id="assumeSel"></div>
+      <div id="assumeContent"></div>
+    </div>
+
     <div class="panel" id="p-expert"><div class="expert" id="expertContent"></div></div>
 
     <div class="panel" id="p-raw">
@@ -252,7 +284,7 @@
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-const S = { files: [], reports: [], spot: [], yearly: [], charts: [] };
+const S = { files: [], reports: [], spot: [], yearly: [], assumptions: [], charts: [] };
 
 // ============= FILE HANDLING =============
 const uploadZone = document.getElementById('uploadZone');
@@ -274,7 +306,7 @@ function renderFiles() {
   document.getElementById('fileCount').textContent = S.files.length + ' dosya';
 }
 function clearAll() {
-  S.files = []; S.reports = []; S.spot = []; S.yearly = [];
+  S.files = []; S.reports = []; S.spot = []; S.yearly = []; S.assumptions = [];
   S.charts.forEach(c => c.destroy()); S.charts = [];
   renderFiles(); document.getElementById('results').style.display = 'none';
 }
@@ -451,13 +483,167 @@ function extractSpot(text, fileName) {
   return data;
 }
 
+// ============= ASSUMPTIONS =============
+const ASSUME_DEFS = {
+  riskFreeRate: {
+    name: 'Risksiz Faiz Oranı',
+    desc: 'Devlet tahvili getirisine dayanan, teorik olarak sıfır kredi riski taşıyan yatırımın beklenen getirisi. Genellikle uzun vadeli (10 yıllık) devlet tahvili faizi baz alınır.',
+    impact: 'Risksiz faiz oranı yükseldikçe iskonto oranı (WACC) artar ve şirketin bugünkü değeri düşer. Düşük risksiz faiz ortamında değerlemeler yukarı yönlü etkilenir.',
+    category: 'wacc'
+  },
+  marketRiskPremium: {
+    name: 'Piyasa Risk Primi (Özsermaye Risk Primi)',
+    desc: 'Yatırımcıların hisse senedi piyasasına yatırım yaparak risksiz faiz üzerinde talep ettiği ek getiri. Tarihsel piyasa getirisi ile risksiz faiz arasındaki fark olarak hesaplanır.',
+    impact: 'Yüksek piyasa risk primi, yatırımcıların daha fazla risk tazminatı beklediğini gösterir. Bu, özsermaye maliyetini ve dolayısıyla WACC\'ı artırarak değerlemeyi düşürür.',
+    category: 'wacc'
+  },
+  beta: {
+    name: 'Beta Katsayısı (β)',
+    desc: 'Şirketin hisse senedinin piyasa geneline göre sistematik riskini ölçer. Beta = 1 piyasayla aynı volatilite, >1 piyasadan daha riskli, <1 daha az riskli anlamına gelir.',
+    impact: 'Beta arttıkça özsermaye maliyeti yükselir. Kaldıraçlı (levered) beta şirketin borç yapısını da yansıtır. Karşılaştırılabilir şirketlerin betası ile uyumu kontrol edilmelidir.',
+    category: 'wacc'
+  },
+  countryRisk: {
+    name: 'Ülke Risk Primi',
+    desc: 'Gelişmekte olan ülkelerde yatırım yapmanın ek riskini (politik istikrarsızlık, kur riski, hukuki belirsizlik) yansıtan ek getiri beklentisi.',
+    impact: 'Türkiye gibi gelişmekte olan piyasalarda önemli bir bileşendir. CDS spreadi veya Damodaran ülke risk primi kullanılır. Yüksek ülke riski değerlemeyi önemli ölçüde düşürür.',
+    category: 'wacc'
+  },
+  companyRisk: {
+    name: 'Şirkete Özel Risk Primi',
+    desc: 'Şirketin kendine özgü risklerini (küçük ölçek, tek müşteriye bağımlılık, yönetim riski, sektörel riskler) yansıtan ek iskonto oranı. Genellikle %1-5 arasında uygulanır.',
+    impact: 'Subjektif bir parametredir ve değerleme sonucunu doğrudan etkiler. Yüksek şirkete özel risk primi, değerlemeyi aşağı çeker. Gerekçeleri açıkça belirtilmelidir.',
+    category: 'wacc'
+  },
+  costOfEquity: {
+    name: 'Özsermaye Maliyeti (Ke)',
+    desc: 'Hissedarların şirkete yatırım yaparak beklediği minimum getiri oranı. CAPM modeline göre: Ke = Risksiz Faiz + Beta × Piyasa Risk Primi + Ülke Riski + Şirkete Özel Risk.',
+    impact: 'Özsermaye maliyeti, WACC hesaplamasının en büyük bileşenidir. Yüksek Ke, şirket değerini düşürür.',
+    category: 'wacc'
+  },
+  costOfDebt: {
+    name: 'Borç Maliyeti (Kd)',
+    desc: 'Şirketin borçlanma için ödediği faiz oranı. Vergi kalkanı etkisiyle vergi sonrası borç maliyeti = Kd × (1 - Vergi Oranı) olarak hesaplanır.',
+    impact: 'Borç maliyeti genellikle özsermaye maliyetinden düşüktür (vergi kalkanı etkisi). Ancak aşırı borçlanma iflas riskini artırır.',
+    category: 'wacc'
+  },
+  debtEquityRatio: {
+    name: 'Borç / Özsermaye Oranı (D/E)',
+    desc: 'Şirketin sermaye yapısındaki borç ve özsermaye dengesini gösterir. WACC hesaplamasında borç ve özsermaye ağırlıklarını belirler.',
+    impact: 'Borç oranı arttıkça WACC başlangıçta düşer (borç maliyeti < özsermaye maliyeti), ancak belirli bir noktadan sonra iflas riski nedeniyle artar (optimal sermaye yapısı teorisi).',
+    category: 'wacc'
+  },
+  taxRate: {
+    name: 'Vergi Oranı',
+    desc: 'İndirgenmiş nakit akışı hesaplamasında kullanılan efektif kurumlar vergisi oranı. Borç maliyetinin vergi kalkanı etkisini belirler.',
+    impact: 'Yüksek vergi oranı, vergi sonrası nakit akışlarını düşürürken borçlanmanın vergi avantajını artırır.',
+    category: 'wacc'
+  },
+  wacc: {
+    name: 'Ağırlıklı Ortalama Sermaye Maliyeti (WACC)',
+    desc: 'Şirketin tüm sermaye kaynaklarının (borç + özsermaye) ağırlıklı ortalama maliyeti. WACC = (E/V) × Ke + (D/V) × Kd × (1-t) formülüyle hesaplanır.',
+    impact: 'WACC, gelecekteki nakit akışlarını bugüne indirgemek için kullanılan iskonto oranıdır. %1 puanlık artış, firma değerini %8-15 oranında düşürebilir.',
+    category: 'wacc'
+  },
+  terminalGrowth: {
+    name: 'Terminal (Kalıcı) Büyüme Oranı',
+    desc: 'Projeksiyon dönemi sonrasında şirketin sonsuza kadar büyüyeceği varsayılan oran. Genellikle uzun vadeli enflasyon veya GSYİH büyüme oranına yakın seçilir (%2-4).',
+    impact: 'Terminal değer, toplam firma değerinin genellikle %60-80\'ini oluşturur. Bu nedenle terminal büyüme oranındaki küçük değişiklikler değerleme sonucunu dramatik şekilde etkiler.',
+    category: 'dcf'
+  },
+  projectionPeriod: {
+    name: 'Projeksiyon (Tahmin) Dönemi',
+    desc: 'Detaylı nakit akışı tahminlerinin yapıldığı süre. Genellikle 5-10 yıl arasında seçilir. Dönem sonunda terminal değer hesaplanır.',
+    impact: 'Kısa projeksiyon dönemi terminal değerin ağırlığını artırır. Uzun dönem ise tahmin belirsizliğini artırır.',
+    category: 'dcf'
+  },
+  controlPremium: {
+    name: 'Kontrol Primi',
+    desc: 'Şirketin yönetim kontrolünü elde etmek için azınlık hisse değeri üzerine ödenen ek bedel. Genellikle %15-40 arasında uygulanır.',
+    impact: 'Kontrol primi uygulanması değerlemeyi yukarı yönlü etkiler. M&A işlemlerinde alıcının kontrol avantajını yansıtır.',
+    category: 'premium'
+  },
+  minorityDiscount: {
+    name: 'Azınlık İskontosu',
+    desc: 'Azınlık hissedarlığının yönetim üzerinde kontrol sağlamaması nedeniyle uygulanan indirim. Kontrol priminin tersi olarak düşünülebilir.',
+    impact: 'Azınlık hisse değerlemesinde uygulanır. Hisse değerini aşağı yönlü etkiler.',
+    category: 'premium'
+  },
+  liquidityDiscount: {
+    name: 'Likidite (Pazarlanabilirlik) İskontosu',
+    desc: 'Borsada işlem görmeyen veya düşük hacimli hisselerin kolayca nakde çevrilememesi nedeniyle uygulanan indirim. Genellikle %10-35 arasında.',
+    impact: 'Halka açık olmayan şirketlerde uygulanır. Likidite iskontosu, özellikle azınlık hissedarlığında değerlemeyi önemli ölçüde düşürebilir.',
+    category: 'premium'
+  },
+  dlom: {
+    name: 'Pazarlanabilirlik Eksikliği İskontosu (DLOM)',
+    desc: 'Hissenin organize bir piyasada serbestçe alınıp satılamamasından kaynaklanan değer kaybı. Restricted stock çalışmaları ve put opsiyon modelleriyle tahmin edilir.',
+    impact: 'DLOM ile likidite iskontosu birlikte veya ayrı ayrı uygulanabilir. Halka açık olmayan şirketlerde %15-30 arasında uygulanması yaygındır.',
+    category: 'premium'
+  },
+  evEbitda: {
+    name: 'FD/FAVÖK Çarpanı (EV/EBITDA)',
+    desc: 'Firma değerinin FAVÖK\'e bölünmesiyle bulunan değerleme çarpanı. Karşılaştırılabilir şirket analizi ve emsal işlem analizinde kullanılır.',
+    impact: 'Sektör ortalamasından yüksek çarpan, prim veya aşırı değerleme gösterebilir. Düşük çarpan ise iskontolu değerleme veya düşük büyüme beklentisine işaret eder.',
+    category: 'multiples'
+  },
+  pe: {
+    name: 'Fiyat / Kazanç Oranı (F/K — P/E)',
+    desc: 'Hisse fiyatının hisse başına kâra bölünmesiyle hesaplanır. Şirketin kârlılığına göre ne kadar "pahalı" olduğunu gösterir.',
+    impact: 'Yüksek F/K, yatırımcıların gelecekte güçlü büyüme beklediğini yansıtır. Çok yüksek F/K değerleri balon riski taşıyabilir.',
+    category: 'multiples'
+  },
+  pbv: {
+    name: 'Piyasa Değeri / Defter Değeri (PD/DD — P/BV)',
+    desc: 'Piyasa değerinin özkaynak defter değerine oranı. Şirketin muhasebe değerine göre piyasadaki primini veya iskontosunu gösterir.',
+    impact: 'PD/DD > 1 ise piyasa şirkete defter değerinin üzerinde değer biçiyor. Düşük PD/DD düşük kârlılık veya varlık yoğun yapıya işaret edebilir.',
+    category: 'multiples'
+  },
+};
+
+const ASSUME_PATTERNS = [
+  { key:'riskFreeRate', rx:/(?:risksiz\s*faiz|risk[\s\-]*free\s*rate|devlet\s*tahvil\s*faiz|gösterge\s*faiz)\s*(?:oranı)?\s*[:\-=]?\s*%?\s*([\d.,]+)\s*%?/i, unit:'%' },
+  { key:'marketRiskPremium', rx:/(?:piyasa\s*risk\s*prim|özsermaye\s*risk\s*prim|equity\s*risk\s*premium|market\s*risk\s*premium|ERP)\s*[:\-=]?\s*%?\s*([\d.,]+)\s*%?/i, unit:'%' },
+  { key:'beta', rx:/(?:beta|β)\s*(?:katsayısı|coefficient|levered|kaldıraçlı|unlevered|kaldıraçsız)?\s*[:\-=]?\s*([\d.,]+)/i, unit:'' },
+  { key:'countryRisk', rx:/(?:ülke\s*risk\s*prim|country\s*risk\s*premium|CRP|ülke\s*riski)\s*[:\-=]?\s*%?\s*([\d.,]+)\s*%?/i, unit:'%' },
+  { key:'companyRisk', rx:/(?:şirket(?:e)?\s*özel\s*risk|firmaya?\s*özel\s*risk|company[\s\-]*specific\s*risk|size\s*premium|ölçek\s*primi|küçük\s*şirket\s*primi)\s*[:\-=]?\s*%?\s*([\d.,]+)\s*%?/i, unit:'%' },
+  { key:'costOfEquity', rx:/(?:özsermaye\s*maliyet|cost\s*of\s*equity|Ke)\s*[:\-=]?\s*%?\s*([\d.,]+)\s*%?/i, unit:'%' },
+  { key:'costOfDebt', rx:/(?:borç\s*maliyet|borçlanma\s*maliyet|cost\s*of\s*debt|Kd)\s*[:\-=]?\s*%?\s*([\d.,]+)\s*%?/i, unit:'%' },
+  { key:'debtEquityRatio', rx:/(?:borç\s*\/?\s*özsermaye|D\s*\/\s*E|debt\s*(?:to\s*)?equity|borç\s*oranı|borç\s*ağırlığı)\s*[:\-=]?\s*%?\s*([\d.,]+)\s*%?/i, unit:'%' },
+  { key:'taxRate', rx:/(?:vergi\s*oranı|kurumlar\s*vergisi|efektif\s*vergi|tax\s*rate)\s*[:\-=]?\s*%?\s*([\d.,]+)\s*%?/i, unit:'%' },
+  { key:'wacc', rx:/(?:WACC|AOSM|ağırlıklı\s*ortalama\s*sermaye\s*maliyet|iskonto\s*oranı)\s*[:\-=]?\s*%?\s*([\d.,]+)\s*%?/i, unit:'%' },
+  { key:'terminalGrowth', rx:/(?:terminal\s*büyüme|kalıcı\s*büyüme|perpetuity\s*growth|terminal\s*growth|sonsuz\s*büyüme|uzun\s*vadeli\s*büyüme)\s*(?:oranı)?\s*[:\-=]?\s*%?\s*([\d.,]+)\s*%?/i, unit:'%' },
+  { key:'projectionPeriod', rx:/(?:projeksiyon\s*(?:dönem|süre|period)|tahmin\s*(?:dönem|süre)|forecast\s*period|explicit\s*period)\s*[:\-=]?\s*([\d]+)\s*(?:yıl|year)?/i, unit:' yıl' },
+  { key:'controlPremium', rx:/(?:kontrol\s*prim|control\s*premium)\s*[:\-=]?\s*%?\s*([\d.,]+)\s*%?/i, unit:'%' },
+  { key:'minorityDiscount', rx:/(?:azınlık\s*iskonto|minority\s*discount)\s*[:\-=]?\s*%?\s*([\d.,]+)\s*%?/i, unit:'%' },
+  { key:'liquidityDiscount', rx:/(?:likidite\s*iskonto|pazarlanabilirlik\s*iskonto|liquidity\s*discount|marketability\s*discount|DLOM)\s*[:\-=]?\s*%?\s*([\d.,]+)\s*%?/i, unit:'%' },
+  { key:'evEbitda', rx:/(?:FD\s*\/\s*FAVÖK|EV\s*\/\s*EBITDA)\s*(?:çarpanı|multiple)?\s*[:\-=]?\s*([\d.,]+)\s*x?/i, unit:'x' },
+  { key:'pe', rx:/(?:F\s*\/\s*K|P\s*\/\s*E|fiyat\s*kazanç)\s*(?:oranı|çarpanı|multiple)?\s*[:\-=]?\s*([\d.,]+)\s*x?/i, unit:'x' },
+  { key:'pbv', rx:/(?:PD\s*\/\s*DD|P\s*\/\s*BV)\s*(?:oranı|çarpanı|multiple)?\s*[:\-=]?\s*([\d.,]+)\s*x?/i, unit:'x' },
+];
+
+function extractAssumptions(text, fileName) {
+  const result = { dosya: fileName, items: {} };
+  for (const p of ASSUME_PATTERNS) {
+    const match = text.match(p.rx);
+    if (match) {
+      const v = parseNum(match[1]);
+      if (v !== null) {
+        const def = ASSUME_DEFS[p.key] || {};
+        result.items[p.key] = { value: v, unit: p.unit, name: def.name || p.key, desc: def.desc || '', impact: def.impact || '', category: def.category || 'other' };
+      }
+    }
+  }
+  return result;
+}
+
 // ============= MAIN =============
 async function analyzeAll() {
   if (!S.files.length) return;
   const pb = document.getElementById('progressBar');
   const pf = document.getElementById('progressFill');
   pb.style.display = 'block'; pf.style.width = '0%';
-  S.reports = []; S.spot = []; S.yearly = [];
+  S.reports = []; S.spot = []; S.yearly = []; S.assumptions = [];
   S.charts.forEach(c => c.destroy()); S.charts = [];
 
   for (let i = 0; i < S.files.length; i++) {
@@ -468,6 +654,7 @@ async function analyzeAll() {
       S.reports.push({ name: S.files[i].name, text: txt });
       S.spot.push(extractSpot(txt, S.files[i].name));
       S.yearly.push(extractYearly(txt, S.files[i].name));
+      S.assumptions.push(extractAssumptions(txt, S.files[i].name));
       if (el) el.className = 'file-dot done';
     } catch (err) {
       console.error(err);
@@ -475,6 +662,7 @@ async function analyzeAll() {
       S.reports.push({ name: S.files[i].name, text: 'Hata: ' + err.message });
       S.spot.push({ dosya: S.files[i].name, m: {} });
       S.yearly.push({ dosya: S.files[i].name, sirket: S.files[i].name, years: {}, metrics: {} });
+      S.assumptions.push({ dosya: S.files[i].name, items: {} });
     }
     pf.style.width = ((i+1)/S.files.length*100) + '%';
   }
@@ -483,7 +671,7 @@ async function analyzeAll() {
   pb.style.display = 'none';
 }
 
-function render() { renderSummary(); renderProj(); renderTable(); renderCharts(); renderExpert(); renderRaw(); }
+function render() { renderSummary(); renderProj(); renderTable(); renderCharts(); renderAssumptions(); renderExpert(); renderRaw(); }
 
 // ===== SUMMARY =====
 function renderSummary() {
@@ -613,6 +801,72 @@ function renderCharts() {
     S.charts.push(ch);
   }
   if(!grid.children.length) grid.innerHTML='<div class="empty">Karşılaştırma grafiği için yeterli veri bulunamadı.</div>';
+}
+
+// ===== ASSUMPTIONS =====
+function renderAssumptions(si) {
+  si = si !== undefined ? si : 0;
+  const sel = document.getElementById('assumeSel');
+  const el = document.getElementById('assumeContent');
+
+  sel.innerHTML = S.assumptions.length > 1 ? S.assumptions.map((d,i) =>
+    `<button class="${i===si?'active':''}" onclick="renderAssumptions(${i})">${S.yearly[i]?.sirket || d.dosya}</button>`
+  ).join('') : '';
+
+  const data = S.assumptions[si];
+  if (!data || !Object.keys(data.items).length) {
+    el.innerHTML = '<div class="empty">Bu raporda varsayım verisi bulunamadı.<br>PDF içeriğinde WACC bileşenleri, iskonto oranı, beta, büyüme oranı vb. ifadeler aranmaktadır.</div>';
+    return;
+  }
+
+  const categories = {
+    wacc: { title: 'Ağırlıklı Ortalama Sermaye Maliyeti (WACC) Bileşenleri', items: [] },
+    dcf: { title: 'İndirgenmiş Nakit Akışı (İNA/DCF) Varsayımları', items: [] },
+    premium: { title: 'Primler ve İskontolar', items: [] },
+    multiples: { title: 'Değerleme Çarpanları', items: [] },
+    other: { title: 'Diğer Varsayımlar', items: [] },
+  };
+
+  for (const [key, item] of Object.entries(data.items)) {
+    const cat = categories[item.category] || categories.other;
+    cat.items.push({ key, ...item });
+  }
+
+  let html = '';
+  for (const [catKey, cat] of Object.entries(categories)) {
+    if (!cat.items.length) continue;
+    html += `<div class="assume-section">`;
+    html += `<div class="assume-section__title">${cat.title}</div>`;
+    html += `<div class="assume-grid">`;
+    for (const item of cat.items) {
+      html += `<div class="assume-card">`;
+      html += `<div class="assume-card__head">`;
+      html += `<span class="assume-card__name">${item.name}</span>`;
+      html += `<span class="assume-card__val">${item.unit === '%' ? '%' : ''}${typeof item.value === 'number' ? item.value.toLocaleString('tr-TR', {maximumFractionDigits:2}) : item.value}${item.unit === '%' ? '' : item.unit}</span>`;
+      html += `</div>`;
+      if (item.desc) html += `<div class="assume-card__desc">${item.desc}</div>`;
+      if (item.impact) html += `<div class="assume-card__impact"><strong>Değerlemeye Etkisi:</strong> ${item.impact}</div>`;
+      html += `</div>`;
+    }
+    html += `</div></div>`;
+  }
+
+  // Add explanatory note for assumptions not found
+  const allPossible = Object.keys(ASSUME_DEFS);
+  const found = Object.keys(data.items);
+  const missing = allPossible.filter(k => !found.includes(k));
+  if (missing.length > 0 && found.length > 0) {
+    html += `<div class="assume-section"><div class="assume-section__title">Raporda Tespit Edilemeyen Varsayımlar</div>`;
+    html += `<div style="font-size:0.8rem;color:var(--muted-light);line-height:1.8;">`;
+    html += `<p style="margin-bottom:0.5rem;">Aşağıdaki varsayımlar raporda açıkça belirtilmemiş veya farklı bir formatta sunulmuş olabilir:</p><ul style="list-style:disc;padding-left:1.2rem;">`;
+    for (const mk of missing) {
+      const def = ASSUME_DEFS[mk];
+      if (def) html += `<li><strong>${def.name}:</strong> ${def.desc.split('.')[0]}.</li>`;
+    }
+    html += `</ul></div></div>`;
+  }
+
+  el.innerHTML = html;
 }
 
 // ===== EXPERT ANALYSIS =====
@@ -825,7 +1079,7 @@ function esc(t){const d=document.createElement('div');d.textContent=t;return d.i
 function switchTab(id) {
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  const map=['overview','proj','table','charts','expert','raw'];
+  const map=['overview','proj','table','charts','assume','expert','raw'];
   const idx=map.indexOf(id);
   const tabs=document.querySelectorAll('.tab');
   if(idx>=0&&tabs[idx])tabs[idx].classList.add('active');
