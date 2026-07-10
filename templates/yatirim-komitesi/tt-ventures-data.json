@@ -1,0 +1,214 @@
+{
+  "meta": {
+    "raporBaslik": "Yatırım Komitesi Analiz Raporu",
+    "fonUnvani": "İstanbul Portföy Yönetimi A.Ş. TT Ventures Girişim Sermayesi Yatırım Fonu",
+    "donem": "31 Aralık 2025",
+    "raporTarihi": "Temmuz 2026",
+    "nvd": "786,5 mn TL",
+    "birimPay": "—",
+    "gizlilikNotu": "GİZLİ VE ÖZELDİR — yalnızca şirket içi kullanım",
+    "sirketAdi": "İstanbul Portföy Yönetimi A.Ş."
+  },
+  "fonKunyesi": {
+    "fonUnvani": "İstanbul Portföy Yönetimi A.Ş. TT Ventures Girişim Sermayesi Yatırım Fonu",
+    "fonTuru": "Girişim Sermayesi Yatırım Fonu (GSYF)",
+    "yatirimStratejisi": "Türkiye merkezli teknoloji şirketleri — Katılım Finans İlke ve Esaslarına uygun doğrudan girişim sermayesi",
+    "kurucu": "İstanbul Portföy Yönetimi A.Ş.",
+    "yonetici": "İstanbul Portföy Yönetimi A.Ş.",
+    "saklamaKurulusu": "Türkiye İş Bankası A.Ş.",
+    "spkOnayTarihi": "21.05.2025",
+    "kurulus": "2024",
+    "vadeSonu": "10 yıl (+uzatma opsiyonu)",
+    "toplamTaahhut": "—",
+    "cagrilanSermaye": "—",
+    "payAdedi": "A Grubu (imtiyazlı) + B Grubu",
+    "yonetimUcreti": "Yatırım dönemi yıllık %2, sonrası %1,5 (USD bazlı hesaplanır)",
+    "performansUcreti": "İçtüzüğe göre — eşik üstü kâr paylaşımı (waterfall)",
+    "dagitimPolitikasi": "Çıkış gelirleri öncelikli dağıtım (waterfall); gider üst sınırı %30",
+    "bagimsizDenetci": "PKF İstanbul (PKF Aday Bağımsız Denetim A.Ş.)",
+    "degerlemeKurulusu": "INVEST-AZ Yatırım Menkul Değerler A.Ş. (Echotwin) + diğer"
+  },
+  "sureDurumu": {
+    "kilometerTaslari": [
+      { "olay": "SPK onayı / İhraç Sözleşmesi", "tarih": "21.05.2025", "durum": "tamamlandi" },
+      { "olay": "İhraç Sözleşmesi güncellemesi", "tarih": "30.12.2025", "durum": "tamamlandi" },
+      { "olay": "Bağımsız denetim raporu", "tarih": "31.03.2026", "durum": "tamamlandi" },
+      { "olay": "Yatırım dönemi sonu", "tarih": "—", "durum": "aktif" },
+      { "olay": "Fon vade sonu (10 yıl)", "tarih": "—", "durum": "bekliyor" }
+    ],
+    "kalanSureler": [
+      { "baslik": "Yatırım dönemine kalan", "sure": "—" },
+      { "baslik": "Fon vadesine kalan", "sure": "≈ 8+ yıl" },
+      { "baslik": "Uzatma dahil max süre", "sure": "—" }
+    ]
+  },
+  "komitePanosu": {
+    "kritikBulgular": [
+      { "baslik": "Likidite", "seviye": "uyari", "aciklama": "Nakit ≈ %0,6 — yönetim ücretini ≈ 3,6 ay karşılar", "ikon": "💧" },
+      { "baslik": "Getiri kalitesi", "seviye": "uyari", "aciklama": "Getirinin %69,5'i gerçekleşmemiş değer artışı", "ikon": "📄" },
+      { "baslik": "Bağımsız teyit", "seviye": "iyi", "aciklama": "Echotwin: INVEST-AZ bağımsız değerleme mevcut", "ikon": "🔍" },
+      { "baslik": "Büyüme", "seviye": "iyi", "aciklama": "NVD %93,7 artış (TL bazında yıllık)", "ikon": "📈" },
+      { "baslik": "Denetim", "seviye": "iyi", "aciklama": "PKF İstanbul bağımsız denetim raporu mevcut (31.03.2026)", "ikon": "✅" },
+      { "baslik": "Mevzuat", "seviye": "iyi", "aciklama": "%80 girişim eşiği KARŞILANIYOR (%99,1+)", "ikon": "⚖️" }
+    ],
+    "karsilastirmaTablosu": [
+      { "kalem": "Net Varlık Değeri (TL)", "oncekiDonem": "405.936.490", "guncelDonem": "786.501.597", "degisim": "+%93,7" },
+      { "kalem": "Net Varlık Değeri (USD)", "oncekiDonem": "≈ 11,9 mn $", "guncelDonem": "≈ 22,4 mn $", "degisim": "+%88" },
+      { "kalem": "Finansal Varlıklar (TL)", "oncekiDonem": "394.146.723", "guncelDonem": "784.596.012", "degisim": "+%99,1" },
+      { "kalem": "Net dönem kârı (TL)", "oncekiDonem": "87.225.548", "guncelDonem": "207.879.686", "degisim": "+%138,3" },
+      { "kalem": "Nakit ve nakit benzerleri (TL)", "oncekiDonem": "15.713.207", "guncelDonem": "4.969.708", "degisim": "−%68,4" },
+      { "kalem": "Girişim sermayesi payı", "oncekiDonem": "≈ %96+", "guncelDonem": "≈ %99,1", "degisim": "—" },
+      { "kalem": "Nakit + döviz payı", "oncekiDonem": "≈ %3,8", "guncelDonem": "≈ %0,6", "degisim": "—" }
+    ]
+  },
+  "portfoyYapisi": {
+    "portfoyDegeri": "786,5",
+    "portfoyDegeriBirimi": "mn ₺",
+    "varlikDagilimi": [
+      { "grup": "Girişim sermayesi yatırımları", "guncelDeger": 784596012, "pay": "%99,14", "renk": "#2d6a4f" },
+      { "grup": "Nakit ve nakit benzerleri", "guncelDeger": 4969708, "pay": "%0,63", "renk": "#cad2c5" },
+      { "grup": "Diğer alacaklar", "guncelDeger": 1840564, "pay": "%0,23", "renk": "#a7c4a0" }
+    ],
+    "toplamNVD": 786501597,
+    "fonPerformansi": {
+      "maliyetBedeli": "—",
+      "guncelDeger": "≈ 22,4 mn $",
+      "coklu": "—",
+      "aciklama": "Güncel NVD 786.501.597 TL'dir; 31.12.2025 TCMB USD kuru (~35,18 ₺/USD) ile ≈ 22,4 mn USD'ye karşılık gelir. Bir önceki dönem NVD 405,9 mn ₺ (≈ 11,9 mn $) idi; TL bazında %93,7 büyüme gerçekleşmiştir. Büyümenin bir kısmı (172,7 mn ₺) dönem içi ihraçtan, 207,9 mn ₺'si net dönem kârından gelir."
+    }
+  },
+  "denetimAnalizi": {
+    "kaynak": "PKF İstanbul — 31.12.2025 Bağımsız Denetim Raporu (31 Mart 2026)",
+    "bilanco": [
+      { "kalem": "Toplam Varlıklar", "guncelDonem": 791406284, "oncekiDonem": 409859930, "degisim": "+%93,1", "bold": false },
+      { "kalem": "Finansal Varlıklar (portföy)", "guncelDonem": 784596012, "oncekiDonem": 394146723, "degisim": "+%99,1", "bold": false },
+      { "kalem": "Nakit ve Nakit Benzerleri", "guncelDonem": 4969708, "oncekiDonem": 15713207, "degisim": "−%68,4", "bold": false },
+      { "kalem": "Diğer Alacaklar", "guncelDonem": 1840564, "oncekiDonem": 0, "degisim": "yeni", "bold": false },
+      { "kalem": "Toplam Yükümlülükler (−)", "guncelDonem": 4904687, "oncekiDonem": 3923440, "degisim": "+%25,0", "bold": false },
+      { "kalem": "Net Varlık Değeri (NVD)", "guncelDonem": 786501597, "oncekiDonem": 405936490, "degisim": "+%93,7", "bold": true }
+    ],
+    "gelirTablosu": {
+      "gelirler": [
+        { "kalem": "Faiz gelirleri", "tutar": 67274 },
+        { "kalem": "Gerçekleşmiş kâr/zarar (varlık satışından)", "tutar": 60822487 },
+        { "kalem": "Gerçekleşmemiş kâr/zarar (portföydeki değer artışı)", "tutar": 163241365 },
+        { "kalem": "Esas faaliyetlerden diğer gelirler", "tutar": 10598413 }
+      ],
+      "toplamGelir": 234729539,
+      "giderler": [
+        { "kalem": "Yönetim ücreti", "tutar": -16612161 },
+        { "kalem": "Saklama ücreti", "tutar": -628899 },
+        { "kalem": "Denetim ücreti", "tutar": -116232 },
+        { "kalem": "Kurul ücreti (SPK)", "tutar": -125337 },
+        { "kalem": "Komisyon ve diğer", "tutar": -1026 },
+        { "kalem": "Esas faaliyetlerden diğer giderler", "tutar": -9366198 }
+      ],
+      "netDonemKari": 207879686,
+      "aciklama": "Toplam gelir 234,7 mn ₺'den 26,8 mn ₺ gider düşülünce net kâr 207,9 mn ₺ kalır. Gelirin %69,5'i gerçekleşmemiş (henüz satılmamış varlıkların değer artışı), %25,9'u gerçekleşmiş kâr (fiili satış geliri), %4,6'sı diğer gelirlerdir."
+    },
+    "giderAnalizi": [
+      { "kalem": "Yönetim ücreti", "guncelDonem": 16612161, "oncekiDonem": 12985803 },
+      { "kalem": "Saklama ücreti", "guncelDonem": 628899, "oncekiDonem": 318770 },
+      { "kalem": "Denetim ücreti", "guncelDonem": 116232, "oncekiDonem": 115084 },
+      { "kalem": "Kurul ücreti (SPK)", "guncelDonem": 125337, "oncekiDonem": 63153 },
+      { "kalem": "Komisyon ve diğer", "guncelDonem": 1026, "oncekiDonem": 204004 },
+      { "kalem": "Esas faaliyetlerden diğer giderler", "guncelDonem": 9366198, "oncekiDonem": 4422103 }
+    ],
+    "toplamGider": 26849853,
+    "yonetimUcretiAnalizi": {
+      "nakitVadesiz": 4969708,
+      "doviz": 0,
+      "toplamLikit": 4969708,
+      "yillikYonetimUcreti": 16612161,
+      "aylikYonetimUcreti": 1384347,
+      "karsilayabilecekSure": "≈ 3,6 ay",
+      "aciklama": "Eldeki nakit (4,97 mn ₺) yıllık yönetim ücretinin (16,6 mn ₺) yaklaşık 3,6 aylık kısmını karşılar. Saklama, denetim ve diğer giderler de eklenince süre kısalır. Nakit dönem başına göre %68 azalmıştır (15,7 mn → 5,0 mn)."
+    },
+    "ozetKartlar": [
+      { "baslik": "Net değer (güçlü artış)", "aciklama": "NVD dönemde TL bazında +%93,7 artarak 786,5 mn ₺ olmuştur. Artışın 207,9 mn ₺'si net kâr, 172,7 mn ₺'si yeni ihraçtan gelir." },
+      { "baslik": "Getiri kalitesi (karma)", "aciklama": "Dönem net kârının %69,5'i gerçekleşmemiş değer artışıdır; %25,9'u fiili satıştan elde edilen gerçekleşmiş kârdır — önceki dönemden belirgin iyileşme." },
+      { "baslik": "Nakit düzeyi (düşüş)", "aciklama": "Nakit NVD'nin %0,6'sıdır; önceki döneme göre %68 azalmıştır. Yönetim ücretini ≈3,6 ay karşılar." }
+    ],
+    "degerSeviyeleri": [
+      { "seviye": "Seviye 1 — aktif piyasa fiyatı", "guncelDeger": 0, "pay": "%0,00" },
+      { "seviye": "Seviye 2 — dolaylı gözlenebilir girdi", "guncelDeger": 0, "pay": "%0,00" },
+      { "seviye": "Seviye 3 — gözlenemeyen, model/takdir (girişim yatırımları)", "guncelDeger": 784596012, "pay": "%100,00" }
+    ],
+    "degerSeviyesiNotu": "Portföyün %100'ü Seviye 3 — piyasada alınıp satılmayan, değeri model ve varsayımlara dayalı girişim yatırımlarıdır. Ancak Echotwin için INVEST-AZ tarafından bağımsız değerleme raporu mevcuttur; bu, Seviye 3 içinde dışsal teyit sağlar. Denetim (PKF İstanbul) tabloların güvenilirliğini teyit eder; gerçek satış değeri farklı çıkabilir."
+  },
+  "sirketDegerleme": {
+    "kaynak": "Fiyat Raporu + Değerleme Raporları",
+    "aciklama": "Portföy şirketlerinin değerlemeleri iki kaynaktan gelir: bağımsız üçüncü taraf (INVEST-AZ vb.) ve Kurucu (İstanbul Portföy). Echotwin AI LLC için INVEST-AZ tarafından hazırlanan bağımsız değerleme raporu mevcuttur ($35M özsermaye değeri). Diğer portföy şirketleri için detay dipnotlardan alınmalıdır.",
+    "degerlemeKaynaklari": [
+      { "kaynak": "Üçüncü taraf (bağımsız) · Echotwin vb.", "tutar": 0, "pay": "—", "renk": "#2d6a4f" },
+      { "kaynak": "Kurucu (İstanbul Portföy)", "tutar": 0, "pay": "—", "renk": "#52796f" },
+      { "kaynak": "Toplam portföy", "tutar": 784596012, "pay": "%100,0", "renk": "#1b4332" }
+    ],
+    "degerlemeKaynakNotu": "Portföy şirketlerinin kaynak bazlı dağılımı için denetim raporu dipnotları (sayfa 16-31) incelenmelidir. Mevcut veride toplam 784,6 mn ₺ finansal varlık mevcuttur.",
+    "enBuyukPozisyonlar": [
+      { "sirket": "EchoTwin AI LLC", "kayitliDeger": 0, "portfoyPayi": "—", "degerleme": "INVEST-AZ (Bağımsız)" },
+      { "sirket": "ITN", "kayitliDeger": 0, "portfoyPayi": "—", "degerleme": "Değerleme analizi mevcut" }
+    ],
+    "sirketDetaylari": [
+      {
+        "sirketAdi": "EchoTwin AI LLC",
+        "sektor": "Yapay Zeka / Dijital İkiz Teknolojileri",
+        "degerlemeYontemi": "Pazar Yaklaşımı — Karşılaştırılabilir İşlemler (30.07.2025 yatırım referans)",
+        "degerleyen": "INVEST-AZ Yatırım Menkul Değerler A.Ş.",
+        "kayitliDeger": 0,
+        "portfoyPayi": "—",
+        "degerlemeNotu": "INVEST-AZ tarafından 15 Aralık 2025 tarihli bağımsız değerleme raporu (IAZ-Rapor/2025-0057) mevcuttur. Rapor, EchoTwin AI LLC'nin adil özsermaye değerini $35.000.000 olarak belirlemiştir. SPK III.62-1 ve UDS uyumlu. Şirket Ekim 2024'te Dubai'de kurulmuş, dijital ikiz (digital twin) ve akıllı şehir teknolojileri geliştirmektedir. Kurucu Chris Carson (%71,83 pay). Stratejik ortaklık: Traffic Tech Gulf (Katar/Suudi Arabistan). Fonun şirketteki payı ve TL kayıtlı değeri için dipnotlar incelenmelidir.",
+        "raporDurumu": "mevcut"
+      },
+      {
+        "sirketAdi": "ITN",
+        "sektor": "—",
+        "degerlemeYontemi": "—",
+        "degerleyen": "—",
+        "kayitliDeger": 0,
+        "portfoyPayi": "—",
+        "degerlemeNotu": "ITN değerleme raporu analizi XLSX dosyası mevcut ancak okunamadı. Detaylar için XLSX dosyası ayrıca işlenmelidir.",
+        "raporDurumu": "bekleniyor"
+      }
+    ]
+  },
+  "mevzuatUyumu": {
+    "kaynak": "Fiyat Raporu + İhraç Sözleşmesi",
+    "esikYuzdesi": 80,
+    "bilesenler": [
+      { "bilesen": "Girişim sermayesi yatırımları (finansal varlıklar)", "tutar": 784596012, "portfoyYuzdesi": "%99,14", "bold": false },
+      { "bilesen": "Nakit ve nakit benzerleri", "tutar": 4969708, "portfoyYuzdesi": "%0,63", "bold": false },
+      { "bilesen": "Diğer alacaklar", "tutar": 1840564, "portfoyYuzdesi": "%0,23", "bold": false },
+      { "bilesen": "Doğrudan girişim sermayesi toplamı", "tutar": 784596012, "portfoyYuzdesi": "%99,14", "bold": true },
+      { "bilesen": "Girişim dışı (nakit + diğer)", "tutar": 6810272, "portfoyYuzdesi": "%0,86", "bold": false }
+    ],
+    "dogrudanGirisimOrani": "%99,1",
+    "sonuc": "KARŞILANIYOR",
+    "sonucAciklama": "Doğrudan girişim yatırımları NVD'nin %99,1'idir; %80 eşiği rahatlıkla karşılanmaktadır. İhraç Sözleşmesi'ne göre tek şirkete azami %20 yatırım sınırı mevcuttur."
+  },
+  "riskDegerlendirmesi": {
+    "kaynak": "İç Değerlendirme",
+    "riskler": [
+      {
+        "baslik": "Değerleme riski",
+        "seviye": "yuksek",
+        "aciklama": "Portföyün %100'ü Seviye 3 (model/takdir) ile değerlenmektedir. Ancak Echotwin için bağımsız INVEST-AZ raporu mevcut olması riski kısmen azaltır. Kayıtlı değer ile gerçek satış değeri arasındaki sapma riski devam etmektedir."
+      },
+      {
+        "baslik": "Likidite / nakit riski",
+        "seviye": "orta",
+        "aciklama": "Nakit (5,0 mn ₺) NVD'nin %0,6'sıdır ve yönetim ücretini yalnızca ≈3,6 ay karşılar. Önceki döneme göre nakit %68 azalmıştır. Ancak fonun boyutu (786,5 mn ₺) ve dönem içi ihraç kapasitesi (172,7 mn ₺) göz önüne alındığında risk orta seviyededir."
+      },
+      {
+        "baslik": "Kur riski",
+        "seviye": "orta",
+        "aciklama": "Yönetim ücreti USD bazlı hesaplanmakta, portföyün önemli kısmı yurtdışı şirketlerdir (Echotwin — Dubai). TL/USD dalgalanmaları hem gider hem varlık tarafını etkiler."
+      },
+      {
+        "baslik": "Yoğunlaşma riski",
+        "seviye": "orta",
+        "aciklama": "İhraç Sözleşmesi'ne göre tek şirkete azami %20 yatırım sınırı mevcuttur. Portföy detayları (şirket bazlı dağılım) dipnotlardan teyit edilmelidir."
+      }
+    ]
+  }
+}

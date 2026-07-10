@@ -122,7 +122,7 @@ async function renderToPDF(dataPath, outputPath) {
   try {
     const { chromium } = require('playwright');
     const browser = await chromium.launch({
-      executablePath: '/opt/pw-browsers/chromium/chrome'
+      executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
     });
     const page = await browser.newPage();
     await page.goto('file://' + path.resolve(htmlPath), { waitUntil: 'networkidle' });
