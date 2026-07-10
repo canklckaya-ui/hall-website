@@ -1,11 +1,347 @@
 {
   "version": 1,
   "skills": {
+    "3-statement-model": {
+      "source": "fivetaku/claude-office-skills",
+      "sourceType": "github",
+      "skillPath": "claude-in-excel/3-statement-model/SKILL.md",
+      "computedHash": "b9a961658082bf3a052a4ee91329c21d5a08582fe805d7f2fac3f15839ec8e15"
+    },
+    "Amazon Seller": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "amazon-seller/SKILL.md",
+      "computedHash": "06e06fa3175aca677db3e126343fef5d3b0fef8af1e7f1264f04d10f709dfcd0"
+    },
+    "Apple Shortcuts Integration": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "apple-shortcuts/SKILL.md",
+      "computedHash": "c1f639cf7e0b4c6b58522d4ada949af7f046440869e8645e049a843e11f4c386"
+    },
+    "Applicant Screening": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "applicant-screening/SKILL.md",
+      "computedHash": "b37ca4af2d5af79c514f1359eb9bcbe8922fd660c506c04238ea59819f43c519"
+    },
+    "Asana Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "asana-automation/SKILL.md",
+      "computedHash": "6dedfe52decdff7e8db1da7b46c065a3c5150e218a8b72f93ce02b75c9b5d133"
+    },
+    "Brand Guidelines Generator": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "brand-guidelines/SKILL.md",
+      "computedHash": "59434d7ddfe945dd7e2c3098e6e2f9e8ff9f452c76e6981c42b8ffcddce98525"
+    },
+    "Browser Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "browser-automation/SKILL.md",
+      "computedHash": "237d8356ed8211011cc1796eaf5b4200c6214a0abcd1b99ab37646fcf33bd825"
+    },
+    "Changelog Generator": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "changelog-generator/SKILL.md",
+      "computedHash": "6a9f69f98d414c29934d0500b7d14388ad7c6dded91b1112f2c782e12f7adda6"
+    },
+    "Chat with PDF": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "chat-with-pdf/SKILL.md",
+      "computedHash": "862111e8c54ce06c7afc1f0f25ad7baa819fe57553beb11963969a37264fc19a"
+    },
+    "ClickUp Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "clickup-automation/SKILL.md",
+      "computedHash": "02a3bd1a43e2122fac032157660943c0046b872bbcd1da91c64bd85edeb582d0"
+    },
+    "Content Research Writer": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "content-writer/SKILL.md",
+      "computedHash": "fe51451e295bd561532dbe547288b9f2102b67435bc14a6f719e2f77386be384"
+    },
+    "Database Sync": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "database-sync/SKILL.md",
+      "computedHash": "c9ef163f3eaba6f27523a5c603be632e1a83b8a1cb1e1910753d07376bb53585"
+    },
+    "DocuSign Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "docusign-automation/SKILL.md",
+      "computedHash": "136e1ec22b637f277b50db169771c9b0b0f599dcd8e51d3af1570dc4bed9c477"
+    },
+    "ETL Pipeline": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "etl-pipeline/SKILL.md",
+      "computedHash": "4663ddf39772a0181df90d996fddeb15c594de2c25cfb4ef7afe2f382df32973"
+    },
+    "Email Classifier": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "email-classifier/SKILL.md",
+      "computedHash": "1dbbfd4b26319a62f0437b58930975466a758574969ec1302307403293a0b33f"
+    },
+    "Expense Tracker": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "expense-tracker/SKILL.md",
+      "computedHash": "a741eb982892d3d488e3cd4dfd0a3a32fb4c95900f5d9d71e326abd1116e8cbe"
+    },
+    "Facebook/Meta Ads": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "facebook-ads/SKILL.md",
+      "computedHash": "33cff4ee52d9243cd2c7f37a7197e322a6437cb1ece01ea1163b7ef4e0eadb99"
+    },
+    "File Organizer": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "file-organizer/SKILL.md",
+      "computedHash": "c0ee059875e0bb07780229a5ba96acfdf151031a05e203168f5ee4a07fff4f8e"
+    },
+    "Home Assistant Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "home-assistant/SKILL.md",
+      "computedHash": "ffe5c7be2f56303b3a30866cee963be135361da74fd4034c68596e60cdc60996"
+    },
+    "Intercom Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "intercom-automation/SKILL.md",
+      "computedHash": "31ef438ca1d4b669a69c9f9ed0828004417b648731c776cd16666bfdb2d5e6ff"
+    },
+    "Invoice Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "invoice-automation/SKILL.md",
+      "computedHash": "37db731930d8602113ef69172e5e3b8617453608cb3b7f38f09d7ed91888e71c"
+    },
+    "Invoice Organizer": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "invoice-organizer/SKILL.md",
+      "computedHash": "3596f506dc7f35155404fb840d581c18d150eefecd13b5d0ccb25ae56410d91b"
+    },
+    "Jira Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "jira-automation/SKILL.md",
+      "computedHash": "9ff9011bebab1510b13eca4569ec081011b401cbedd25f05e0837ffbade88462"
+    },
+    "Job Description Generator": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "job-description/SKILL.md",
+      "computedHash": "2a6026e617f3d57927e65235a962b7fdd8d91939b11bedd5ab40291239f1ab44"
+    },
+    "Lead Qualification": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "lead-qualification/SKILL.md",
+      "computedHash": "4e93ebef865304647b05f952fd8d5853ce21e150d9ee20f80750345b320f952a"
+    },
+    "Lead Research Assistant": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "lead-research/SKILL.md",
+      "computedHash": "0fa74099704cb3a4aa49520cffcbd4933f7a2bf09d35f7de2e75cec861c3e4e8"
+    },
+    "Linear Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "linear-automation/SKILL.md",
+      "computedHash": "89d8a80e8de458c4fb57b87c053ffbec00014ddd610e205d196e5d53383e04f2"
+    },
+    "LinkedIn Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "linkedin-automation/SKILL.md",
+      "computedHash": "b70976d824d3b70a6bc52772d8c6f3368dfbc32f9024ac7d503598b4c0786d50"
+    },
+    "Mailchimp Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "mailchimp-automation/SKILL.md",
+      "computedHash": "77247d17ecb93a25eb25dd03c37e4428d1d17552abc0041bbb63caada21d9f43"
+    },
+    "Microsoft Teams Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "microsoft-teams/SKILL.md",
+      "computedHash": "eb1f66dfbc534bd3d730acf034cc2f817b541aa7f9c4d3301b20d871b243d869"
+    },
+    "Monday.com Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "monday-automation/SKILL.md",
+      "computedHash": "47426a06eaf16119cb9f414fa816cd903374a7a9f7ffbdadbdb7a243753d0dae"
+    },
+    "Obsidian Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "obsidian-automation/SKILL.md",
+      "computedHash": "29ceb93a77c56fa05ffade965305bd500040fed7ed4651bdfaac2fefa03429b8"
+    },
+    "Offer Letter Generator": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "offer-letter/SKILL.md",
+      "computedHash": "9f5de270998cc966c8a1b19211711a0cd652a14c8a8cb3e3ec6bbe85570c98e3"
+    },
+    "PDF Compress": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "pdf-compress/SKILL.md",
+      "computedHash": "0a06541f1f4dba171445b49620b972c4454540a33aae43425053d5bc2c376637"
+    },
+    "PDF Converter": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "pdf-converter/SKILL.md",
+      "computedHash": "3fd6fc02ca17a883d2d0a5b63e08d1f94e5245814f8d360aa9eff12b136794de"
+    },
+    "PDF Form Filler": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "pdf-form-filler/SKILL.md",
+      "computedHash": "e569fd4f364ca2f9bae54415d42204c6a8ce3718275f140cb0b32a0f1b415c75"
+    },
+    "PDF Merge & Split": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "pdf-merge-split/SKILL.md",
+      "computedHash": "cf776e12f4a96475150571c518226df8c42767cd58a98c7daba23c758531a8cf"
+    },
+    "PDF OCR Extraction": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "pdf-ocr/SKILL.md",
+      "computedHash": "89d2e796a30b97e509bd1096b0f5fb38220f48672e12bebeefc96da1524edab8"
+    },
+    "PDF Watermark": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "pdf-watermark/SKILL.md",
+      "computedHash": "844ec473e18a08c54bcdc66b49c5c3e28b4573001deaadee6148883ee4a52b60"
+    },
+    "Pipedrive Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "pipedrive-automation/SKILL.md",
+      "computedHash": "56f81fe62ede7445a5ba83aff93b321d93db4535ddc210ecdd4dc38fff9f2c03"
+    },
+    "Podcast Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "podcast-automation/SKILL.md",
+      "computedHash": "2aa0283d9e1115b44a3f66d1f75cf0290c6f5c7d2fdfb37d2a722f663c475450"
+    },
+    "QuickBooks Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "quickbooks-automation/SKILL.md",
+      "computedHash": "668b38dc8c4ae8804724c0b192eaed1064945df14b801d44f5977cd1339efba4"
+    },
+    "Security Monitoring": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "security-monitoring/SKILL.md",
+      "computedHash": "3172de39d1eab7062d1155972250cdc65e9bb58cf93ee7754139a6b5ad7b8f32"
+    },
+    "Spotify Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "spotify-automation/SKILL.md",
+      "computedHash": "adcf3c914f32e2cfa1234cd9977ca1865c3bd94acbff5540a43378f8fe608fb4"
+    },
+    "Stripe Payments": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "stripe-payments/SKILL.md",
+      "computedHash": "232fab240d1e5a1a238fcaf198b042e54b89f40dc0e747662f6648a18fcc4fce"
+    },
+    "Suspicious Email Analyzer": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "suspicious-email/SKILL.md",
+      "computedHash": "0018e4421609e2dee89ce1912dfd3bdaca79953a29b42024162a372fc9109c06"
+    },
+    "Transcription Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "transcription-automation/SKILL.md",
+      "computedHash": "0b5ea8e2d12241a7072ef76a95eba54281755bc82aa3b0ae6e1bd3754fca0c57"
+    },
+    "Trello Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "trello-automation/SKILL.md",
+      "computedHash": "1f91b8150b87c4ca17dc9263b58c9c1b93ce2c68a0f742d6bfb680eb45b64ef9"
+    },
+    "Twilio SMS Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "twilio-sms/SKILL.md",
+      "computedHash": "a17d739f51713dfad6069ed2f0af616b08e1ee495c1a7ef2fe1a6fe90142785b"
+    },
+    "Twitter/X Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "twitter-automation/SKILL.md",
+      "computedHash": "b92db91c49d12ea37934d41d6fb786cc3f9406a633e4fd4a42b7cd96277ba0bb"
+    },
+    "Weather Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "weather-automation/SKILL.md",
+      "computedHash": "88c32b19fc299941f66672253500181245ee92453a65f5ae895a3281b5b8db10"
+    },
+    "Webhook Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "webhook-automation/SKILL.md",
+      "computedHash": "1df4d6308b87de01df422a895a6e5a1fece4bd777ba14955e267579b1cfa72dc"
+    },
+    "WooCommerce Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "woocommerce-automation/SKILL.md",
+      "computedHash": "832db54e74ae306ec8547c400cc19e2e4ddb783932f042faaadbcdff7be233db"
+    },
+    "YouTube Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "youtube-automation/SKILL.md",
+      "computedHash": "56c9207546e26c117fc0093ae533ceaaf3ccf0a61070a38a75a1a6d5a00b0c4e"
+    },
+    "Zendesk Automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "zendesk-automation/SKILL.md",
+      "computedHash": "0f7bb55289553cff9a5c45847b18b07c94a251dd3f9c7e449df3bdda31b6a45a"
+    },
     "ab-testing": {
       "source": "coreyhaines31/marketingskills",
       "sourceType": "github",
       "skillPath": "skills/ab-testing/SKILL.md",
       "computedHash": "c42af0107540e71dfe9605eca51b5100d96730d0bddf51085fc0c9429e40083c"
+    },
+    "academic-search": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "academic-search/SKILL.md",
+      "computedHash": "b82b97a44b44bad390009ccdd7f0adf35390fe7b6690cb05843d752629fdaaeb"
     },
     "ad-creative": {
       "source": "coreyhaines31/marketingskills",
@@ -19,11 +355,35 @@
       "skillPath": "skills/ads/SKILL.md",
       "computedHash": "569e690ae2defe2abaea3d63dc955e0af5d99cbe2b52d2cb977fd2039aae31a2"
     },
+    "ads-copywriter": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "ads-copywriter/SKILL.md",
+      "computedHash": "143d60166187d611c5ef943ccb440252934306e0ea5e9615ce2a064e5ea4b7f8"
+    },
+    "ai-agent-builder": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "ai-agent-builder/SKILL.md",
+      "computedHash": "e9c8f2b8f951dbdbd252aba85738e8c01b8f11d1e9339e977aaf1843c3ae8292"
+    },
     "ai-seo": {
       "source": "coreyhaines31/marketingskills",
       "sourceType": "github",
       "skillPath": "skills/ai-seo/SKILL.md",
       "computedHash": "a6265a6c9451a25987a94453f638e07bef84eb3f1cd73366d703fee79151cf09"
+    },
+    "ai-slides": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "ai-slides/SKILL.md",
+      "computedHash": "222b5336240063437a277ac61a8fb00c29d1b3c09251d85d32c6cba8b58acf49"
+    },
+    "airtable-automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "airtable-automation/SKILL.md",
+      "computedHash": "7bb0ea18138c471354afad3242decf307a8c76cdfe787dd3a86519ef371cd9b4"
     },
     "analytics": {
       "source": "coreyhaines31/marketingskills",
@@ -37,11 +397,29 @@
       "skillPath": "skills/aso/SKILL.md",
       "computedHash": "f84a1fb5cb1a8a7f7171bd60ae6850f24a82fa6af94bd5f12e5b3e9227480a34"
     },
+    "audit-xls": {
+      "source": "fivetaku/claude-office-skills",
+      "sourceType": "github",
+      "skillPath": "claude-in-excel/audit-xls/SKILL.md",
+      "computedHash": "fd618bcafbfa2e42344857defe86f2d7d43cad9d85566232d2e3c4a5ffed38c0"
+    },
     "banner-design": {
       "source": "nextlevelbuilder/ui-ux-pro-max-skill",
       "sourceType": "github",
       "skillPath": ".claude/skills/banner-design/SKILL.md",
       "computedHash": "82c86217829268afd1f86e89390270e35cb3a1761854a0bbe6180929614ae022"
+    },
+    "batch-convert": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "batch-convert/SKILL.md",
+      "computedHash": "2903d16a9199291ed2b3fefba1a5d1149cfc2b8856efb13c3bb166a0de1b3ca6"
+    },
+    "batch-processor": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "batch-processor/SKILL.md",
+      "computedHash": "d31e9e676921312bd5af3f73fe709e3506797a0afdc9097c2d09acd5b4f269ce"
     },
     "brainstorming": {
       "source": "obra/superpowers",
@@ -55,6 +433,18 @@
       "skillPath": ".claude/skills/brand/SKILL.md",
       "computedHash": "3c7acb846082f9e4cc873f1cf85bd57ade027206e18c7c050797f815e3a56af7"
     },
+    "calendar-automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "calendar-automation/SKILL.md",
+      "computedHash": "1e645b6206ed465352a6766dcbf50eeffa3281d2375fa73918087c5e49973cb7"
+    },
+    "chart-designer": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "chart-designer/SKILL.md",
+      "computedHash": "6d69766f465bea4e2836a35c93e75b322cc236a5266ae1e50f2ff851c494699c"
+    },
     "churn-prevention": {
       "source": "coreyhaines31/marketingskills",
       "sourceType": "github",
@@ -66,6 +456,12 @@
       "sourceType": "github",
       "skillPath": "SKILL.md",
       "computedHash": "bc499b2417d8b641f58787165a6fc4a88d947939b3c82e6b117babb51438f0a0"
+    },
+    "clean-data-xls": {
+      "source": "fivetaku/claude-office-skills",
+      "sourceType": "github",
+      "skillPath": "claude-in-excel/clean-data-xls/SKILL.md",
+      "computedHash": "90a4e1187f790a6246cfdded0786e24471972c4f18776e05ff799b586561bf26"
     },
     "co-marketing": {
       "source": "coreyhaines31/marketingskills",
@@ -85,6 +481,18 @@
       "skillPath": "skills/community-marketing/SKILL.md",
       "computedHash": "d089fdcff8cf5a8623cfaee0fdb005f9470c8c7e3da0a4fb11bc9e10dff5b502"
     },
+    "company-research": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "company-research/SKILL.md",
+      "computedHash": "001f1cfee381c6242fbaaedda15bbeb318f65f8779ce6c73bf6986860a45628e"
+    },
+    "competitive-analysis": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "competitive-analysis/SKILL.md",
+      "computedHash": "8b9d912f9c41cfac7bc313126b10d7abe5b5d5c79dc2e219f7cc3981f7340e55"
+    },
     "competitor-profiling": {
       "source": "coreyhaines31/marketingskills",
       "sourceType": "github",
@@ -103,6 +511,18 @@
       "skillPath": "skills/content-strategy/SKILL.md",
       "computedHash": "13824c129ab70874c57d766c2d844f8dac7a0b366845f108a73527c9d094c4f6"
     },
+    "contract-review": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "contract-review/SKILL.md",
+      "computedHash": "23633a3629f7d98d3fc14bf2a6c8a1d084834b35ee1895ca27c7380a45965ce0"
+    },
+    "contract-template": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "contract-template/SKILL.md",
+      "computedHash": "d6cb790725644b0a9e672d92ec12c466e576712660667f4fd982086e26f6613d"
+    },
     "copy-editing": {
       "source": "coreyhaines31/marketingskills",
       "sourceType": "github",
@@ -115,17 +535,89 @@
       "skillPath": "skills/copywriting/SKILL.md",
       "computedHash": "c8d63b1f77be04fd54981720de65697988810bd28331097dbe0aaf3e166d638a"
     },
+    "cover-letter": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "cover-letter/SKILL.md",
+      "computedHash": "3ac95c65245e20a21e23dd47569cf7dcb687f3425bcbf25e349d8dc64b924786"
+    },
+    "crm-automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "crm-automation/SKILL.md",
+      "computedHash": "3802668496ec7e9099a90f43279700302faa78e6f767c6184be0cc05d86fde4f"
+    },
     "cro": {
       "source": "coreyhaines31/marketingskills",
       "sourceType": "github",
       "skillPath": "skills/cro/SKILL.md",
       "computedHash": "07f7a27c57e48f4b67230712f8efbc5bcc01611b35321b3c2c2e5279c9304bcd"
     },
+    "crypto-report": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "crypto-report/SKILL.md",
+      "computedHash": "2b809a4ce2d28a193b4a9105d66669454a7308cb4c441aa8f611f675384234ba"
+    },
     "customer-research": {
       "source": "coreyhaines31/marketingskills",
       "sourceType": "github",
       "skillPath": "skills/customer-research/SKILL.md",
       "computedHash": "cc68018a343c1a75ef9aed44b7037928795f654bdde0b28372176f686c1982be"
+    },
+    "customer-success": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "customer-success/SKILL.md",
+      "computedHash": "e0cd563075808b32a8250875443642cbbfd45e5ff4e1a87a4d5f64d597035966"
+    },
+    "cv-builder": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "cv-builder/SKILL.md",
+      "computedHash": "e5de7de7841c4c5d51985f55e56faa7e9df1566bf6288200c1944a56ac017786"
+    },
+    "data-analysis": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "data-analysis/SKILL.md",
+      "computedHash": "dee20c2c003730a1cf7a273805b45aa9ee42084cedfde3eaa4addd20d681abc8"
+    },
+    "data-extractor": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "data-extractor/SKILL.md",
+      "computedHash": "7cd1fe725a05f472637a080cf3cabf5ff340e3e36bfc91a76617e9045ce186b0"
+    },
+    "data-pipeline": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "data-pipeline/SKILL.md",
+      "computedHash": "4b8676f77ee0a054f4e39c356f273eabd74fe23db86177d8a48c1af78400b4f3"
+    },
+    "dcf-model": {
+      "source": "fivetaku/claude-office-skills",
+      "sourceType": "github",
+      "skillPath": "claude-in-excel/dcf-model/SKILL.md",
+      "computedHash": "5b05e1b5b933caf7745751496f660a57585f93232cc47e1c8d3437f2576d0ec8"
+    },
+    "dcf-valuation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "dcf-valuation/SKILL.md",
+      "computedHash": "3bb24d0d97a5eeacb32eade993f2cafb094780c0505d6b700c0eb1261d18e724"
+    },
+    "deck-refresh": {
+      "source": "fivetaku/claude-office-skills",
+      "sourceType": "github",
+      "skillPath": "claude-in-powerpoint/deck-refresh/SKILL.md",
+      "computedHash": "92827327787bbd1404b0282f39133ccfd7629cefd56a59f060f33e0282d4492c"
+    },
+    "deep-research": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "deep-research/SKILL.md",
+      "computedHash": "3f34118e0dd15ea4302aa708afd498a920366746755387bea25f4badc00fb443"
     },
     "design": {
       "source": "nextlevelbuilder/ui-ux-pro-max-skill",
@@ -139,11 +631,35 @@
       "skillPath": ".claude/skills/design-system/SKILL.md",
       "computedHash": "a05715299135276628f53519484e1267ec8ad111e6355a09c2da1cf66aee2cc3"
     },
+    "dev-slides": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "dev-slides/SKILL.md",
+      "computedHash": "c9b99de83d641a72eb41dfa0f6a2269a46ff09fcbbdbc6614e9765fcc2f5a36f"
+    },
+    "devops-automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "devops-automation/SKILL.md",
+      "computedHash": "5b10e70bef82a107f098973a536cc914c56020acee67592ba27cd4860178b6b4"
+    },
+    "diagram-creator": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "diagram-creator/SKILL.md",
+      "computedHash": "194c79fd66c553077dc7b957d5deec6d231eb53c48bd146ea5a25d2a18fa7f06"
+    },
     "directory-submissions": {
       "source": "coreyhaines31/marketingskills",
       "sourceType": "github",
       "skillPath": "skills/directory-submissions/SKILL.md",
       "computedHash": "b737c3b9b9387bbeefd4fb5a003c1debaf273563f170665f6b9341c6818d121b"
+    },
+    "discord-bot": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "discord-bot/SKILL.md",
+      "computedHash": "c6ab4b49cbcb54f2c1c26f0ec41aa0c66ff3b96c76616a06310413f556fb6991"
     },
     "dispatching-parallel-agents": {
       "source": "obra/superpowers",
@@ -151,11 +667,53 @@
       "skillPath": "skills/dispatching-parallel-agents/SKILL.md",
       "computedHash": "85df55d2235a7623b315dac4bc340c14a37dcdc57c869c80a829e1a53a174689"
     },
+    "doc-parser": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "doc-parser/SKILL.md",
+      "computedHash": "72e667a2dfb0cf767f8daba1dbbbf47151186a42447c0228ff7ac55c5f3b9660"
+    },
+    "doc-pipeline": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "doc-pipeline/SKILL.md",
+      "computedHash": "255fb529f5d3d93c7c11994f4381ca981b39d22f73dcccc8045c23f291760ed2"
+    },
+    "docx": {
+      "source": "appautomaton/document-SKILLs",
+      "sourceType": "github",
+      "skillPath": "docx/SKILL.md",
+      "computedHash": "9c890e956bcc8564d881b2d55af0a4dc0e508617f4dc06ebcba03575d34688cd"
+    },
+    "docx-manipulation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "docx-manipulation/SKILL.md",
+      "computedHash": "8a6022f9be78b6565e9e8356dae50c061a1090f06982fcbbae67fddc9be98a5d"
+    },
+    "email-drafter": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "email-drafter/SKILL.md",
+      "computedHash": "aeaaa9f8deef6e972b2f6fe4855ec12944ac12bfea672cb82fd97b8938cdb0d7"
+    },
+    "email-marketing": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "email-marketing/SKILL.md",
+      "computedHash": "4af2dfe3c79e1f67c8694aad7f6675f06585ad4394e9a4b694d141b3d3fab17a"
+    },
     "emails": {
       "source": "coreyhaines31/marketingskills",
       "sourceType": "github",
       "skillPath": "skills/emails/SKILL.md",
       "computedHash": "261d986c2a1f1f5f823f8c889e16db723edb8a9d0fa5ede8412f981594715c49"
+    },
+    "excel-automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "excel-automation/SKILL.md",
+      "computedHash": "0580e0c2f19d4854e42f5ea2b484727816f4756188bbc70df68be69307ef515a"
     },
     "executing-plans": {
       "source": "obra/superpowers",
@@ -163,11 +721,29 @@
       "skillPath": "skills/executing-plans/SKILL.md",
       "computedHash": "08604f93f2e38dd3575e5503c79cda5c623c78a8df0e472457ac5ef7a33f22b8"
     },
+    "expense-report": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "expense-report/SKILL.md",
+      "computedHash": "202ecc68ece0c00d41304c8b0788e5ee7e8c949ad8e8092bb5c883b09cbbcf6d"
+    },
+    "financial-modeling": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "financial-modeling/SKILL.md",
+      "computedHash": "7b9347eba3e65246cd865dc2371d7de9eae115214ea0dc597816ef7af2d15ac0"
+    },
     "finishing-a-development-branch": {
       "source": "obra/superpowers",
       "sourceType": "github",
       "skillPath": "skills/finishing-a-development-branch/SKILL.md",
       "computedHash": "aa2632ed96df59c36348bd8f8ec1ff0fb0c5cc68b60691834687bf4cedc6be3f"
+    },
+    "form-builder": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "form-builder/SKILL.md",
+      "computedHash": "76befb46400c973afc8bad99d960a03354e9604753a2544cad524d09a10e7076"
     },
     "free-tools": {
       "source": "coreyhaines31/marketingskills",
@@ -175,11 +751,77 @@
       "skillPath": "skills/free-tools/SKILL.md",
       "computedHash": "3fd8ab504b9b6d791b307baed7a87f49b455fc084ff367772c7418b8a57ce56d"
     },
+    "gmail-workflows": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "gmail-workflows/SKILL.md",
+      "computedHash": "8d9ced03628367e30d9c61c186d153d7091bdbdd729bcc083feea60ea55b732d"
+    },
+    "google-ads-manager": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "google-ads-manager/SKILL.md",
+      "computedHash": "821d4199d97cae69dc1ec42a92ed991510a7e1010766dda8c2f4eaa472fd34b5"
+    },
+    "hr-automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "hr-automation/SKILL.md",
+      "computedHash": "bf1406dedb8fcdc58fcd9cf7bad2737bf8c4e7bb89d3eef0b8a39ee514e1e3ab"
+    },
+    "html-slides": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "html-slides/SKILL.md",
+      "computedHash": "92ebe1f925720815523bafdbb17391bf33d073f6e9a99b32fe39bf7fe1750cf1"
+    },
+    "html-to-ppt": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "html-to-ppt/SKILL.md",
+      "computedHash": "050ae0e8dd621b5d70c29f3d7d71ea93256883001e5872c0f824450ab5d0bb39"
+    },
+    "ib-check-deck": {
+      "source": "fivetaku/claude-office-skills",
+      "sourceType": "github",
+      "skillPath": "claude-in-powerpoint/ib-check-deck/SKILL.md",
+      "computedHash": "e5910734aff2fc3974819aa692aa6ebc3fffa4acfe4cc4158f9c09ca8446db67"
+    },
     "image": {
       "source": "coreyhaines31/marketingskills",
       "sourceType": "github",
       "skillPath": "skills/image/SKILL.md",
       "computedHash": "e4b5511566d08a79f6f5fd26319eaaac0e18e1e238848c5a3fb2e9839e306ebe"
+    },
+    "image-generation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "image-generation/SKILL.md",
+      "computedHash": "82412c7d34a72172b34cc09e65038390ab0688701ded9d8f682e587e2b7c1646"
+    },
+    "infographic": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "infographic/SKILL.md",
+      "computedHash": "1f81bbcfe4c2c6399f75b83cd4c85c2c2d0a95a3a28bd2162b511ce68cdaf57b"
+    },
+    "investment-memo": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "investment-memo/SKILL.md",
+      "computedHash": "164ca17d48f2726f13479d2575b336810939ffbdb4d7bfabf79c46b938e98c40"
+    },
+    "invoice-generator": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "invoice-generator/SKILL.md",
+      "computedHash": "447d50f79ab763e1263ea27925a00c7fb5881f592d9ae8b73beb8c4eebd028e0"
+    },
+    "invoice-template": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "invoice-template/SKILL.md",
+      "computedHash": "8752d9c1eabcd22eaf1ed7bbd1130d23c161bbad18c10afd32f7594988460af8"
     },
     "karpathy-guidelines": {
       "source": "multica-ai/andrej-karpathy-skills",
@@ -193,11 +835,29 @@
       "skillPath": "skills/launch/SKILL.md",
       "computedHash": "a2b19accde6cace3af7cb9875072163d436eb48f12bab900dff6d312507459e0"
     },
+    "layout-analyzer": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "layout-analyzer/SKILL.md",
+      "computedHash": "5ef6e2b921b1ee66cb1b23cb5d85e7b258f611b337b879ca4e6318bdf1035210"
+    },
+    "lbo-model": {
+      "source": "fivetaku/claude-office-skills",
+      "sourceType": "github",
+      "skillPath": "claude-in-excel/lbo-model/SKILL.md",
+      "computedHash": "4ec5e2c3305af6d447e2d8d546e2a5cef7a7e4461d57a5b33662b6028044a206"
+    },
     "lead-magnets": {
       "source": "coreyhaines31/marketingskills",
       "sourceType": "github",
       "skillPath": "skills/lead-magnets/SKILL.md",
       "computedHash": "268c83c38cc49d3e437042f5d4e3c31b822deb6012b9d5d7a1370ae500058018"
+    },
+    "lead-routing": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "lead-routing/SKILL.md",
+      "computedHash": "b0cc8265005056721d84a94e9ded82bbc85057fe36dbf6f2f54fdd614e918477"
     },
     "marketing-council": {
       "source": "coreyhaines31/marketingskills",
@@ -229,11 +889,71 @@
       "skillPath": "skills/marketing-psychology/SKILL.md",
       "computedHash": "50d735eb0f5c36f379ed2200f21aeacc9b9ad85667b5d33ec6111857352a1340"
     },
+    "mcp-hub": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "mcp-hub/SKILL.md",
+      "computedHash": "39820f7bf265f97cf7d1b7a99f2fcaa979974edfc21eed1fdad795e56136e28d"
+    },
+    "md-slides": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "md-slides/SKILL.md",
+      "computedHash": "13726d169fcf7f948b0a954bdd659eb80baddffc613c38418d33a8bd721181fd"
+    },
+    "md-to-office": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "md-to-office/SKILL.md",
+      "computedHash": "50c4a34c9181281ffc8c2a11228cad90c09df38913a222ee9e42a50ef1259ff1"
+    },
+    "meeting-notes": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "meeting-notes/SKILL.md",
+      "computedHash": "537f386c7ad22ade1c3862c759473d4e465ebc081dfce026d71c6a617f0d082a"
+    },
+    "n8n-workflow": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "n8n-workflow/SKILL.md",
+      "computedHash": "3923e1fbf10b8b53ff4c82f9e56a03aa69dd874cc51b04639b064de44dfcb000"
+    },
+    "nda-generator": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "nda-generator/SKILL.md",
+      "computedHash": "21f5410d204b23cff4de8acd987c678e353667bc65705e55119ffa267ef6ce49"
+    },
+    "news-monitor": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "news-monitor/SKILL.md",
+      "computedHash": "c096a1630cfbb3e44e8cc99b98eeea1557a393e340e6e5f6ae4b47a210d9b603"
+    },
+    "notion-automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "notion-automation/SKILL.md",
+      "computedHash": "72c8c2f2dc76b257bf9e1320fa3d2b5682b0ee2653b877c11ddf5d2739b3ff4f"
+    },
     "offers": {
       "source": "coreyhaines31/marketingskills",
       "sourceType": "github",
       "skillPath": "skills/offers/SKILL.md",
       "computedHash": "4e49425fc003bfc113cee7757ffa57de0859b1903dec89973cc599c42fca8942"
+    },
+    "office-mcp": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "office-mcp/SKILL.md",
+      "computedHash": "50f55faef29ff1e3c30a7657121fbf01fcb39aad549d09745894530abe4de913"
+    },
+    "office-to-md": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "office-to-md/SKILL.md",
+      "computedHash": "3d947ab7538c8437a6928cb6c48791d0a594a118293baf01c6bc2c42e6c3ea0f"
     },
     "onboarding": {
       "source": "coreyhaines31/marketingskills",
@@ -247,11 +967,47 @@
       "skillPath": "skills/paywalls/SKILL.md",
       "computedHash": "1f0b8d15770d2e7737b818408dc5877b2eadc4cab072cdfb3529349ab059815f"
     },
+    "pdf": {
+      "source": "appautomaton/document-SKILLs",
+      "sourceType": "github",
+      "skillPath": "pdf/SKILL.md",
+      "computedHash": "0e11abe3b289b65683a3bb43fa940ad488a8ecdb5c5f34fd00aec13b1a9f0005"
+    },
+    "pdf-extraction": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "pdf-extraction/SKILL.md",
+      "computedHash": "b747452a0366e63d69743af86c0abf3da7e3f84a65f57bad2c61a1c0a44c0e14"
+    },
+    "pdf-to-docx": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "pdf-to-docx/SKILL.md",
+      "computedHash": "48ff79d9f3c0bb21b2983e37e1f2884892e189778c203de1fe75dc61b0d5f0ef"
+    },
     "popups": {
       "source": "coreyhaines31/marketingskills",
       "sourceType": "github",
       "skillPath": "skills/popups/SKILL.md",
       "computedHash": "95c5cb45dcbb05362168255d97ee68d53a5916d8de779bd08f5f70c9b0cabd36"
+    },
+    "ppt-visual": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "ppt-visual/SKILL.md",
+      "computedHash": "1fae810acf92ef6c9ea08a3821fb0c317ea1e655d6673fd8e3cd015b6d8dc0a6"
+    },
+    "pptx": {
+      "source": "appautomaton/document-SKILLs",
+      "sourceType": "github",
+      "skillPath": "pptx/SKILL.md",
+      "computedHash": "b6dff75483a3d9eeeb02ae7bad3b11449da2442e46b093b65dc3ea0a4c6c80a2"
+    },
+    "pptx-manipulation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "pptx-manipulation/SKILL.md",
+      "computedHash": "86e57f8a26c136c02ace6d0f1218c87d0568c256d5e51f58a8a1694f6d4d3fd7"
     },
     "pricing": {
       "source": "coreyhaines31/marketingskills",
@@ -270,6 +1026,12 @@
       "sourceType": "github",
       "skillPath": "skills/programmatic-seo/SKILL.md",
       "computedHash": "0bbdcbacfbe46fd78d774041ee49afd313505bb435b775dc246f4b8e6981d797"
+    },
+    "proposal-writer": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "proposal-writer/SKILL.md",
+      "computedHash": "b37311069029473356b37be76d7fd04e34948ae417b287040c712044b49238e5"
     },
     "prospecting": {
       "source": "coreyhaines31/marketingskills",
@@ -295,17 +1057,35 @@
       "skillPath": "skills/referrals/SKILL.md",
       "computedHash": "1b9228f8c74abd2ad43f72baf34e7de1727dc56fba8ed8a54588bec181c39c97"
     },
+    "report-generator": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "report-generator/SKILL.md",
+      "computedHash": "a1d8f43dcdb5fd1d2d92bfb8f53fe37065b121b16b3609b54d700f12b0f94450"
+    },
     "requesting-code-review": {
       "source": "obra/superpowers",
       "sourceType": "github",
       "skillPath": "skills/requesting-code-review/SKILL.md",
       "computedHash": "cde520e9118d7e6b74b5ab0123cff2f68d9c07bddb3f82c997753b6126600aed"
     },
+    "resume-tailor": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "resume-tailor/SKILL.md",
+      "computedHash": "ff501a55ad92e727dc707a0fb92fb7ecb5d37dcf5de13c6fcc2853da0a36e6b5"
+    },
     "revops": {
       "source": "coreyhaines31/marketingskills",
       "sourceType": "github",
       "skillPath": "skills/revops/SKILL.md",
       "computedHash": "3ed71e1704d4c27f846ac7a207e66030c91fe6fa7f8ce83bcf7f30fda3badb6d"
+    },
+    "saas-metrics": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "saas-metrics/SKILL.md",
+      "computedHash": "ef23572e0f6e8442f664e4bd318b80b444fefa0a3f07912b45b044965694cb99"
     },
     "sales-enablement": {
       "source": "coreyhaines31/marketingskills",
@@ -325,6 +1105,24 @@
       "skillPath": "skills/seo-audit/SKILL.md",
       "computedHash": "f2dc52130189068981f21e1c0bdc4471ac7cd9b08d8a1320604411aa0f950385"
     },
+    "seo-optimizer": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "seo-optimizer/SKILL.md",
+      "computedHash": "3369143281e3ca22f15fe7989b08c64ac3468197c2ea73ab6ca7f47e28940cb8"
+    },
+    "sheets-automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "sheets-automation/SKILL.md",
+      "computedHash": "59bbe5beab5cad9db924e4ab521c72ca151499c18e3aa20768587191ecd5f15e"
+    },
+    "shopify-automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "shopify-automation/SKILL.md",
+      "computedHash": "6372770b5e5ad0dcbfd8b69bfe537e2bd465822b6fe690c1ad62e5334b0eb89a"
+    },
     "signup": {
       "source": "coreyhaines31/marketingskills",
       "sourceType": "github",
@@ -337,11 +1135,29 @@
       "skillPath": "skills/site-architecture/SKILL.md",
       "computedHash": "48a38c5e2b000d134c3db282364b1014bad362fa91d4618ad8c2eb7cee991208"
     },
+    "skill-name": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "_template/SKILL.md",
+      "computedHash": "3d703ba83ffebde8f37088caf33b955ef99d0f90c7ff74e964b80b2c982f40f6"
+    },
+    "slack-workflows": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "slack-workflows/SKILL.md",
+      "computedHash": "67885cfe1466be43e1d2b5b927ebf810f76b46508dc0e56e82e41d6133073415"
+    },
     "slides": {
       "source": "nextlevelbuilder/ui-ux-pro-max-skill",
       "sourceType": "github",
       "skillPath": ".claude/skills/slides/SKILL.md",
       "computedHash": "c72a8bcd2ee98a7caab8f00a816c7e7ccfa46bba6682539db2186e71220155f1"
+    },
+    "smart-ocr": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "smart-ocr/SKILL.md",
+      "computedHash": "31c5bd5513224fcbdd7c0f44e6d34ac65f62d67d9fce6b6fa5bb562c039f5792"
     },
     "sms": {
       "source": "coreyhaines31/marketingskills",
@@ -355,11 +1171,29 @@
       "skillPath": "skills/social/SKILL.md",
       "computedHash": "906a0529e4ee506c3e2ae81d6dab72d98d2933ec3dac0f332d6b8a2e67acf6a0"
     },
+    "social-publisher": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "social-publisher/SKILL.md",
+      "computedHash": "3f4a60ea1a380adaa8f47c13f4e7fbc008171868ef730da357a8d90c16595bb1"
+    },
+    "stock-analysis": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "stock-analysis/SKILL.md",
+      "computedHash": "b3f1c83317db31623bb03c143ac70b1de9b1c41cf3f820efeac99cf040388dfe"
+    },
     "subagent-driven-development": {
       "source": "obra/superpowers",
       "sourceType": "github",
       "skillPath": "skills/subagent-driven-development/SKILL.md",
       "computedHash": "aaeb6686111c76b3c38e09156fe18af44d73b324ee055e5cb0ab63dc776f216f"
+    },
+    "subscription-management": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "subscription-management/SKILL.md",
+      "computedHash": "55365507e7c8b3839f3678835524617368b5e833e743cdb11c8ac70a423527e0"
     },
     "systematic-debugging": {
       "source": "obra/superpowers",
@@ -367,11 +1201,35 @@
       "skillPath": "skills/systematic-debugging/SKILL.md",
       "computedHash": "792a368e074981d7e3138edb439e138489b2ac247cd1e5739fab52af680fb17b"
     },
+    "table-extractor": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "table-extractor/SKILL.md",
+      "computedHash": "32b7fb8822c2c74a33cb7498b5bce1bec2c5235ff0b9097168bfdd75991e12a8"
+    },
+    "telegram-bot": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "telegram-bot/SKILL.md",
+      "computedHash": "8c9554098e2f9c4baa53980e09f3bd7374034c1948e73341b691a33ebb473db9"
+    },
+    "template-engine": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "template-engine/SKILL.md",
+      "computedHash": "20d5f4ddad9d41ee56d2d3eb5e0b4c4a15180ada9a877a434ff535c0bb3c20f2"
+    },
     "test-driven-development": {
       "source": "obra/superpowers",
       "sourceType": "github",
       "skillPath": "skills/test-driven-development/SKILL.md",
       "computedHash": "eee144aea35d783296d178017e9fe843c6d16cc8b240e106f5e50910f6caf329"
+    },
+    "tiktok-marketing": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "tiktok-marketing/SKILL.md",
+      "computedHash": "a032f7707e06200535491daab615d36ee0d1ab5aaed766bb30a215bb45eef10f"
     },
     "ui-styling": {
       "source": "nextlevelbuilder/ui-ux-pro-max-skill",
@@ -409,6 +1267,24 @@
       "skillPath": "skills/video/SKILL.md",
       "computedHash": "8286d39be8d86f9fc1c39b3c340cdebcf9a490f7606ffde566572baa163b1fe7"
     },
+    "web-search": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "web-search/SKILL.md",
+      "computedHash": "ec4bd9f90f8e7aea9ed7fa35b5a6a26bb88b5121dd22065aa6308187ed780f82"
+    },
+    "weekly-report": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "weekly-report/SKILL.md",
+      "computedHash": "090dc136f2afde6f5904221efa9456b39fe40332a267241d0701a9de4d31039e"
+    },
+    "whatsapp-automation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "whatsapp-automation/SKILL.md",
+      "computedHash": "e2d1e6e888803e24a5ac4bde08a9cac434d9911f0d3c2ba4e9cc7edf11dc5f08"
+    },
     "writing-plans": {
       "source": "obra/superpowers",
       "sourceType": "github",
@@ -420,6 +1296,18 @@
       "sourceType": "github",
       "skillPath": "skills/writing-skills/SKILL.md",
       "computedHash": "985a2c1a4242d89bd44a0060cd0e2c81ebb3683e820026fa52ccd7213804ce03"
+    },
+    "xlsx": {
+      "source": "appautomaton/document-SKILLs",
+      "sourceType": "github",
+      "skillPath": "xlsx/SKILL.md",
+      "computedHash": "f50acebdaeeff99169b0d23c19ca5e1d31dd075e38a5803ce702916305ff8851"
+    },
+    "xlsx-manipulation": {
+      "source": "claude-office-skills/skills",
+      "sourceType": "github",
+      "skillPath": "xlsx-manipulation/SKILL.md",
+      "computedHash": "8ff345006ea94c56d09b9ee2324b14be93050ce164370e2c89cacbb6ca0c539e"
     }
   }
 }
