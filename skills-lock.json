@@ -452,10 +452,10 @@
       "computedHash": "527c4740617d9eeea66e14c3f7b7ecede41d6b0520c252f413fdfd0b763a6c64"
     },
     "claude-design": {
-      "source": "jiji262/claude-design-skill",
+      "source": "chinazane/claude-design",
       "sourceType": "github",
-      "skillPath": "SKILL.md",
-      "computedHash": "bc499b2417d8b641f58787165a6fc4a88d947939b3c82e6b117babb51438f0a0"
+      "skillPath": "skill/SKILL.md",
+      "computedHash": "1aec24e421b7d26b034be9c3ba12d7bd4d72333b301fb9181e6398a589da3c06"
     },
     "clean-data-xls": {
       "source": "fivetaku/claude-office-skills",
@@ -750,6 +750,12 @@
       "sourceType": "github",
       "skillPath": "skills/free-tools/SKILL.md",
       "computedHash": "3fd8ab504b9b6d791b307baed7a87f49b455fc084ff367772c7418b8a57ce56d"
+    },
+    "frontend-slides": {
+      "source": "zarazhangrui/frontend-slides",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "5a331e7db78e7bc312eecc6f7b2aa0e89463e7c088be960992e01f609ba2f47a"
     },
     "gmail-workflows": {
       "source": "claude-office-skills/skills",
@@ -1284,6 +1290,12 @@
       "sourceType": "github",
       "skillPath": "whatsapp-automation/SKILL.md",
       "computedHash": "e2d1e6e888803e24a5ac4bde08a9cac434d9911f0d3c2ba4e9cc7edf11dc5f08"
+    },
+    "wireframe": {
+      "source": "Magdoub/claude-wireframe-skill",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "c40cf76d37df3394933610ee3aad3266d4474d8151260984c32955407731ecdc"
     },
     "writing-plans": {
       "source": "obra/superpowers",
