@@ -4,6 +4,55 @@
 
 All 200+ skills activate automatically on relevant tasks. No confirmation needed. Use matching skill when task context fits.
 
+## Automation Rules
+
+These rules apply to EVERY task automatically:
+
+### Auto-Design Pipeline
+When creating any visual output (landing page, deck, prototype, poster, dashboard):
+1. Use claude-design + ui-ux-pro-max for design quality
+2. Apply design-system tokens and ui-styling (Tailwind/shadcn)
+3. Use brand skill for identity consistency
+4. Verify with playwright-skill (screenshot + visual check)
+
+### Auto-Presentation Pipeline
+When creating any presentation or slide deck:
+1. Use frontend-slides (34 design systems) or slides skill for HTML slides
+2. For PPTX export: use pptx skill html2pptx.js pipeline
+3. For PDF export: use playwright-skill headless render
+4. Never lose visual fidelity during conversion
+
+### Auto-Prototype Pipeline
+When creating wireframes or prototypes:
+1. Use wireframe skill: generate 5 options (B&W + Clean + Polished)
+2. Use claude-design for high-fidelity version
+3. Export via playwright-skill (PDF) or pptx (PowerPoint)
+
+### Auto-Document Pipeline
+When creating office documents:
+1. Excel: xlsx + excel-automation
+2. Word: docx + docx-manipulation
+3. PDF: pdf + playwright-skill for HTML-to-PDF
+4. PowerPoint: pptx + html-to-ppt for HTML-to-PPTX
+5. Conversion: md-to-office, office-to-md, batch-convert
+
+### Auto-Copy Pipeline
+When writing marketing/sales copy:
+1. Use copywriting + copy-editing skills
+2. Apply marketing-psychology principles
+3. Use marketing-council advisors (Ogilvy, Hormozi, Godin)
+4. Verify with cro skill for conversion optimization
+
+### Auto-Export Rule
+After creating ANY HTML artifact, always offer:
+- PDF export (playwright-skill)
+- PPTX export (pptx html2pptx.js)
+- Both formats if presentation/deck
+
+---
+
+## Skill Catalog (All Auto-Active)
+
 ### Coding Quality (Karpathy Guidelines)
 - State assumptions explicitly. If uncertain, ask.
 - If multiple interpretations exist, present them.
