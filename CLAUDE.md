@@ -2,40 +2,108 @@
 
 ## Auto-Active Skills
 
-All skills below activate automatically on every task. No confirmation needed.
+All 200+ skills activate automatically on relevant tasks. No confirmation needed. Use matching skill when task context fits.
 
 ### Coding Quality (Karpathy Guidelines)
 - State assumptions explicitly. If uncertain, ask.
 - If multiple interpretations exist, present them.
-- If simpler approach exists, say so. Push back when warranted.
-- No features beyond what was asked. No abstractions for single-use code.
-- No speculative "flexibility" or error handling for impossible scenarios.
-- If 200 lines could be 50, rewrite it.
-- Don't "improve" adjacent code. Match existing style.
+- Simplicity first. No features beyond what was asked.
 - Every changed line traces directly to user's request.
 - Transform tasks into verifiable goals with verify steps.
 
 ### Development Workflow (Superpowers)
-- **Plan first**: Use writing-plans skill before complex tasks. Brief plan with verify steps.
-- **Execute plans**: Follow executing-plans skill. Step-by-step, verify each.
-- **TDD**: Write failing test first, then make it pass. Use test-driven-development skill.
-- **Systematic debugging**: Root cause tracing, no guessing. Use systematic-debugging skill.
-- **Verification before completion**: Always verify changes work before reporting done.
-- **Git worktrees**: Use for parallel isolated work when needed.
-- **Subagent-driven development**: Dispatch parallel agents for independent tasks.
-- **Parallel agents**: Fan out work when tasks are independent.
-- **Brainstorming**: Use visual companion for design discussions.
-- **Code review**: Auto-request review on finishing branches. Apply receiving-code-review skill on feedback.
-- **Branch finishing**: Clean up, verify, and prepare before merge.
+- **Plan first**: writing-plans before complex tasks.
+- **Execute**: executing-plans step-by-step, verify each.
+- **TDD**: test-driven-development, failing test first.
+- **Debug**: systematic-debugging, root cause tracing.
+- **Verify**: verification-before-completion always.
+- **Parallel**: dispatching-parallel-agents for independent work.
+- **Subagents**: subagent-driven-development when needed.
+- **Git**: using-git-worktrees for isolated parallel work.
+- **Review**: requesting-code-review + receiving-code-review on branches.
+- **Finish**: finishing-a-development-branch before merge.
+- **Brainstorm**: brainstorming with visual companion.
 
-### UI/UX (Pro Max)
-- Apply ui-ux-pro-max skill on all frontend work. Follow UX guidelines, color theory, typography rules.
-- Use ui-styling skill for Tailwind, shadcn, responsive design.
-- Use design-system skill for token architecture, component specs.
-- Use design skill for logos, icons, CIP, social media assets.
-- Use banner-design skill for banner/header creation.
-- Use brand skill for brand identity consistency.
-- Use slides skill for presentation creation.
+### UI/UX Design
+- **Core**: ui-ux-pro-max on all frontend work.
+- **Styling**: ui-styling for Tailwind, shadcn, responsive.
+- **Design system**: design-system for tokens, components.
+- **Design**: claude-design for landing pages, decks, prototypes, animations, posters.
+- **Logos/Icons**: design skill for logos, icons, CIP.
+- **Banners**: banner-design for headers/banners.
+- **Brand**: brand for identity consistency.
+- **Infographic**: infographic for data visualization.
+- **Charts**: chart-designer for chart creation.
+- **Diagrams**: diagram-creator for flowcharts, architecture.
+- **Image**: image + image-generation for visuals.
+
+### Presentations & Slides
+- **PPTX**: pptx + pptx-manipulation for PowerPoint files.
+- **HTML slides**: html-slides + html-to-ppt + dev-slides + ai-slides.
+- **Markdown slides**: md-slides for markdown-based presentations.
+- **Slide design**: slides skill for layout, copy, strategy.
+- **PPT visual**: ppt-visual for visual enhancements.
+- **Deck refresh**: deck-refresh for updating existing decks.
+- **IB decks**: ib-check-deck for investment banking decks.
+
+### Office Documents
+- **Excel/XLSX**: xlsx + xlsx-manipulation + excel-automation + sheets-automation.
+- **Word/DOCX**: docx + docx-manipulation for Word docs.
+- **PDF**: pdf + pdf-compress + pdf-converter + pdf-extraction + pdf-form-filler + pdf-merge-split + pdf-ocr-extraction + pdf-to-docx + pdf-watermark + chat-with-pdf.
+- **Conversion**: md-to-office + office-to-md + batch-convert.
+- **Templates**: template-engine + contract-template + invoice-template.
+- **OCR**: smart-ocr + table-extractor + layout-analyzer + doc-parser.
+
+### Finance & Modeling
+- **DCF**: dcf-model + dcf-valuation.
+- **LBO**: lbo-model.
+- **3-Statement**: 3-statement-model.
+- **Financial**: financial-modeling + stock-analysis + saas-metrics + crypto-report.
+- **Investment**: investment-memo.
+- **Audit**: audit-xls + clean-data-xls.
+- **Expense**: expense-report + expense-tracker.
+- **Invoice**: invoice-automation + invoice-generator + invoice-organizer.
+
+### Marketing & Copywriting
+- **Copy**: copywriting + copy-editing + ads-copywriter + content-research-writer.
+- **Strategy**: content-strategy + marketing-plan + marketing-ideas + marketing-loops + marketing-psychology.
+- **SEO**: ai-seo + seo-audit + seo-optimizer + programmatic-seo + schema + site-architecture.
+- **Ads**: ads + ad-creative + facebook-meta-ads + google-ads-manager.
+- **Email**: emails + email-marketing + email-drafter + email-classifier + cold-email.
+- **Social**: social + social-publisher + tiktok-marketing + linkedin-automation + twitter-x-automation.
+- **CRO**: cro + ab-testing + popups + paywalls + signup + onboarding.
+- **Research**: customer-research + competitor-profiling + competitors + competitive-analysis + company-research.
+- **Offers**: offers + pricing + lead-magnets + referrals.
+- **Launch**: launch + directory-submissions + public-relations.
+- **Council**: marketing-council (Ogilvy, Hormozi, Godin advisors).
+- **Product**: product-marketing + aso.
+- **SMS**: sms + twilio-sms-automation.
+- **Video**: video + podcast-automation + youtube-automation.
+- **Co-marketing**: co-marketing + community-marketing.
+
+### Sales & Revenue
+- **Sales**: sales-enablement + prospecting + lead-qualification + lead-research-assistant + lead-routing.
+- **RevOps**: revops + churn-prevention + subscription-management.
+- **CRM**: crm-automation + pipedrive-automation.
+
+### HR & Business
+- **HR**: hr-automation + applicant-screening + job-description-generator + offer-letter-generator.
+- **CV**: cv-builder + resume-tailor + cover-letter.
+- **Legal**: contract-review + contract-template + nda-generator.
+- **Reports**: report-generator + weekly-report + meeting-notes + proposal-writer.
+
+### Data & Automation
+- **Data**: data-analysis + data-extractor + data-pipeline + etl-pipeline + database-sync + batch-processor.
+- **Workflow**: n8n-workflow + webhook-automation.
+- **Tools**: form-builder + file-organizer + news-monitor + web-search + deep-research + academic-search.
+
+### Platform Integrations
+- **Project mgmt**: jira-automation + asana-automation + clickup-automation + linear-automation + trello-automation + monday.com-automation.
+- **Communication**: slack-workflows + microsoft-teams-automation + discord-bot + telegram-bot + whatsapp-automation.
+- **Productivity**: notion-automation + obsidian-automation + gmail-workflows + calendar-automation.
+- **Commerce**: shopify-automation + woocommerce-automation + amazon-seller + stripe-payments + quickbooks-automation.
+- **Mail**: mailchimp-automation + intercom-automation + docusign-automation.
+- **Other**: home-assistant-automation + apple-shortcuts-integration + spotify-automation + weather-automation + browser-automation + security-monitoring + devops-automation + ai-agent-builder + mcp-hub.
 
 ### Skill Writing
-- When creating new skills, follow writing-skills best practices and anthropic guidelines.
+- writing-skills + using-superpowers for creating new skills.
