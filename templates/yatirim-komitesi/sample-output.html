@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yatırım Komitesi Analiz Raporu</title>
+<style>
+  @page { size: A4; margin: 20mm 18mm 25mm 18mm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #1a1a1a; font-size: 10pt; line-height: 1.5; background: #fff; }
+
+  .page { page-break-after: always; padding: 40px; max-width: 210mm; margin: 0 auto; position: relative; min-height: 297mm; }
+  .page:last-child { page-break-after: avoid; }
+
+  .footer { position: absolute; bottom: 20px; left: 40px; right: 40px; display: flex; justify-content: space-between; align-items: center; font-size: 8pt; color: #666; border-top: 2px solid #2d6a4f; padding-top: 8px; }
+
+  h1 { font-size: 22pt; font-weight: 700; color: #1a1a1a; margin-bottom: 4px; }
+  h2 { font-size: 16pt; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; }
+  h3 { font-size: 13pt; font-weight: 600; color: #1a1a1a; margin-bottom: 10px; }
+  h4 { font-size: 11pt; font-weight: 600; color: #1a1a1a; margin-bottom: 8px; }
+
+  .section-number { color: #1a1a1a; }
+  .source-badge { display: inline-block; font-size: 8pt; background: #f0f0f0; border: 1px solid #ddd; border-radius: 4px; padding: 2px 8px; margin-left: 8px; color: #555; vertical-align: middle; }
+
+  table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+  th { background: #f5f5f0; text-transform: uppercase; font-size: 8pt; font-weight: 600; letter-spacing: 0.5px; color: #555; text-align: left; padding: 8px 12px; border-bottom: 1px solid #ddd; }
+  td { padding: 8px 12px; border-bottom: 1px solid #eee; font-size: 9.5pt; }
+  tr.bold td { font-weight: 700; background: #f9f9f5; }
+
+  .card { background: #f9f9f5; border: 1px solid #e8e8e0; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+  .card-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px; }
+
+  .metric-card { background: #f9f9f5; border: 1px solid #e8e8e0; border-radius: 8px; padding: 16px; text-align: center; }
+  .metric-label { font-size: 8pt; text-transform: uppercase; letter-spacing: 0.5px; color: #777; margin-bottom: 4px; }
+  .metric-value { font-size: 20pt; font-weight: 700; color: #1a1a1a; }
+
+  .alert-card { border-left: 4px solid; padding: 12px 16px; margin-bottom: 10px; border-radius: 0 6px 6px 0; }
+  .alert-kritik { border-left-color: #dc3545; background: #fff5f5; }
+  .alert-uyari { border-left-color: #f59e0b; background: #fffbeb; }
+  .alert-normal { border-left-color: #6b7280; background: #f9fafb; }
+  .alert-iyi { border-left-color: #10b981; background: #f0fdf4; }
+  .alert-en_yuksek { border-left-color: #dc3545; background: #fff5f5; }
+  .alert-yuksek { border-left-color: #f59e0b; background: #fffbeb; }
+  .alert-orta { border-left-color: #6b7280; background: #f9fafb; }
+  .alert-dusuk { border-left-color: #10b981; background: #f0fdf4; }
+
+  .badge { display: inline-block; font-size: 8pt; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+  .badge-kritik, .badge-en_yuksek { background: #dc3545; color: #fff; }
+  .badge-uyari, .badge-yuksek { background: #f59e0b; color: #fff; }
+  .badge-normal, .badge-orta { background: #6b7280; color: #fff; }
+  .badge-iyi, .badge-dusuk { background: #10b981; color: #fff; }
+  .badge-kurucu { background: #2d6a4f; color: #fff; }
+  .badge-bagimsiz { background: #1d4ed8; color: #fff; }
+  .badge-bekleniyor { background: #f59e0b; color: #fff; }
+  .badge-mevcut { background: #10b981; color: #fff; }
+
+  .bar-container { width: 100%; height: 8px; background: #eee; border-radius: 4px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; }
+
+  .progress-bar { width: 100%; height: 20px; background: #eee; border-radius: 10px; position: relative; overflow: hidden; margin: 8px 0; }
+  .progress-fill { height: 100%; background: #2d6a4f; border-radius: 10px; }
+  .progress-threshold { position: absolute; top: 0; bottom: 0; width: 2px; background: #1a1a1a; }
+  .progress-label { font-size: 8pt; color: #555; }
+
+  .callout { background: #fff8e1; border: 1px solid #ffe082; border-radius: 6px; padding: 12px 16px; margin: 12px 0; font-size: 9pt; }
+  .callout-danger { background: #ffebee; border-color: #ef9a9a; }
+
+  .toc-item { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dotted #ccc; font-size: 10pt; }
+  .toc-number { color: #2d6a4f; font-weight: 600; margin-right: 8px; }
+
+  .findings-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+  .finding-card { padding: 12px; border-radius: 6px; border: 1px solid #e8e8e0; }
+  .finding-icon { font-size: 18pt; margin-bottom: 4px; }
+  .finding-title { font-weight: 600; font-size: 9.5pt; margin-bottom: 2px; }
+  .finding-desc { font-size: 8.5pt; color: #555; }
+
+  .cover-header { text-align: center; padding-top: 80px; }
+  .cover-title { font-size: 28pt; font-weight: 700; margin-bottom: 8px; }
+  .cover-subtitle { font-size: 14pt; color: #555; margin-bottom: 40px; }
+  .cover-metrics { display: flex; justify-content: center; gap: 40px; margin-top: 32px; }
+  .cover-metric { text-align: center; }
+  .cover-metric-label { font-size: 9pt; color: #777; text-transform: uppercase; }
+  .cover-metric-value { font-size: 18pt; font-weight: 700; }
+
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+
+  .status-tamamlandi { color: #10b981; }
+  .status-aktif { color: #f59e0b; }
+  .status-bekliyor { color: #6b7280; }
+
+  .text-right { text-align: right; }
+  .text-center { text-align: center; }
+  .text-muted { color: #777; }
+  .text-small { font-size: 8.5pt; }
+  .mt-8 { margin-top: 8px; }
+  .mt-16 { margin-top: 16px; }
+  .mb-8 { margin-bottom: 8px; }
+  .mb-16 { margin-bottom: 16px; }
+
+  @media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .page { padding: 0; min-height: auto; }
+    .footer { position: running(footer); }
+    @page { @bottom-center { content: element(footer); } }
+  }
+</style>
+</head>
+<body>
+
+<!-- PAGE 1: COVER -->
+<div class="page" id="cover">
+  <div class="cover-header">
+    <div class="cover-title">Yatırım Komitesi Analiz Raporu</div>
+    <div class="cover-subtitle">İstanbul Portföy Birinci Girişim Sermayesi Yatırım Fonu</div>
+    <div style="font-size: 12pt; color: #777; margin-bottom: 40px;">Dönem: 31 Aralık 2025</div>
+
+    <div class="cover-metrics">
+      <div class="cover-metric">
+        <div class="cover-metric-label">Net Varlık Değeri</div>
+        <div class="cover-metric-value">30,0 mn TL</div>
+      </div>
+      <div class="cover-metric">
+        <div class="cover-metric-label">Birim Pay Değeri</div>
+        <div class="cover-metric-value">2,9994 TL</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 60px;">
+    <h3>İçindekiler</h3>
+    <div class="toc-item"><span><span class="toc-number">1</span>Fon Künyesi</span><span>2</span></div>
+    <div class="toc-item"><span><span class="toc-number">1.1</span>Süre Durumu</span><span>3</span></div>
+    <div class="toc-item"><span><span class="toc-number">1.2</span>Komite Panosu</span><span>4</span></div>
+    <div class="toc-item"><span><span class="toc-number">2</span>Organizasyon ve Portföy Yapısı</span><span>6</span></div>
+    <div class="toc-item"><span><span class="toc-number">3</span>Bağımsız Denetim Raporu Analizi</span><span>7</span></div>
+    <div class="toc-item"><span><span class="toc-number">4</span>Şirket Bazında Değerleme Analizi</span><span>10</span></div>
+    <div class="toc-item"><span><span class="toc-number">5</span>Mevzuat Uyumu</span><span>12</span></div>
+    <div class="toc-item"><span><span class="toc-number">6</span>Risk Değerlendirmesi</span><span>12</span></div>
+  </div>
+
+  <div class="footer">
+    <span>GİZLİ VE ÖZELDİR — yalnızca şirket içi kullanım</span>
+    <span>İstanbul Portföy Yönetimi A.Ş.</span>
+    <span>1</span>
+  </div>
+</div>
+
+<!-- PAGE 2: FON KÜNYESİ -->
+<div class="page">
+  <h2><span class="section-number">1 ·</span> Fon Künyesi</h2>
+  <table>
+    <tr><td style="width:35%; font-weight:600;">Fon Unvanı</td><td>İstanbul Portföy Birinci Girişim Sermayesi Yatırım Fonu</td></tr>
+    <tr><td style="font-weight:600;">Fon Türü</td><td>Girişim Sermayesi Yatırım Fonu (GSYF)</td></tr>
+    <tr><td style="font-weight:600;">Yatırım Stratejisi</td><td>Doğrudan girişim sermayesi — erken/büyüme aşaması teknoloji şirketleri</td></tr>
+    <tr><td style="font-weight:600;">Kurucu</td><td>İstanbul Portföy Yönetimi A.Ş.</td></tr>
+    <tr><td style="font-weight:600;">Portföy Yöneticisi</td><td>İstanbul Portföy Yönetimi A.Ş.</td></tr>
+    <tr><td style="font-weight:600;">Saklama Kuruluşu</td><td>İş Yatırım Menkul Değerler A.Ş.</td></tr>
+    <tr><td style="font-weight:600;">SPK Onay Tarihi</td><td>15.07.2024</td></tr>
+    <tr><td style="font-weight:600;">Kuruluş</td><td>27.12.2024</td></tr>
+    <tr><td style="font-weight:600;">Vade Sonu</td><td>27.12.2031 (7 yıl; +2 yıl uzatma opsiyonu)</td></tr>
+    <tr><td style="font-weight:600;">Toplam Taahhüt</td><td>10.000.000 pay × 1,00 TL = 10,0 mn TL</td></tr>
+    <tr><td style="font-weight:600;">Çağrılan Sermaye</td><td>10,0 mn TL (%100)</td></tr>
+    <tr><td style="font-weight:600;">Pay Adedi</td><td>10.000.000</td></tr>
+    <tr><td style="font-weight:600;">Yönetim Ücreti</td><td>Fon toplam değerinin yıllık %2,5'i</td></tr>
+    <tr><td style="font-weight:600;">Performans Ücreti</td><td>İçtüzüğe göre — eşik üstü kâr paylaşımı</td></tr>
+    <tr><td style="font-weight:600;">Dağıtım Politikası</td><td>Çıkış gelirleri öncelikli dağıtım (waterfall)</td></tr>
+    <tr><td style="font-weight:600;">Bağımsız Denetçi</td><td>—</td></tr>
+    <tr><td style="font-weight:600;">Değerleme Kuruluşu</td><td>Kurucu (İstanbul Portföy) — bağımsız değerleme henüz yok</td></tr>
+  </table>
+  <div class="footer">
+    <span>GİZLİ VE ÖZELDİR — yalnızca şirket içi kullanım</span>
+    <span>İstanbul Portföy Yönetimi A.Ş.</span>
+    <span>2</span>
+  </div>
+</div>
+
+<!-- PAGE 3: SÜRE DURUMU -->
+<div class="page">
+  <h3>1.1 — Süre Durumu</h3>
+  <table>
+    <thead><tr><th>Olay</th><th>Tarih</th><th>Durum</th></tr></thead>
+    <tbody>
+    
+    <tr>
+      <td>SPK onayı</td>
+      <td>15.07.2024</td>
+      <td><span class="status-tamamlandi">●</span> tamamlandi</td>
+    </tr>
+    
+    <tr>
+      <td>Fon kuruluşu</td>
+      <td>27.12.2024</td>
+      <td><span class="status-tamamlandi">●</span> tamamlandi</td>
+    </tr>
+    
+    <tr>
+      <td>Yatırım dönemi sonu</td>
+      <td>27.12.2028</td>
+      <td><span class="status-aktif">●</span> aktif</td>
+    </tr>
+    
+    <tr>
+      <td>Fon vade sonu</td>
+      <td>27.12.2031</td>
+      <td><span class="status-bekliyor">●</span> bekliyor</td>
+    </tr>
+    
+    <tr>
+      <td>Uzatma opsiyonu sonu</td>
+      <td>27.12.2033</td>
+      <td><span class="status-bekliyor">●</span> bekliyor</td>
+    </tr>
+    
+    </tbody>
+  </table>
+
+  <h4 class="mt-16">Kalan Süreler</h4>
+  <table>
+    
+    <tr><td style="font-weight:600;">Yatırım dönemine kalan</td><td class="text-right">≈ 3 yıl</td></tr>
+    
+    <tr><td style="font-weight:600;">Fon vadesine kalan</td><td class="text-right">≈ 6 yıl</td></tr>
+    
+    <tr><td style="font-weight:600;">Uzatma dahil max süre</td><td class="text-right">≈ 8 yıl</td></tr>
+    
+  </table>
+  <div class="footer">
+    <span>GİZLİ VE ÖZELDİR — yalnızca şirket içi kullanım</span>
+    <span>İstanbul Portföy Yönetimi A.Ş.</span>
+    <span>3</span>
+  </div>
+</div>
+
+<!-- PAGE 4-5: KOMİTE PANOSU -->
+<div class="page">
+  <h3>1.2 — Komite Panosu</h3>
+
+  <div class="findings-grid">
+    
+    <div class="finding-card alert-kritik">
+      <div class="finding-icon">💧</div>
+      <div class="finding-title">Likidite <span class="badge badge-kritik">kritik</span></div>
+      <div class="finding-desc">Nakit ≈ %0,0 — yönetim ücretini ≈ 0 ay karşılar</div>
+    </div>
+    
+    <div class="finding-card alert-uyari">
+      <div class="finding-icon">📄</div>
+      <div class="finding-title">Değer kağıt üzerinde <span class="badge badge-uyari">uyari</span></div>
+      <div class="finding-desc">Getirinin %100'i gerçekleşmemiş değer artışı</div>
+    </div>
+    
+    <div class="finding-card alert-kritik">
+      <div class="finding-icon">🔍</div>
+      <div class="finding-title">Bağımsız teyit <span class="badge badge-kritik">kritik</span></div>
+      <div class="finding-desc">0/1 şirkette bağımsız değerleme raporu</div>
+    </div>
+    
+    <div class="finding-card alert-uyari">
+      <div class="finding-icon">📊</div>
+      <div class="finding-title">Yoğunlaşma <span class="badge badge-uyari">uyari</span></div>
+      <div class="finding-desc">En büyük 1 pozisyon NVD'nin %100,0'ı</div>
+    </div>
+    
+    <div class="finding-card alert-normal">
+      <div class="finding-icon">⏱️</div>
+      <div class="finding-title">Zaman <span class="badge badge-normal">normal</span></div>
+      <div class="finding-desc">Yatırım dönemine ≈ 3 yıl, vadeye ≈ 6 yıl kaldı</div>
+    </div>
+    
+    <div class="finding-card alert-iyi">
+      <div class="finding-icon">⚖️</div>
+      <div class="finding-title">Mevzuat <span class="badge badge-iyi">iyi</span></div>
+      <div class="finding-desc">%80 girişim eşiği KARŞILANIYOR (%100,0)</div>
+    </div>
+    
+  </div>
+
+  <h4 class="mt-16">Dönemsel Karşılaştırma</h4>
+  <table>
+    <thead><tr><th>Kalem</th><th class="text-right">Önceki Dönem</th><th class="text-right">Güncel Dönem</th><th class="text-right">Değişim</th></tr></thead>
+    <tbody>
+    
+    <tr>
+      <td>Net Varlık Değeri (TL)</td>
+      <td class="text-right">27.563.706</td>
+      <td class="text-right">29.993.968</td>
+      <td class="text-right">+%8,8</td>
+    </tr>
+    
+    <tr>
+      <td>Net Varlık Değeri (USD)</td>
+      <td class="text-right">≈ — mn $</td>
+      <td class="text-right">≈ — mn $</td>
+      <td class="text-right">—</td>
+    </tr>
+    
+    <tr>
+      <td>Birim pay değeri (TL)</td>
+      <td class="text-right">2,756371</td>
+      <td class="text-right">2,999397</td>
+      <td class="text-right">+%8,8</td>
+    </tr>
+    
+    <tr>
+      <td>Net dönem kârı (TL)</td>
+      <td class="text-right">—</td>
+      <td class="text-right">2.430.262</td>
+      <td class="text-right">—</td>
+    </tr>
+    
+    <tr>
+      <td>Maliyet bedeli (TL)</td>
+      <td class="text-right">821.262</td>
+      <td class="text-right">821.262</td>
+      <td class="text-right">%0</td>
+    </tr>
+    
+    <tr>
+      <td>Girişim sermayesi payı</td>
+      <td class="text-right">%100,00</td>
+      <td class="text-right">%100,00</td>
+      <td class="text-right">—</td>
+    </tr>
+    
+    <tr>
+      <td>Nakit + döviz payı</td>
+      <td class="text-right">≈ %0,0</td>
+      <td class="text-right">≈ %0,0</td>
+      <td class="text-right">—</td>
+    </tr>
+    
+    </tbody>
+  </table>
+  <div class="footer">
+    <span>GİZLİ VE ÖZELDİR — yalnızca şirket içi kullanım</span>
+    <span>İstanbul Portföy Yönetimi A.Ş.</span>
+    <span>4</span>
+  </div>
+</div>
+
+<!-- PAGE 6: ORGANİZASYON VE PORTFÖY YAPISI -->
+<div class="page">
+  <h2><span class="section-number">2 ·</span> Organizasyon ve Portföy Yapısı</h2>
+  <p class="mb-16">Fonun varlıkları dört grupta toplanmıştır; ağırlık, doğrudan girişim şirketi yatırımlarındadır.</p>
+
+  <div class="card mb-16">
+    <div style="display:flex; align-items:center; gap:24px; flex-wrap:wrap;">
+      <div>
+        <div class="text-muted text-small">PORTFÖY DEĞERİ</div>
+        <div style="font-size:24pt; font-weight:700;">32,9</div>
+        <div class="text-muted">mn ₺</div>
+      </div>
+      <div style="flex:1; display:grid; grid-template-columns:repeat(2, 1fr); gap:8px;">
+        
+        <div style="display:flex; align-items:center; gap:6px; font-size:9pt;">
+          <span class="dot" style="background:#2d6a4f;"></span>
+          Girişim sermayesi yatırımları <strong>%100,00</strong>
+        </div>
+        
+        <div style="display:flex; align-items:center; gap:6px; font-size:9pt;">
+          <span class="dot" style="background:#52796f;"></span>
+          Sermaye piyasası araçları (girişim şirketleri) <strong>%0,00</strong>
+        </div>
+        
+        <div style="display:flex; align-items:center; gap:6px; font-size:9pt;">
+          <span class="dot" style="background:#84a98c;"></span>
+          Yatırım fonu / GSYF katılma payları <strong>%0,00</strong>
+        </div>
+        
+        <div style="display:flex; align-items:center; gap:6px; font-size:9pt;">
+          <span class="dot" style="background:#a7c4a0;"></span>
+          Döviz (USD + EUR) <strong>%0,00</strong>
+        </div>
+        
+        <div style="display:flex; align-items:center; gap:6px; font-size:9pt;">
+          <span class="dot" style="background:#cad2c5;"></span>
+          Nakit (vadesiz mevduat) <strong>%0,00</strong>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <h3>Varlık Gruplarına Göre Dağılım</h3>
+  <table>
+    <thead><tr><th>Varlık Grubu</th><th class="text-right">Güncel Değer (TL)</th><th class="text-right">Pay</th><th>Dağılım</th></tr></thead>
+    <tbody>
+    
+    <tr>
+      <td><span class="dot" style="background:#2d6a4f;"></span>Girişim sermayesi yatırımları</td>
+      <td class="text-right">32.938.511</td>
+      <td class="text-right">%100,00</td>
+      <td><div class="bar-container"><div class="bar-fill" style="width:100%; background:#2d6a4f;"></div></div></td>
+    </tr>
+    
+    <tr>
+      <td><span class="dot" style="background:#52796f;"></span>Sermaye piyasası araçları (girişim şirketleri)</td>
+      <td class="text-right">0</td>
+      <td class="text-right">%0,00</td>
+      <td><div class="bar-container"><div class="bar-fill" style="width:0%; background:#52796f;"></div></div></td>
+    </tr>
+    
+    <tr>
+      <td><span class="dot" style="background:#84a98c;"></span>Yatırım fonu / GSYF katılma payları</td>
+      <td class="text-right">0</td>
+      <td class="text-right">%0,00</td>
+      <td><div class="bar-container"><div class="bar-fill" style="width:0%; background:#84a98c;"></div></div></td>
+    </tr>
+    
+    <tr>
+      <td><span class="dot" style="background:#a7c4a0;"></span>Döviz (USD + EUR)</td>
+      <td class="text-right">0</td>
+      <td class="text-right">%0,00</td>
+      <td><div class="bar-container"><div class="bar-fill" style="width:0%; background:#a7c4a0;"></div></div></td>
+    </tr>
+    
+    <tr>
+      <td><span class="dot" style="background:#cad2c5;"></span>Nakit (vadesiz mevduat)</td>
+      <td class="text-right">0</td>
+      <td class="text-right">%0,00</td>
+      <td><div class="bar-container"><div class="bar-fill" style="width:0%; background:#cad2c5;"></div></div></td>
+    </tr>
+    
+    <tr class="bold">
+      <td>Toplam (≈ NVD)</td>
+      <td class="text-right">29.993.968</td>
+      <td class="text-right">%100,0</td>
+      <td></td>
+    </tr>
+    </tbody>
+  </table>
+
+  <h3>Fon Performansı</h3>
+  <div class="card-grid">
+    <div class="metric-card">
+      <div class="metric-label">Maliyet Bedeli (USD)</div>
+      <div class="metric-value" style="font-size:16pt;">≈ 0,0 mn $</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Güncel Değer (NVD, USD)</div>
+      <div class="metric-value" style="font-size:16pt;">≈ — mn $</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Çoklu (USD Bazında)</div>
+      <div class="metric-value" style="font-size:16pt;">≈ — ×</div>
+    </div>
+  </div>
+  <p class="text-small text-muted">Güncel değer (NVD) 29.993.968 TL'dir; 31.12.2025 MB ABD Doları alış kuru (≈ 0,0 ₺/USD) ile ≈ — mn USD'ye karşılık gelir. Maliyet bedeli ≈ 0,0 mn USD olduğundan, USD bazında değer çoğalması ≈ — kattır.</p>
+
+  <div class="footer">
+    <span>GİZLİ VE ÖZELDİR — yalnızca şirket içi kullanım</span>
+    <span>İstanbul Portföy Yönetimi A.Ş.</span>
+    <span>6</span>
+  </div>
+</div>
+
+<!-- PAGE 7: BAĞIMSIZ DENETİM RAPORU ANALİZİ -->
+<div class="page">
+  <h2><span class="section-number">3 ·</span> Bağımsız Denetim Raporu Analizi</h2>
+  <span class="source-badge">Kaynak: 31.12.2025 Bağımsız Denetim Raporu</span>
+  <p class="mt-8 mb-16">Başlıca finansal tablo kalemleri ve her birinin altında kısa analizi aşağıdadır.</p>
+
+  <h3>3.1 — Bilanço ve Yıllık Karşılaştırma</h3>
+  <table>
+    <thead><tr><th>Kalem (TL)</th><th class="text-right">Güncel Dönem</th><th class="text-right">Önceki Dönem</th><th class="text-right">Değişim</th></tr></thead>
+    <tbody>
+    
+    <tr class="">
+      <td>Toplam Varlıklar</td>
+      <td class="text-right">32.938.511</td>
+      <td class="text-right">28.974.440</td>
+      <td class="text-right">+%13,7</td>
+    </tr>
+    
+    <tr class="">
+      <td>Finansal Varlıklar (portföy)</td>
+      <td class="text-right">32.938.511</td>
+      <td class="text-right">28.974.377</td>
+      <td class="text-right">+%13,7</td>
+    </tr>
+    
+    <tr class="">
+      <td>Nakit ve Nakit Benzerleri</td>
+      <td class="text-right">0</td>
+      <td class="text-right">63</td>
+      <td class="text-right">−%100,0</td>
+    </tr>
+    
+    <tr class="">
+      <td>Toplam Yükümlülükler (−)</td>
+      <td class="text-right">2.944.543</td>
+      <td class="text-right">1.410.734</td>
+      <td class="text-right">+%108,7</td>
+    </tr>
+    
+    <tr class="bold">
+      <td>Net Varlık Değeri (NVD)</td>
+      <td class="text-right">29.993.968</td>
+      <td class="text-right">27.563.706</td>
+      <td class="text-right">+%8,8</td>
+    </tr>
+    
+    <tr class="">
+      <td>Birim Pay Değeri (TL)</td>
+      <td class="text-right">2,999397</td>
+      <td class="text-right">2,756371</td>
+      <td class="text-right">+%8,8</td>
+    </tr>
+    
+    <tr class="">
+      <td>Dolaşımdaki Pay Sayısı (adet)</td>
+      <td class="text-right">10.000.000</td>
+      <td class="text-right">—</td>
+      <td class="text-right">—</td>
+    </tr>
+    
+    </tbody>
+  </table>
+
+  <h3>3.2 — Dönem Kârı Nasıl Oluştu? <span class="text-muted" style="font-weight:400;">(Gelir Tablosu)</span></h3>
+  <table>
+    <thead><tr><th colspan="2">Gelirler</th></tr></thead>
+    <tbody>
+    
+    <tr><td>Gerçekleşmiş kâr (varlık satışından elde edilen)</td><td class="text-right">0</td></tr>
+    
+    <tr><td>Gerçekleşmemiş kâr (portföydeki değer artışı, henüz satılmadı)</td><td class="text-right">3.960.000</td></tr>
+    
+    <tr><td>Temettü, faiz ve diğer gelirler</td><td class="text-right">0</td></tr>
+    
+    <tr class="bold"><td>Toplam Gelir</td><td class="text-right">3.960.000</td></tr>
+    </tbody>
+  </table>
+  <table>
+    <thead><tr><th colspan="2">Giderler</th></tr></thead>
+    <tbody>
+    
+    <tr><td>Yönetim, saklama, danışmanlık ve diğer giderler (−)</td><td class="text-right">(-1.529.738)</td></tr>
+    
+    <tr class="bold" style="background:#2d6a4f; color:#fff;"><td>Net Dönem Kârı</td><td class="text-right">2.430.262</td></tr>
+    </tbody>
+  </table>
+  <div class="callout">Toplam gelir 4,0 mn ₺'den 1,5 mn ₺ gider düşülünce net kâr 2,4 mn ₺ kalır. Gelirin %100'i "gerçekleşmemiş" (henüz satılmamış varlıkların değer artışı), yalnızca %0'i fiilen satıştan elde edilen nakit kârdır.</div>
+
+  <div class="footer">
+    <span>GİZLİ VE ÖZELDİR — yalnızca şirket içi kullanım</span>
+    <span>İstanbul Portföy Yönetimi A.Ş.</span>
+    <span>7</span>
+  </div>
+</div>
+
+<!-- PAGE 8: GİDERLER VE YÖNETİM ÜCRETİ -->
+<div class="page">
+  <h3>3.3 — Giderler ve Yönetim Ücreti</h3>
+  <table>
+    <thead><tr><th>Gider Kalemi</th><th class="text-right">Güncel Dönem (TL)</th><th class="text-right">Önceki Dönem (TL)</th></tr></thead>
+    <tbody>
+    
+    <tr>
+      <td>Yönetim ücreti</td>
+      <td class="text-right">630.000</td>
+      <td class="text-right">0</td>
+    </tr>
+    
+    <tr>
+      <td>Danışmanlık gideri</td>
+      <td class="text-right">0</td>
+      <td class="text-right">0</td>
+    </tr>
+    
+    <tr>
+      <td>Diğer giderler (saklama, denetim, kurul ücretleri vb.)</td>
+      <td class="text-right">899.738</td>
+      <td class="text-right">—</td>
+    </tr>
+    
+    <tr class="bold"><td>Toplam Gider</td><td class="text-right">1.529.738</td><td class="text-right">—</td></tr>
+    </tbody>
+  </table>
+
+  <div class="card-grid">
+    
+    <div class="card">
+      <div style="font-weight:600; margin-bottom:4px;">Net değer (arttı)</div>
+      <div class="text-small">Fonun net değeri dönemde TL bazında +%8,8, USD bazında — değişmiş; NVD 30,0 mn ₺ olmuştur. Birim pay +%8,8.</div>
+    </div>
+    
+    <div class="card">
+      <div style="font-weight:600; margin-bottom:4px;">Getiri kalitesi</div>
+      <div class="text-small">Dönem net kârının ≈%100'i gerçekleşmemiş (henüz satılmamış) değer artışıdır; nakde dönen gerçekleşmiş kâr 0,0 mn ₺.</div>
+    </div>
+    
+    <div class="card">
+      <div style="font-weight:600; margin-bottom:4px;">Nakit düzeyi</div>
+      <div class="text-small">Nakit, NVD'nin ≈%0,0'idir; bu düzey erken dağıtım kapasitesini belirler.</div>
+    </div>
+    
+  </div>
+
+  <h4>Analiz — Yönetim Ücretinin Esası</h4>
+  <h4>Likidite ile Yönetim Ücreti Karşılama Süresi</h4>
+  <table>
+    <tr><td>Nakit (vadesiz mevduat)</td><td class="text-right">0</td></tr>
+    <tr><td>Döviz (USD + EUR)</td><td class="text-right">0</td></tr>
+    <tr class="bold"><td>Toplam Likit Varlık</td><td class="text-right">0</td></tr>
+    <tr><td>Yıllık yönetim ücreti (fiili)</td><td class="text-right">630.000</td></tr>
+    <tr><td>Aylık yönetim ücreti (≈)</td><td class="text-right">52.500</td></tr>
+    <tr class="bold" style="background:#2d6a4f; color:#fff;"><td>Karşılayabileceği süre (likit + aylık ücret)</td><td class="text-right">≈ 0 ay</td></tr>
+  </table>
+  <p class="text-small text-muted">Eldeki nakit ve döviz, yıllık yönetim ücretinin yalnızca yarısından biraz fazlasını karşılar — mevcut likidite ≈0 ay yönetim ücreti öder. Diğer giderler de eklenince süre ≈0,0 aya iner. Fon, giderlerini karşılamak için portföyden bir çıkışa/temettüye bağımlıdır.</p>
+
+  <div class="footer">
+    <span>GİZLİ VE ÖZELDİR — yalnızca şirket içi kullanım</span>
+    <span>İstanbul Portföy Yönetimi A.Ş.</span>
+    <span>8</span>
+  </div>
+</div>
+
+<!-- PAGE 9: GERÇEĞE UYGUN DEĞER SEVİYELERİ -->
+<div class="page">
+  <h3>3.4 — Gerçeğe Uygun Değer Seviyeleri</h3>
+  <table>
+    <thead><tr><th>Seviye</th><th class="text-right">Güncel Değer (TL)</th><th class="text-right">Pay</th></tr></thead>
+    <tbody>
+    
+    <tr>
+      <td>Seviye 1 — aktif piyasa fiyatı (yatırım fonu payları)</td>
+      <td class="text-right">0</td>
+      <td class="text-right">%0,00</td>
+    </tr>
+    
+    <tr>
+      <td>Seviye 2 — dolaylı gözlenebilir girdi</td>
+      <td class="text-right">—</td>
+      <td class="text-right">—</td>
+    </tr>
+    
+    <tr>
+      <td>Seviye 3 — gözlenemeyen, model/takdir (girişim yatırımları)</td>
+      <td class="text-right">32.938.511</td>
+      <td class="text-right">%100,00</td>
+    </tr>
+    
+    <tr class="bold"><td>Toplam Portföy</td><td class="text-right">—</td><td class="text-right">%100,0</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-danger">
+    <strong>En kritik husus.</strong> En kritik husus. Portföyün %100,0'si piyasada alınıp satılmadığı için fiyatı doğrudan görülemeyen şirketlerden oluşur; değerleri tahmin ve varsayıma dayalı hesaplamalarla bulunur. Denetim, tabloların güvenilirliğini teyit eder; ancak bu şirketlerin değerinin "doğru" olduğunu garanti etmez — gerçek satış (çıkış) değeri farklı çıkabilir.
+  </div>
+
+  <div class="footer">
+    <span>GİZLİ VE ÖZELDİR — yalnızca şirket içi kullanım</span>
+    <span>İstanbul Portföy Yönetimi A.Ş.</span>
+    <span>9</span>
+  </div>
+</div>
+
+<!-- PAGE 10: ŞİRKET BAZINDA DEĞERLEME ANALİZİ -->
+<div class="page">
+  <h2><span class="section-number">4 ·</span> Şirket Bazında Değerleme Analizi</h2>
+  <span class="source-badge">Kaynak: Fiyat Raporu + Değerleme Raporları</span>
+  <p class="mt-8 mb-16">Portföy şirketlerinin değerlemeleri iki kaynaktan gelir: bağımsız üçüncü taraf (görece güvenilir) ve Kurucu (fonu yöneten). Aşağıda, değerleme kaynağına göre dağılım ve şirket bazında analiz yer alır.</p>
+
+  <h3>4.1 — Değerleme Kaynakları</h3>
+  <div class="callout mb-16">Kapsam portföydeki 1 şirkettir. "Değerlenmedi" olarak işaretli pozisyonlar varsa, bunlar ilgili dönemde hiçbir kaynakta değerlenmemiş olup kapsam boşluğu oluşturur ve öncelikli kapatılmalıdır.</div>
+  <table>
+    <thead><tr><th>Değerleme Kaynağı</th><th class="text-right">Tutar (TL)</th><th class="text-right">Pay</th><th>Dağılım</th></tr></thead>
+    <tbody>
+    
+    <tr>
+      <td><span class="dot" style="background:#2d6a4f;"></span>Üçüncü taraf (bağımsız) · 0 şirket</td>
+      <td class="text-right">0</td>
+      <td class="text-right">%0,0</td>
+      <td><div class="bar-container"><div class="bar-fill" style="width:0%; background:#2d6a4f;"></div></div></td>
+    </tr>
+    
+    <tr>
+      <td><span class="dot" style="background:#52796f;"></span>Kurucu (İstanbul Portföy) · 1 şirket</td>
+      <td class="text-right">32.938.511</td>
+      <td class="text-right">%100,0</td>
+      <td><div class="bar-container"><div class="bar-fill" style="width:100%; background:#52796f;"></div></div></td>
+    </tr>
+    
+    <tr>
+      <td><span class="dot" style="background:#e63946;"></span>Değerlenmedi · 0 şirket</td>
+      <td class="text-right">0</td>
+      <td class="text-right">%0,0</td>
+      <td><div class="bar-container"><div class="bar-fill" style="width:0%; background:#e63946;"></div></div></td>
+    </tr>
+    
+    <tr>
+      <td><span class="dot" style="background:#adb5bd;"></span>Değer düşüklüğü · 0 şirket</td>
+      <td class="text-right">0</td>
+      <td class="text-right">%0,0</td>
+      <td><div class="bar-container"><div class="bar-fill" style="width:0%; background:#adb5bd;"></div></div></td>
+    </tr>
+    
+    </tbody>
+  </table>
+
+  <h3>4.2 — En Büyük Fon Pozisyonları</h3>
+  <table>
+    <thead><tr><th>Şirket (Konsolide)</th><th class="text-right">Kayıtlı Değer (TL)</th><th class="text-right">Portföy Payı</th><th>Değerleme</th></tr></thead>
+    <tbody>
+    
+    <tr>
+      <td>Mediazz</td>
+      <td class="text-right">32.938.511</td>
+      <td class="text-right">%100,00</td>
+      <td><span class="badge badge-kurucu">Kurucu</span></td>
+    </tr>
+    
+    <tr class="bold">
+      <td>Girişim sermayesi yatırımları toplamı</td>
+      <td class="text-right">—</td>
+      <td class="text-right">%100,0</td>
+      <td></td>
+    </tr>
+    </tbody>
+  </table>
+
+  <h3>4.3 — Değerleme Raporu Analizleri</h3>
+  <p class="text-small text-muted mb-16">Her portföy şirketi için kullanılan değerleme yöntemi, değerlemeyi yapan taraf, fona kayıtlı değer, NVD payı ve bağımsız değerlendirme notu aşağıda yer almaktadır.</p>
+
+  <div class="footer">
+    <span>GİZLİ VE ÖZELDİR — yalnızca şirket içi kullanım</span>
+    <span>İstanbul Portföy Yönetimi A.Ş.</span>
+    <span>10</span>
+  </div>
+</div>
+
+<!-- PAGE 11: ŞİRKET DETAYLARI -->
+<div class="page">
+  
+  <div class="card mb-16">
+    <h3 style="margin-bottom:2px;">Mediazz</h3>
+    <div class="text-muted text-small mb-8">Dijital Medya / Reklam Teknolojisi</div>
+
+    <div style="background:#2d6a4f; color:#fff; padding:6px 12px; border-radius:4px; font-size:9pt; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+      <span>Model / Takdir (Seviye 3) — bağımsız denetim ve bağımsız değerleme raporu YOK</span>
+      <span class="badge badge-kurucu">Kurucu</span>
+    </div>
+
+    <div class="card-grid" style="margin-bottom:12px;">
+      <div class="metric-card">
+        <div class="metric-label">Kayıtlı Değer (TL)</div>
+        <div class="metric-value" style="font-size:16pt;">32.938.511</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Portföy Payı</div>
+        <div class="metric-value" style="font-size:16pt;">%100,00</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Değerleyen</div>
+        <div class="metric-value" style="font-size:16pt;">Kurucu</div>
+      </div>
+    </div>
+
+    <h4>Değerlendirme Notu</h4>
+    <p class="text-small" style="line-height:1.6;">Fonun TEK varlığı (portföyün %100'ü), %100 Seviye 3. Kayıtlı maliyet 821.262 TL → güncel 32.938.511 TL ≈ 40,1× yazım; değerin tamamı gerçekleşmemiştir (2025'te gerçekleşmiş kazanç/faiz geliri 0). BELGE İNCELEMESİ: (1) Bağımsız denetim raporu, bu pozisyonu yalnızca "Seviye 3 — piyasada gözlenebilir veriye dayanmayan girdilerle değerlenen" finansal varlık olarak SINIFLANDIRIR; kullanılan değerleme yöntemini (İNA/DCF, piyasa çarpanı vb.), varsayımları veya değerleyen tarafı AÇIKLAMAZ. (2) Komite raporu, SPK III-62.1 kapsamında BAĞIMSIZ bir DEĞERLEME RAPORUNUN dosyada bulunmadığını belirtir. Yani şirketin ne bağımsız denetimi ne de bağımsız değerleme raporu mevcuttur; 40,1× yazım Kurucu'nun model/takdir değerlemesine dayanır. Pozisyon 27.12.2024'te edinilmiş, 31.12.2024'te zaten 28,97 mn ₺ taşınıyordu. EN KRİTİK ÖNERİ: 40,1× değerin dayanağı, yöntemi ve varsayımları için SPK III-62.1'e uygun BAĞIMSIZ bir değerleme raporu temin edilmeli ve Komite'ye sunulmalıdır. Ayrıca nakit 0, yükümlülük 2,94 mn ₺.</p>
+
+    <div class="mt-8">
+      <span class="badge badge-bekleniyor">
+        Rapor bekleniyor
+        
+        
+      </span>
+    </div>
+  </div>
+  
+
+  <div class="footer">
+    <span>GİZLİ VE ÖZELDİR — yalnızca şirket içi kullanım</span>
+    <span>İstanbul Portföy Yönetimi A.Ş.</span>
+    <span>11</span>
+  </div>
+</div>
+
+<!-- PAGE 12: MEVZUAT UYUMU + RİSK DEĞERLENDİRMESİ -->
+<div class="page">
+  <h2><span class="section-number">5 ·</span> Mevzuat Uyumu <span class="source-badge">Kaynak: Fiyat Raporu</span></h2>
+  <h4>%80 girişim sermayesi yatırım eşiği</h4>
+
+  <table>
+    <thead><tr><th>Bileşen (TL)</th><th class="text-right">Tutar</th><th class="text-right">Portföy %</th></tr></thead>
+    <tbody>
+    
+    <tr class="">
+      <td>Girişim sermayesi yatırımları</td>
+      <td class="text-right">32.938.511</td>
+      <td class="text-right">%100,00</td>
+    </tr>
+    
+    <tr class="">
+      <td>Sermaye piyasası araçları (girişim şirketleri)</td>
+      <td class="text-right">0</td>
+      <td class="text-right">%0,00</td>
+    </tr>
+    
+    <tr class="bold">
+      <td>Doğrudan girişim sermayesi toplamı</td>
+      <td class="text-right">32.938.511</td>
+      <td class="text-right">%100,00</td>
+    </tr>
+    
+    <tr class="">
+      <td>GSYF katılma payları (dolaylı girişim payı)</td>
+      <td class="text-right">0</td>
+      <td class="text-right">%0,00</td>
+    </tr>
+    
+    <tr class="">
+      <td>Girişim dışı (döviz + nakit)</td>
+      <td class="text-right">0</td>
+      <td class="text-right">%0,00</td>
+    </tr>
+    
+    </tbody>
+  </table>
+
+  <div style="margin:16px 0;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+      <span style="font-weight:600;">Doğrudan girişim sermayesi / NVD</span>
+      <span style="font-size:20pt; font-weight:700; color:#2d6a4f;">%100,0</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" style="width:100%;"></div>
+      <div class="progress-threshold" style="left:80%;"></div>
+    </div>
+    <div style="display:flex; justify-content:space-between;" class="progress-label">
+      <span>%0</span>
+      <span>eşik %80 ↑</span>
+      <span>%100</span>
+    </div>
+  </div>
+
+  <div class="callout" style="border-color:#10b981; background:#f0fdf4;">
+    <strong>Sonuç — KARŞILANIYOR.</strong> Doğrudan girişim yatırımları NVD'nin %100,0'sidir; %80 eşiği GSYF katılma payları (%0,00) hariç dahi karşılanmaktadır.
+  </div>
+
+  <h2 class="mt-16"><span class="section-number">6 ·</span> Risk Değerlendirmesi <span class="source-badge">İç Değerlendirme</span></h2>
+
+  
+  <div class="alert-card alert-en_yuksek" style="margin-bottom:12px;">
+    <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+      <strong>Değerleme riski</strong>
+      <span class="badge badge-en_yuksek">En yüksek</span>
+    </div>
+    <p class="text-small">Portföyün %100,0i, piyasada fiyatı doğrudan görülemeyen (model/takdir ile değerlenen, Seviye 3) şirketlerden oluşur. Bu tür değerlemelerde piyasa karşılaştırması sınırlı olabilir; bağımsız üçüncü tarafça değerlenen kısım görece daha sağlamdır. Kayıtlı değer ile gerçek satış (çıkış) değeri arasındaki sapma riski yüksektir.</p>
+  </div>
+  
+  <div class="alert-card alert-yuksek" style="margin-bottom:12px;">
+    <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+      <strong>Yoğunlaşma riski</strong>
+      <span class="badge badge-yuksek">Yüksek</span>
+    </div>
+    <p class="text-small">En büyük üç pozisyon (Mediazz) NVD'nin %100,0ini oluşturur; tek bir şirketteki olumsuz gelişme fonu belirgin etkiler.</p>
+  </div>
+  
+  <div class="alert-card alert-yuksek" style="margin-bottom:12px;">
+    <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+      <strong>Likidite / çıkış riski</strong>
+      <span class="badge badge-yuksek">Yüksek</span>
+    </div>
+    <p class="text-small">Nakit, NVD'nin ≈%0,0idir; likit varlıklar ≈0 ay yönetim ücretini karşılar. Girişim paylarının aktif ikincil piyasası bulunmadığından çıkış (realizasyon) başarısı belirleyicidir.</p>
+  </div>
+  
+
+  <div class="footer">
+    <span>GİZLİ VE ÖZELDİR — yalnızca şirket içi kullanım</span>
+    <span>İstanbul Portföy Yönetimi A.Ş.</span>
+    <span>12</span>
+  </div>
+</div>
+
+</body>
+</html>
