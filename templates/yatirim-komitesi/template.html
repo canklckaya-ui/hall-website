@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{meta.raporBaslik}}</title>
+<style>
+  @page { size: A4; margin: 20mm 18mm 25mm 18mm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #1a1a1a; font-size: 10pt; line-height: 1.5; background: #fff; }
+
+  .page { page-break-after: always; padding: 40px; max-width: 210mm; margin: 0 auto; position: relative; min-height: 297mm; }
+  .page:last-child { page-break-after: avoid; }
+
+  .footer { position: absolute; bottom: 20px; left: 40px; right: 40px; display: flex; justify-content: space-between; align-items: center; font-size: 8pt; color: #666; border-top: 2px solid #2d6a4f; padding-top: 8px; }
+
+  h1 { font-size: 22pt; font-weight: 700; color: #1a1a1a; margin-bottom: 4px; }
+  h2 { font-size: 16pt; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; }
+  h3 { font-size: 13pt; font-weight: 600; color: #1a1a1a; margin-bottom: 10px; }
+  h4 { font-size: 11pt; font-weight: 600; color: #1a1a1a; margin-bottom: 8px; }
+
+  .section-number { color: #1a1a1a; }
+  .source-badge { display: inline-block; font-size: 8pt; background: #f0f0f0; border: 1px solid #ddd; border-radius: 4px; padding: 2px 8px; margin-left: 8px; color: #555; vertical-align: middle; }
+
+  table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+  th { background: #f5f5f0; text-transform: uppercase; font-size: 8pt; font-weight: 600; letter-spacing: 0.5px; color: #555; text-align: left; padding: 8px 12px; border-bottom: 1px solid #ddd; }
+  td { padding: 8px 12px; border-bottom: 1px solid #eee; font-size: 9.5pt; }
+  tr.bold td { font-weight: 700; background: #f9f9f5; }
+
+  .card { background: #f9f9f5; border: 1px solid #e8e8e0; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+  .card-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px; }
+
+  .metric-card { background: #f9f9f5; border: 1px solid #e8e8e0; border-radius: 8px; padding: 16px; text-align: center; }
+  .metric-label { font-size: 8pt; text-transform: uppercase; letter-spacing: 0.5px; color: #777; margin-bottom: 4px; }
+  .metric-value { font-size: 20pt; font-weight: 700; color: #1a1a1a; }
+
+  .alert-card { border-left: 4px solid; padding: 12px 16px; margin-bottom: 10px; border-radius: 0 6px 6px 0; }
+  .alert-kritik { border-left-color: #dc3545; background: #fff5f5; }
+  .alert-uyari { border-left-color: #f59e0b; background: #fffbeb; }
+  .alert-normal { border-left-color: #6b7280; background: #f9fafb; }
+  .alert-iyi { border-left-color: #10b981; background: #f0fdf4; }
+  .alert-en_yuksek { border-left-color: #dc3545; background: #fff5f5; }
+  .alert-yuksek { border-left-color: #f59e0b; background: #fffbeb; }
+  .alert-orta { border-left-color: #6b7280; background: #f9fafb; }
+  .alert-dusuk { border-left-color: #10b981; background: #f0fdf4; }
+
+  .badge { display: inline-block; font-size: 8pt; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+  .badge-kritik, .badge-en_yuksek { background: #dc3545; color: #fff; }
+  .badge-uyari, .badge-yuksek { background: #f59e0b; color: #fff; }
+  .badge-normal, .badge-orta { background: #6b7280; color: #fff; }
+  .badge-iyi, .badge-dusuk { background: #10b981; color: #fff; }
+  .badge-kurucu { background: #2d6a4f; color: #fff; }
+  .badge-bagimsiz { background: #1d4ed8; color: #fff; }
+  .badge-bekleniyor { background: #f59e0b; color: #fff; }
+  .badge-mevcut { background: #10b981; color: #fff; }
+
+  .bar-container { width: 100%; height: 8px; background: #eee; border-radius: 4px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; }
+
+  .progress-bar { width: 100%; height: 20px; background: #eee; border-radius: 10px; position: relative; overflow: hidden; margin: 8px 0; }
+  .progress-fill { height: 100%; background: #2d6a4f; border-radius: 10px; }
+  .progress-threshold { position: absolute; top: 0; bottom: 0; width: 2px; background: #1a1a1a; }
+  .progress-label { font-size: 8pt; color: #555; }
+
+  .callout { background: #fff8e1; border: 1px solid #ffe082; border-radius: 6px; padding: 12px 16px; margin: 12px 0; font-size: 9pt; }
+  .callout-danger { background: #ffebee; border-color: #ef9a9a; }
+
+  .toc-item { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dotted #ccc; font-size: 10pt; }
+  .toc-number { color: #2d6a4f; font-weight: 600; margin-right: 8px; }
+
+  .findings-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+  .finding-card { padding: 12px; border-radius: 6px; border: 1px solid #e8e8e0; }
+  .finding-icon { font-size: 18pt; margin-bottom: 4px; }
+  .finding-title { font-weight: 600; font-size: 9.5pt; margin-bottom: 2px; }
+  .finding-desc { font-size: 8.5pt; color: #555; }
+
+  .cover-header { text-align: center; padding-top: 80px; }
+  .cover-title { font-size: 28pt; font-weight: 700; margin-bottom: 8px; }
+  .cover-subtitle { font-size: 14pt; color: #555; margin-bottom: 40px; }
+  .cover-metrics { display: flex; justify-content: center; gap: 40px; margin-top: 32px; }
+  .cover-metric { text-align: center; }
+  .cover-metric-label { font-size: 9pt; color: #777; text-transform: uppercase; }
+  .cover-metric-value { font-size: 18pt; font-weight: 700; }
+
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+
+  .status-tamamlandi { color: #10b981; }
+  .status-aktif { color: #f59e0b; }
+  .status-bekliyor { color: #6b7280; }
+
+  .text-right { text-align: right; }
+  .text-center { text-align: center; }
+  .text-muted { color: #777; }
+  .text-small { font-size: 8.5pt; }
+  .mt-8 { margin-top: 8px; }
+  .mt-16 { margin-top: 16px; }
+  .mb-8 { margin-bottom: 8px; }
+  .mb-16 { margin-bottom: 16px; }
+
+  @media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .page { padding: 0; min-height: auto; }
+    .footer { position: running(footer); }
+    @page { @bottom-center { content: element(footer); } }
+  }
+</style>
+</head>
+<body>
+
+<!-- PAGE 1: COVER -->
+<div class="page" id="cover">
+  <div class="cover-header">
+    <div class="cover-title">{{meta.raporBaslik}}</div>
+    <div class="cover-subtitle">{{meta.fonUnvani}}</div>
+    <div style="font-size: 12pt; color: #777; margin-bottom: 40px;">Dönem: {{meta.donem}}</div>
+
+    <div class="cover-metrics">
+      <div class="cover-metric">
+        <div class="cover-metric-label">Net Varlık Değeri</div>
+        <div class="cover-metric-value">{{meta.nvd}}</div>
+      </div>
+      <div class="cover-metric">
+        <div class="cover-metric-label">Birim Pay Değeri</div>
+        <div class="cover-metric-value">{{meta.birimPay}}</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 60px;">
+    <h3>İçindekiler</h3>
+    <div class="toc-item"><span><span class="toc-number">1</span>Fon Künyesi</span><span>2</span></div>
+    <div class="toc-item"><span><span class="toc-number">1.1</span>Süre Durumu</span><span>3</span></div>
+    <div class="toc-item"><span><span class="toc-number">1.2</span>Komite Panosu</span><span>4</span></div>
+    <div class="toc-item"><span><span class="toc-number">2</span>Organizasyon ve Portföy Yapısı</span><span>6</span></div>
+    <div class="toc-item"><span><span class="toc-number">3</span>Bağımsız Denetim Raporu Analizi</span><span>7</span></div>
+    <div class="toc-item"><span><span class="toc-number">4</span>Şirket Bazında Değerleme Analizi</span><span>10</span></div>
+    <div class="toc-item"><span><span class="toc-number">5</span>Mevzuat Uyumu</span><span>12</span></div>
+    <div class="toc-item"><span><span class="toc-number">6</span>Risk Değerlendirmesi</span><span>12</span></div>
+  </div>
+
+  <div class="footer">
+    <span>{{meta.gizlilikNotu}}</span>
+    <span>{{meta.sirketAdi}}</span>
+    <span>1</span>
+  </div>
+</div>
+
+<!-- PAGE 2: FON KÜNYESİ -->
+<div class="page">
+  <h2><span class="section-number">1 ·</span> Fon Künyesi</h2>
+  <table>
+    <tr><td style="width:35%; font-weight:600;">Fon Unvanı</td><td>{{fonKunyesi.fonUnvani}}</td></tr>
+    <tr><td style="font-weight:600;">Fon Türü</td><td>{{fonKunyesi.fonTuru}}</td></tr>
+    <tr><td style="font-weight:600;">Yatırım Stratejisi</td><td>{{fonKunyesi.yatirimStratejisi}}</td></tr>
+    <tr><td style="font-weight:600;">Kurucu</td><td>{{fonKunyesi.kurucu}}</td></tr>
+    <tr><td style="font-weight:600;">Portföy Yöneticisi</td><td>{{fonKunyesi.yonetici}}</td></tr>
+    <tr><td style="font-weight:600;">Saklama Kuruluşu</td><td>{{fonKunyesi.saklamaKurulusu}}</td></tr>
+    <tr><td style="font-weight:600;">SPK Onay Tarihi</td><td>{{fonKunyesi.spkOnayTarihi}}</td></tr>
+    <tr><td style="font-weight:600;">Kuruluş</td><td>{{fonKunyesi.kurulus}}</td></tr>
+    <tr><td style="font-weight:600;">Vade Sonu</td><td>{{fonKunyesi.vadeSonu}}</td></tr>
+    <tr><td style="font-weight:600;">Toplam Taahhüt</td><td>{{fonKunyesi.toplamTaahhut}}</td></tr>
+    <tr><td style="font-weight:600;">Çağrılan Sermaye</td><td>{{fonKunyesi.cagrilanSermaye}}</td></tr>
+    <tr><td style="font-weight:600;">Pay Adedi</td><td>{{fonKunyesi.payAdedi}}</td></tr>
+    <tr><td style="font-weight:600;">Yönetim Ücreti</td><td>{{fonKunyesi.yonetimUcreti}}</td></tr>
+    <tr><td style="font-weight:600;">Performans Ücreti</td><td>{{fonKunyesi.performansUcreti}}</td></tr>
+    <tr><td style="font-weight:600;">Dağıtım Politikası</td><td>{{fonKunyesi.dagitimPolitikasi}}</td></tr>
+    <tr><td style="font-weight:600;">Bağımsız Denetçi</td><td>{{fonKunyesi.bagimsizDenetci}}</td></tr>
+    <tr><td style="font-weight:600;">Değerleme Kuruluşu</td><td>{{fonKunyesi.degerlemeKurulusu}}</td></tr>
+  </table>
+  <div class="footer">
+    <span>{{meta.gizlilikNotu}}</span>
+    <span>{{meta.sirketAdi}}</span>
+    <span>2</span>
+  </div>
+</div>
+
+<!-- PAGE 3: SÜRE DURUMU -->
+<div class="page">
+  <h3>1.1 — Süre Durumu</h3>
+  <table>
+    <thead><tr><th>Olay</th><th>Tarih</th><th>Durum</th></tr></thead>
+    <tbody>
+    {{#each sureDurumu.kilometerTaslari}}
+    <tr>
+      <td>{{this.olay}}</td>
+      <td>{{this.tarih}}</td>
+      <td><span class="status-{{this.durum}}">●</span> {{this.durum}}</td>
+    </tr>
+    {{/each}}
+    </tbody>
+  </table>
+
+  <h4 class="mt-16">Kalan Süreler</h4>
+  <table>
+    {{#each sureDurumu.kalanSureler}}
+    <tr><td style="font-weight:600;">{{this.baslik}}</td><td class="text-right">{{this.sure}}</td></tr>
+    {{/each}}
+  </table>
+  <div class="footer">
+    <span>{{meta.gizlilikNotu}}</span>
+    <span>{{meta.sirketAdi}}</span>
+    <span>3</span>
+  </div>
+</div>
+
+<!-- PAGE 4-5: KOMİTE PANOSU -->
+<div class="page">
+  <h3>1.2 — Komite Panosu</h3>
+
+  <div class="findings-grid">
+    {{#each komitePanosu.kritikBulgular}}
+    <div class="finding-card alert-{{this.seviye}}">
+      <div class="finding-icon">{{this.ikon}}</div>
+      <div class="finding-title">{{this.baslik}} <span class="badge badge-{{this.seviye}}">{{this.seviye}}</span></div>
+      <div class="finding-desc">{{this.aciklama}}</div>
+    </div>
+    {{/each}}
+  </div>
+
+  <h4 class="mt-16">Dönemsel Karşılaştırma</h4>
+  <table>
+    <thead><tr><th>Kalem</th><th class="text-right">Önceki Dönem</th><th class="text-right">Güncel Dönem</th><th class="text-right">Değişim</th></tr></thead>
+    <tbody>
+    {{#each komitePanosu.karsilastirmaTablosu}}
+    <tr>
+      <td>{{this.kalem}}</td>
+      <td class="text-right">{{this.oncekiDonem}}</td>
+      <td class="text-right">{{this.guncelDonem}}</td>
+      <td class="text-right">{{this.degisim}}</td>
+    </tr>
+    {{/each}}
+    </tbody>
+  </table>
+  <div class="footer">
+    <span>{{meta.gizlilikNotu}}</span>
+    <span>{{meta.sirketAdi}}</span>
+    <span>4</span>
+  </div>
+</div>
+
+<!-- PAGE 6: ORGANİZASYON VE PORTFÖY YAPISI -->
+<div class="page">
+  <h2><span class="section-number">2 ·</span> Organizasyon ve Portföy Yapısı</h2>
+  <p class="mb-16">Fonun varlıkları dört grupta toplanmıştır; ağırlık, doğrudan girişim şirketi yatırımlarındadır.</p>
+
+  <div class="card mb-16">
+    <div style="display:flex; align-items:center; gap:24px; flex-wrap:wrap;">
+      <div>
+        <div class="text-muted text-small">PORTFÖY DEĞERİ</div>
+        <div style="font-size:24pt; font-weight:700;">{{portfoyYapisi.portfoyDegeri}}</div>
+        <div class="text-muted">{{portfoyYapisi.portfoyDegeriBirimi}}</div>
+      </div>
+      <div style="flex:1; display:grid; grid-template-columns:repeat(2, 1fr); gap:8px;">
+        {{#each portfoyYapisi.varlikDagilimi}}
+        <div style="display:flex; align-items:center; gap:6px; font-size:9pt;">
+          <span class="dot" style="background:{{this.renk}};"></span>
+          {{this.grup}} <strong>{{this.pay}}</strong>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+
+  <h3>Varlık Gruplarına Göre Dağılım</h3>
+  <table>
+    <thead><tr><th>Varlık Grubu</th><th class="text-right">Güncel Değer (TL)</th><th class="text-right">Pay</th><th>Dağılım</th></tr></thead>
+    <tbody>
+    {{#each portfoyYapisi.varlikDagilimi}}
+    <tr>
+      <td><span class="dot" style="background:{{this.renk}};"></span>{{this.grup}}</td>
+      <td class="text-right">{{formatNumber this.guncelDeger}}</td>
+      <td class="text-right">{{this.pay}}</td>
+      <td><div class="bar-container"><div class="bar-fill" style="width:{{parsePercent this.pay}}%; background:{{this.renk}};"></div></div></td>
+    </tr>
+    {{/each}}
+    <tr class="bold">
+      <td>Toplam (≈ NVD)</td>
+      <td class="text-right">{{formatNumber portfoyYapisi.toplamNVD}}</td>
+      <td class="text-right">%100,0</td>
+      <td></td>
+    </tr>
+    </tbody>
+  </table>
+
+  <h3>Fon Performansı</h3>
+  <div class="card-grid">
+    <div class="metric-card">
+      <div class="metric-label">Maliyet Bedeli (USD)</div>
+      <div class="metric-value" style="font-size:16pt;">{{portfoyYapisi.fonPerformansi.maliyetBedeli}}</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Güncel Değer (NVD, USD)</div>
+      <div class="metric-value" style="font-size:16pt;">{{portfoyYapisi.fonPerformansi.guncelDeger}}</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Çoklu (USD Bazında)</div>
+      <div class="metric-value" style="font-size:16pt;">{{portfoyYapisi.fonPerformansi.coklu}}</div>
+    </div>
+  </div>
+  <p class="text-small text-muted">{{portfoyYapisi.fonPerformansi.aciklama}}</p>
+
+  <div class="footer">
+    <span>{{meta.gizlilikNotu}}</span>
+    <span>{{meta.sirketAdi}}</span>
+    <span>6</span>
+  </div>
+</div>
+
+<!-- PAGE 7: BAĞIMSIZ DENETİM RAPORU ANALİZİ -->
+<div class="page">
+  <h2><span class="section-number">3 ·</span> Bağımsız Denetim Raporu Analizi</h2>
+  <span class="source-badge">Kaynak: {{denetimAnalizi.kaynak}}</span>
+  <p class="mt-8 mb-16">Başlıca finansal tablo kalemleri ve her birinin altında kısa analizi aşağıdadır.</p>
+
+  <h3>3.1 — Bilanço ve Yıllık Karşılaştırma</h3>
+  <table>
+    <thead><tr><th>Kalem (TL)</th><th class="text-right">Güncel Dönem</th><th class="text-right">Önceki Dönem</th><th class="text-right">Değişim</th></tr></thead>
+    <tbody>
+    {{#each denetimAnalizi.bilanco}}
+    <tr class="{{#if this.bold}}bold{{/if}}">
+      <td>{{this.kalem}}</td>
+      <td class="text-right">{{formatNumber this.guncelDonem}}</td>
+      <td class="text-right">{{formatNumber this.oncekiDonem}}</td>
+      <td class="text-right">{{this.degisim}}</td>
+    </tr>
+    {{/each}}
+    </tbody>
+  </table>
+
+  <h3>3.2 — Dönem Kârı Nasıl Oluştu? <span class="text-muted" style="font-weight:400;">(Gelir Tablosu)</span></h3>
+  <table>
+    <thead><tr><th colspan="2">Gelirler</th></tr></thead>
+    <tbody>
+    {{#each denetimAnalizi.gelirTablosu.gelirler}}
+    <tr><td>{{this.kalem}}</td><td class="text-right">{{formatNumber this.tutar}}</td></tr>
+    {{/each}}
+    <tr class="bold"><td>Toplam Gelir</td><td class="text-right">{{formatNumber denetimAnalizi.gelirTablosu.toplamGelir}}</td></tr>
+    </tbody>
+  </table>
+  <table>
+    <thead><tr><th colspan="2">Giderler</th></tr></thead>
+    <tbody>
+    {{#each denetimAnalizi.gelirTablosu.giderler}}
+    <tr><td>{{this.kalem}}</td><td class="text-right">({{formatNumber this.tutar}})</td></tr>
+    {{/each}}
+    <tr class="bold" style="background:#2d6a4f; color:#fff;"><td>Net Dönem Kârı</td><td class="text-right">{{formatNumber denetimAnalizi.gelirTablosu.netDonemKari}}</td></tr>
+    </tbody>
+  </table>
+  <div class="callout">{{denetimAnalizi.gelirTablosu.aciklama}}</div>
+
+  <div class="footer">
+    <span>{{meta.gizlilikNotu}}</span>
+    <span>{{meta.sirketAdi}}</span>
+    <span>7</span>
+  </div>
+</div>
+
+<!-- PAGE 8: GİDERLER VE YÖNETİM ÜCRETİ -->
+<div class="page">
+  <h3>3.3 — Giderler ve Yönetim Ücreti</h3>
+  <table>
+    <thead><tr><th>Gider Kalemi</th><th class="text-right">Güncel Dönem (TL)</th><th class="text-right">Önceki Dönem (TL)</th></tr></thead>
+    <tbody>
+    {{#each denetimAnalizi.giderAnalizi}}
+    <tr>
+      <td>{{this.kalem}}</td>
+      <td class="text-right">{{formatNumber this.guncelDonem}}</td>
+      <td class="text-right">{{formatNumber this.oncekiDonem}}</td>
+    </tr>
+    {{/each}}
+    <tr class="bold"><td>Toplam Gider</td><td class="text-right">{{formatNumber denetimAnalizi.toplamGider}}</td><td class="text-right">—</td></tr>
+    </tbody>
+  </table>
+
+  <div class="card-grid">
+    {{#each denetimAnalizi.ozetKartlar}}
+    <div class="card">
+      <div style="font-weight:600; margin-bottom:4px;">{{this.baslik}}</div>
+      <div class="text-small">{{this.aciklama}}</div>
+    </div>
+    {{/each}}
+  </div>
+
+  <h4>Analiz — Yönetim Ücretinin Esası</h4>
+  <h4>Likidite ile Yönetim Ücreti Karşılama Süresi</h4>
+  <table>
+    <tr><td>Nakit (vadesiz mevduat)</td><td class="text-right">{{formatNumber denetimAnalizi.yonetimUcretiAnalizi.nakitVadesiz}}</td></tr>
+    <tr><td>Döviz (USD + EUR)</td><td class="text-right">{{formatNumber denetimAnalizi.yonetimUcretiAnalizi.doviz}}</td></tr>
+    <tr class="bold"><td>Toplam Likit Varlık</td><td class="text-right">{{formatNumber denetimAnalizi.yonetimUcretiAnalizi.toplamLikit}}</td></tr>
+    <tr><td>Yıllık yönetim ücreti (fiili)</td><td class="text-right">{{formatNumber denetimAnalizi.yonetimUcretiAnalizi.yillikYonetimUcreti}}</td></tr>
+    <tr><td>Aylık yönetim ücreti (≈)</td><td class="text-right">{{formatNumber denetimAnalizi.yonetimUcretiAnalizi.aylikYonetimUcreti}}</td></tr>
+    <tr class="bold" style="background:#2d6a4f; color:#fff;"><td>Karşılayabileceği süre (likit + aylık ücret)</td><td class="text-right">{{denetimAnalizi.yonetimUcretiAnalizi.karsilayabilecekSure}}</td></tr>
+  </table>
+  <p class="text-small text-muted">{{denetimAnalizi.yonetimUcretiAnalizi.aciklama}}</p>
+
+  <div class="footer">
+    <span>{{meta.gizlilikNotu}}</span>
+    <span>{{meta.sirketAdi}}</span>
+    <span>8</span>
+  </div>
+</div>
+
+<!-- PAGE 9: GERÇEĞE UYGUN DEĞER SEVİYELERİ -->
+<div class="page">
+  <h3>3.4 — Gerçeğe Uygun Değer Seviyeleri</h3>
+  <table>
+    <thead><tr><th>Seviye</th><th class="text-right">Güncel Değer (TL)</th><th class="text-right">Pay</th></tr></thead>
+    <tbody>
+    {{#each denetimAnalizi.degerSeviyeleri}}
+    <tr>
+      <td>{{this.seviye}}</td>
+      <td class="text-right">{{formatNumber this.guncelDeger}}</td>
+      <td class="text-right">{{this.pay}}</td>
+    </tr>
+    {{/each}}
+    <tr class="bold"><td>Toplam Portföy</td><td class="text-right">{{formatNumber portfoyYapisi.varlikDagilimi.[0].guncelDeger}}</td><td class="text-right">%100,0</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-danger">
+    <strong>En kritik husus.</strong> {{denetimAnalizi.degerSeviyesiNotu}}
+  </div>
+
+  <div class="footer">
+    <span>{{meta.gizlilikNotu}}</span>
+    <span>{{meta.sirketAdi}}</span>
+    <span>9</span>
+  </div>
+</div>
+
+<!-- PAGE 10: ŞİRKET BAZINDA DEĞERLEME ANALİZİ -->
+<div class="page">
+  <h2><span class="section-number">4 ·</span> Şirket Bazında Değerleme Analizi</h2>
+  <span class="source-badge">Kaynak: {{sirketDegerleme.kaynak}}</span>
+  <p class="mt-8 mb-16">{{sirketDegerleme.aciklama}}</p>
+
+  <h3>4.1 — Değerleme Kaynakları</h3>
+  <div class="callout mb-16">{{sirketDegerleme.degerlemeKaynakNotu}}</div>
+  <table>
+    <thead><tr><th>Değerleme Kaynağı</th><th class="text-right">Tutar (TL)</th><th class="text-right">Pay</th><th>Dağılım</th></tr></thead>
+    <tbody>
+    {{#each sirketDegerleme.degerlemeKaynaklari}}
+    <tr>
+      <td><span class="dot" style="background:{{this.renk}};"></span>{{this.kaynak}}</td>
+      <td class="text-right">{{formatNumber this.tutar}}</td>
+      <td class="text-right">{{this.pay}}</td>
+      <td><div class="bar-container"><div class="bar-fill" style="width:{{parsePercent this.pay}}%; background:{{this.renk}};"></div></div></td>
+    </tr>
+    {{/each}}
+    </tbody>
+  </table>
+
+  <h3>4.2 — En Büyük Fon Pozisyonları</h3>
+  <table>
+    <thead><tr><th>Şirket (Konsolide)</th><th class="text-right">Kayıtlı Değer (TL)</th><th class="text-right">Portföy Payı</th><th>Değerleme</th></tr></thead>
+    <tbody>
+    {{#each sirketDegerleme.enBuyukPozisyonlar}}
+    <tr>
+      <td>{{this.sirket}}</td>
+      <td class="text-right">{{formatNumber this.kayitliDeger}}</td>
+      <td class="text-right">{{this.portfoyPayi}}</td>
+      <td><span class="badge badge-kurucu">{{this.degerleme}}</span></td>
+    </tr>
+    {{/each}}
+    <tr class="bold">
+      <td>Girişim sermayesi yatırımları toplamı</td>
+      <td class="text-right">{{formatNumber sirketDegerleme.enBuyukPozisyonlar.[0].kayitliDeger}}</td>
+      <td class="text-right">%100,0</td>
+      <td></td>
+    </tr>
+    </tbody>
+  </table>
+
+  <h3>4.3 — Değerleme Raporu Analizleri</h3>
+  <p class="text-small text-muted mb-16">Her portföy şirketi için kullanılan değerleme yöntemi, değerlemeyi yapan taraf, fona kayıtlı değer, NVD payı ve bağımsız değerlendirme notu aşağıda yer almaktadır.</p>
+
+  <div class="footer">
+    <span>{{meta.gizlilikNotu}}</span>
+    <span>{{meta.sirketAdi}}</span>
+    <span>10</span>
+  </div>
+</div>
+
+<!-- PAGE 11: ŞİRKET DETAYLARI -->
+<div class="page">
+  {{#each sirketDegerleme.sirketDetaylari}}
+  <div class="card mb-16">
+    <h3 style="margin-bottom:2px;">{{this.sirketAdi}}</h3>
+    <div class="text-muted text-small mb-8">{{this.sektor}}</div>
+
+    <div style="background:#2d6a4f; color:#fff; padding:6px 12px; border-radius:4px; font-size:9pt; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+      <span>{{this.degerlemeYontemi}}</span>
+      <span class="badge badge-kurucu">{{this.degerleyen}}</span>
+    </div>
+
+    <div class="card-grid" style="margin-bottom:12px;">
+      <div class="metric-card">
+        <div class="metric-label">Kayıtlı Değer (TL)</div>
+        <div class="metric-value" style="font-size:16pt;">{{formatNumber this.kayitliDeger}}</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Portföy Payı</div>
+        <div class="metric-value" style="font-size:16pt;">{{this.portfoyPayi}}</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Değerleyen</div>
+        <div class="metric-value" style="font-size:16pt;">{{this.degerleyen}}</div>
+      </div>
+    </div>
+
+    <h4>Değerlendirme Notu</h4>
+    <p class="text-small" style="line-height:1.6;">{{this.degerlemeNotu}}</p>
+
+    <div class="mt-8">
+      <span class="badge badge-{{this.raporDurumu}}">
+        {{#if (eq this.raporDurumu "bekleniyor")}}Rapor bekleniyor{{/if}}
+        {{#if (eq this.raporDurumu "mevcut")}}Rapor mevcut{{/if}}
+        {{#if (eq this.raporDurumu "yok")}}Rapor yok{{/if}}
+      </span>
+    </div>
+  </div>
+  {{/each}}
+
+  <div class="footer">
+    <span>{{meta.gizlilikNotu}}</span>
+    <span>{{meta.sirketAdi}}</span>
+    <span>11</span>
+  </div>
+</div>
+
+<!-- PAGE 12: MEVZUAT UYUMU + RİSK DEĞERLENDİRMESİ -->
+<div class="page">
+  <h2><span class="section-number">5 ·</span> Mevzuat Uyumu <span class="source-badge">Kaynak: {{mevzuatUyumu.kaynak}}</span></h2>
+  <h4>%{{mevzuatUyumu.esikYuzdesi}} girişim sermayesi yatırım eşiği</h4>
+
+  <table>
+    <thead><tr><th>Bileşen (TL)</th><th class="text-right">Tutar</th><th class="text-right">Portföy %</th></tr></thead>
+    <tbody>
+    {{#each mevzuatUyumu.bilesenler}}
+    <tr class="{{#if this.bold}}bold{{/if}}">
+      <td>{{this.bilesen}}</td>
+      <td class="text-right">{{formatNumber this.tutar}}</td>
+      <td class="text-right">{{this.portfoyYuzdesi}}</td>
+    </tr>
+    {{/each}}
+    </tbody>
+  </table>
+
+  <div style="margin:16px 0;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+      <span style="font-weight:600;">Doğrudan girişim sermayesi / NVD</span>
+      <span style="font-size:20pt; font-weight:700; color:#2d6a4f;">{{mevzuatUyumu.dogrudanGirisimOrani}}</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" style="width:{{parsePercent mevzuatUyumu.dogrudanGirisimOrani}}%;"></div>
+      <div class="progress-threshold" style="left:{{mevzuatUyumu.esikYuzdesi}}%;"></div>
+    </div>
+    <div style="display:flex; justify-content:space-between;" class="progress-label">
+      <span>%0</span>
+      <span>eşik %{{mevzuatUyumu.esikYuzdesi}} ↑</span>
+      <span>%100</span>
+    </div>
+  </div>
+
+  <div class="callout" style="border-color:#10b981; background:#f0fdf4;">
+    <strong>Sonuç — {{mevzuatUyumu.sonuc}}.</strong> {{mevzuatUyumu.sonucAciklama}}
+  </div>
+
+  <h2 class="mt-16"><span class="section-number">6 ·</span> Risk Değerlendirmesi <span class="source-badge">{{riskDegerlendirmesi.kaynak}}</span></h2>
+
+  {{#each riskDegerlendirmesi.riskler}}
+  <div class="alert-card alert-{{this.seviye}}" style="margin-bottom:12px;">
+    <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+      <strong>{{this.baslik}}</strong>
+      <span class="badge badge-{{this.seviye}}">{{formatSeviye this.seviye}}</span>
+    </div>
+    <p class="text-small">{{this.aciklama}}</p>
+  </div>
+  {{/each}}
+
+  <div class="footer">
+    <span>{{meta.gizlilikNotu}}</span>
+    <span>{{meta.sirketAdi}}</span>
+    <span>12</span>
+  </div>
+</div>
+
+</body>
+</html>

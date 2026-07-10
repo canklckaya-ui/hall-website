@@ -1,0 +1,307 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Yatırım Komitesi Raporu Veri Şeması",
+  "type": "object",
+  "required": ["meta", "fonKunyesi", "sureDurumu", "komitePanosu", "portfoyYapisi", "denetimAnalizi", "sirketDegerleme", "mevzuatUyumu", "riskDegerlendirmesi"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "properties": {
+        "raporBaslik": { "type": "string" },
+        "fonUnvani": { "type": "string" },
+        "donem": { "type": "string" },
+        "raporTarihi": { "type": "string" },
+        "nvd": { "type": "string" },
+        "birimPay": { "type": "string" },
+        "gizlilikNotu": { "type": "string" },
+        "sirketAdi": { "type": "string" }
+      }
+    },
+    "fonKunyesi": {
+      "type": "object",
+      "properties": {
+        "fonUnvani": { "type": "string" },
+        "fonTuru": { "type": "string" },
+        "yatirimStratejisi": { "type": "string" },
+        "kurucu": { "type": "string" },
+        "yonetici": { "type": "string" },
+        "saklamaKurulusu": { "type": "string" },
+        "spkOnayTarihi": { "type": "string" },
+        "kurulus": { "type": "string" },
+        "vadeSonu": { "type": "string" },
+        "toplamTaahhut": { "type": "string" },
+        "cagrilanSermaye": { "type": "string" },
+        "payAdedi": { "type": "string" },
+        "yonetimUcreti": { "type": "string" },
+        "performansUcreti": { "type": "string" },
+        "dagitimPolitikasi": { "type": "string" },
+        "bagimsizDenetci": { "type": "string" },
+        "degerlemeKurulusu": { "type": "string" }
+      }
+    },
+    "sureDurumu": {
+      "type": "object",
+      "properties": {
+        "kilometerTaslari": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "olay": { "type": "string" },
+              "tarih": { "type": "string" },
+              "durum": { "type": "string", "enum": ["tamamlandi", "aktif", "bekliyor"] }
+            }
+          }
+        },
+        "kalanSureler": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "baslik": { "type": "string" },
+              "sure": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "komitePanosu": {
+      "type": "object",
+      "properties": {
+        "kritikBulgular": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "baslik": { "type": "string" },
+              "seviye": { "type": "string", "enum": ["kritik", "uyari", "normal", "iyi"] },
+              "aciklama": { "type": "string" },
+              "ikon": { "type": "string" }
+            }
+          }
+        },
+        "karsilastirmaTablosu": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "kalem": { "type": "string" },
+              "oncekiDonem": { "type": "string" },
+              "guncelDonem": { "type": "string" },
+              "degisim": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "portfoyYapisi": {
+      "type": "object",
+      "properties": {
+        "portfoyDegeri": { "type": "string" },
+        "portfoyDegeriBirimi": { "type": "string" },
+        "varlikDagilimi": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "grup": { "type": "string" },
+              "guncelDeger": { "type": "number" },
+              "pay": { "type": "string" },
+              "renk": { "type": "string" }
+            }
+          }
+        },
+        "toplamNVD": { "type": "number" },
+        "fonPerformansi": {
+          "type": "object",
+          "properties": {
+            "maliyetBedeli": { "type": "string" },
+            "guncelDeger": { "type": "string" },
+            "coklu": { "type": "string" },
+            "aciklama": { "type": "string" }
+          }
+        }
+      }
+    },
+    "denetimAnalizi": {
+      "type": "object",
+      "properties": {
+        "kaynak": { "type": "string" },
+        "bilanco": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "kalem": { "type": "string" },
+              "guncelDonem": { "type": "number" },
+              "oncekiDonem": { "type": "number" },
+              "degisim": { "type": "string" },
+              "bold": { "type": "boolean" }
+            }
+          }
+        },
+        "gelirTablosu": {
+          "type": "object",
+          "properties": {
+            "gelirler": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "kalem": { "type": "string" },
+                  "tutar": { "type": "number" }
+                }
+              }
+            },
+            "toplamGelir": { "type": "number" },
+            "giderler": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "kalem": { "type": "string" },
+                  "tutar": { "type": "number" }
+                }
+              }
+            },
+            "netDonemKari": { "type": "number" },
+            "aciklama": { "type": "string" }
+          }
+        },
+        "giderAnalizi": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "kalem": { "type": "string" },
+              "guncelDonem": { "type": "number" },
+              "oncekiDonem": { "type": "number" }
+            }
+          }
+        },
+        "toplamGider": { "type": "number" },
+        "yonetimUcretiAnalizi": {
+          "type": "object",
+          "properties": {
+            "nakitVadesiz": { "type": "number" },
+            "doviz": { "type": "number" },
+            "toplamLikit": { "type": "number" },
+            "yillikYonetimUcreti": { "type": "number" },
+            "aylikYonetimUcreti": { "type": "number" },
+            "karsilayabilecekSure": { "type": "string" },
+            "aciklama": { "type": "string" }
+          }
+        },
+        "ozetKartlar": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "baslik": { "type": "string" },
+              "aciklama": { "type": "string" }
+            }
+          }
+        },
+        "degerSeviyeleri": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "seviye": { "type": "string" },
+              "guncelDeger": { "type": "number" },
+              "pay": { "type": "string" }
+            }
+          }
+        },
+        "degerSeviyesiNotu": { "type": "string" }
+      }
+    },
+    "sirketDegerleme": {
+      "type": "object",
+      "properties": {
+        "kaynak": { "type": "string" },
+        "aciklama": { "type": "string" },
+        "degerlemeKaynaklari": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "kaynak": { "type": "string" },
+              "tutar": { "type": "number" },
+              "pay": { "type": "string" },
+              "renk": { "type": "string" }
+            }
+          }
+        },
+        "degerlemeKaynakNotu": { "type": "string" },
+        "enBuyukPozisyonlar": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "sirket": { "type": "string" },
+              "kayitliDeger": { "type": "number" },
+              "portfoyPayi": { "type": "string" },
+              "degerleme": { "type": "string" }
+            }
+          }
+        },
+        "sirketDetaylari": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "sirketAdi": { "type": "string" },
+              "sektor": { "type": "string" },
+              "degerlemeYontemi": { "type": "string" },
+              "degerleyen": { "type": "string" },
+              "kayitliDeger": { "type": "number" },
+              "portfoyPayi": { "type": "string" },
+              "degerlemeNotu": { "type": "string" },
+              "raporDurumu": { "type": "string", "enum": ["mevcut", "bekleniyor", "yok"] }
+            }
+          }
+        }
+      }
+    },
+    "mevzuatUyumu": {
+      "type": "object",
+      "properties": {
+        "kaynak": { "type": "string" },
+        "esikYuzdesi": { "type": "number" },
+        "bilesenler": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "bilesen": { "type": "string" },
+              "tutar": { "type": "number" },
+              "portfoyYuzdesi": { "type": "string" },
+              "bold": { "type": "boolean" }
+            }
+          }
+        },
+        "dogrudanGirisimOrani": { "type": "string" },
+        "sonuc": { "type": "string" },
+        "sonucAciklama": { "type": "string" }
+      }
+    },
+    "riskDegerlendirmesi": {
+      "type": "object",
+      "properties": {
+        "kaynak": { "type": "string" },
+        "riskler": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "baslik": { "type": "string" },
+              "seviye": { "type": "string", "enum": ["en_yuksek", "yuksek", "orta", "dusuk"] },
+              "aciklama": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}
