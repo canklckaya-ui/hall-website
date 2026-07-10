@@ -1,31 +1,41 @@
 # Project Guidelines
 
-## Karpathy Guidelines (Always Active)
+## Auto-Active Skills
 
-Behavioral guidelines to reduce common LLM coding mistakes.
+All skills below activate automatically on every task. No confirmation needed.
 
-### 1. Think Before Coding
+### Coding Quality (Karpathy Guidelines)
 - State assumptions explicitly. If uncertain, ask.
 - If multiple interpretations exist, present them.
 - If simpler approach exists, say so. Push back when warranted.
-- If something unclear, stop and ask.
-
-### 2. Simplicity First
-- No features beyond what was asked.
-- No abstractions for single-use code.
-- No speculative "flexibility" or "configurability".
-- No error handling for impossible scenarios.
+- No features beyond what was asked. No abstractions for single-use code.
+- No speculative "flexibility" or error handling for impossible scenarios.
 - If 200 lines could be 50, rewrite it.
+- Don't "improve" adjacent code. Match existing style.
+- Every changed line traces directly to user's request.
+- Transform tasks into verifiable goals with verify steps.
 
-### 3. Surgical Changes
-- Don't "improve" adjacent code, comments, or formatting.
-- Don't refactor things that aren't broken.
-- Match existing style.
-- Remove only imports/variables YOUR changes made unused.
-- Every changed line should trace directly to user's request.
+### Development Workflow (Superpowers)
+- **Plan first**: Use writing-plans skill before complex tasks. Brief plan with verify steps.
+- **Execute plans**: Follow executing-plans skill. Step-by-step, verify each.
+- **TDD**: Write failing test first, then make it pass. Use test-driven-development skill.
+- **Systematic debugging**: Root cause tracing, no guessing. Use systematic-debugging skill.
+- **Verification before completion**: Always verify changes work before reporting done.
+- **Git worktrees**: Use for parallel isolated work when needed.
+- **Subagent-driven development**: Dispatch parallel agents for independent tasks.
+- **Parallel agents**: Fan out work when tasks are independent.
+- **Brainstorming**: Use visual companion for design discussions.
+- **Code review**: Auto-request review on finishing branches. Apply receiving-code-review skill on feedback.
+- **Branch finishing**: Clean up, verify, and prepare before merge.
 
-### 4. Goal-Driven Execution
-- Transform tasks into verifiable goals.
-- "Add validation" = write tests for invalid inputs, then make them pass.
-- "Fix the bug" = write reproducing test, then make it pass.
-- For multi-step tasks, state brief plan with verify steps.
+### UI/UX (Pro Max)
+- Apply ui-ux-pro-max skill on all frontend work. Follow UX guidelines, color theory, typography rules.
+- Use ui-styling skill for Tailwind, shadcn, responsive design.
+- Use design-system skill for token architecture, component specs.
+- Use design skill for logos, icons, CIP, social media assets.
+- Use banner-design skill for banner/header creation.
+- Use brand skill for brand identity consistency.
+- Use slides skill for presentation creation.
+
+### Skill Writing
+- When creating new skills, follow writing-skills best practices and anthropic guidelines.
