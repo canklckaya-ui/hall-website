@@ -36,10 +36,13 @@ All 200+ skills activate automatically on relevant tasks. No confirmation needed
 - **Charts**: chart-designer for chart creation.
 - **Diagrams**: diagram-creator for flowcharts, architecture.
 - **Image**: image + image-generation for visuals.
+- **Wireframe**: wireframe for UX prototypes (B&W/Clean/Polished variants).
+- **Frontend slides**: frontend-slides for 34 bold design system HTML sunumlar.
+- **Playwright**: playwright-skill for browser automation, screenshot, PDF export.
 
 ### Presentations & Slides
 - **PPTX**: pptx + pptx-manipulation for PowerPoint files.
-- **HTML slides**: html-slides + html-to-ppt + dev-slides + ai-slides.
+- **HTML slides**: html-slides + html-to-ppt + dev-slides + ai-slides + frontend-slides.
 - **Markdown slides**: md-slides for markdown-based presentations.
 - **Slide design**: slides skill for layout, copy, strategy.
 - **PPT visual**: ppt-visual for visual enhancements.
@@ -50,7 +53,7 @@ All 200+ skills activate automatically on relevant tasks. No confirmation needed
 - **Excel/XLSX**: xlsx + xlsx-manipulation + excel-automation + sheets-automation.
 - **Word/DOCX**: docx + docx-manipulation for Word docs.
 - **PDF**: pdf + pdf-compress + pdf-converter + pdf-extraction + pdf-form-filler + pdf-merge-split + pdf-ocr-extraction + pdf-to-docx + pdf-watermark + chat-with-pdf.
-- **Conversion**: md-to-office + office-to-md + batch-convert.
+- **Conversion**: md-to-office + office-to-md + batch-convert. HTML-to-PDF via playwright-skill, HTML-to-PPTX via pptx html2pptx.js.
 - **Templates**: template-engine + contract-template + invoice-template.
 - **OCR**: smart-ocr + table-extractor + layout-analyzer + doc-parser.
 

@@ -991,6 +991,12 @@
       "skillPath": "pdf-to-docx/SKILL.md",
       "computedHash": "48ff79d9f3c0bb21b2983e37e1f2884892e189778c203de1fe75dc61b0d5f0ef"
     },
+    "playwright-skill": {
+      "source": "lackeyjb/playwright-skill",
+      "sourceType": "github",
+      "skillPath": "skills/playwright-skill/SKILL.md",
+      "computedHash": "3a284d9eee004bcbcf17f58a08550146021d43efb02c9f411d65cacca889fb25"
+    },
     "popups": {
       "source": "coreyhaines31/marketingskills",
       "sourceType": "github",
